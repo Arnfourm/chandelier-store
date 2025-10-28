@@ -12,7 +12,7 @@ namespace microservices.CatalogAPI.Infrastructure.Database.Entities
         public Guid Id { get; set; }
 
         [Required]
-        [StringLength(75)]
+        [StringLength(100)]
         public required string Article { get; set; }
 
         [Required]
@@ -20,6 +20,6 @@ namespace microservices.CatalogAPI.Infrastructure.Database.Entities
         public required string Name { get; set; }
 
         [Required]
-        public float Price { get; set; }
+        public decimal Price { get; set; }
     }
 }
