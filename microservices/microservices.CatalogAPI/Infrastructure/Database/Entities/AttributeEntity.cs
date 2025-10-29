@@ -4,8 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace microservices.CatalogAPI.Infrastructure.Database.Entities
 {
-    [Table("Product")]
-    public class ProductEntity
+    [Table("Attribute")]
+    public class AttributeEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -13,22 +13,18 @@ namespace microservices.CatalogAPI.Infrastructure.Database.Entities
 
         [Required, NotNull]
         [StringLength(100)]
-        public required string Article { get; set; }
-
-        [Required, NotNull]
-        [StringLength(200)]
         public required string Title { get; set; }
 
         [Required, NotNull]
-        public decimal Price { get; set; }
+        public int AttributeGroupId { get; set; }
+
+        [ForeignKey("AttributeGroupId")]
+        public required AttributeGroupEntity AttributeGroup { get; set; }
 
         [Required, NotNull]
-        public int ProductTypeId { get; set; }
+        public int MeasurementUnitId { get; set; }
 
-        [ForeignKey("ProductTypeId")]
-        public required ProductTypeEntity ProductType { get; set; }
-
-        [Required, NotNull]
-        public DateOnly AddedDate { get; set; }
+        [ForeignKey("MeasurementUnitId")]
+        public required MeasurementUnitEntity MeasurementUnit { get; set; }
     }
 }

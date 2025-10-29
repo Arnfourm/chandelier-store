@@ -1,15 +1,30 @@
+using microservices.CatalogAPI.Domain.Services;
+using microservices.CatalogAPI.Infrastructure.Database.Contexts;
+using microservices.CatalogAPI.Infrastructure.Database.DAO;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDbContext<CatalogDbContext>(
+    options =>
+    {
+        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    }
+);
+
+// DAO registry
+builder.Services.AddScoped<ProductTypeDAO>();
+
+// Services registry
+builder.Services.AddScoped<ProductTypeService>();
+
+builder.Services.AddControllers();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

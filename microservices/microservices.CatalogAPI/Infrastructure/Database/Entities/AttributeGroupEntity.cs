@@ -1,18 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace microservices.CatalogAPI.Infrastructure.Database.Entities
 {
-    [Table("BulbType")]
-    public class BulbTypeEntity
+    [Table("AttributeGroup")]
+    public class AttributeGroupEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Required]
-        [StringLength(50)]
+        [Required, NotNull]
+        [StringLength(75)]
         public required string Title { get; set; }
     }
 }
