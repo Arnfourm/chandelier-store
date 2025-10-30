@@ -1,7 +1,7 @@
 ﻿namespace microservices.CatalogAPI.API.Contracts.Requests
 {
-    public record ProductTypeResponse
+    public record ProductTypeRequest
     (
-        int Id
+        string Title
     );
 }

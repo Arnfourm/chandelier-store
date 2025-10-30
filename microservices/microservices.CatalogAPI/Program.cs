@@ -1,3 +1,5 @@
+using microservices.CatalogAPI.Domain.Interfaces.DAO;
+using microservices.CatalogAPI.Domain.Interfaces.Services;
 using microservices.CatalogAPI.Domain.Services;
 using microservices.CatalogAPI.Infrastructure.Database.Contexts;
 using microservices.CatalogAPI.Infrastructure.Database.DAO;
@@ -16,10 +18,10 @@ builder.Services.AddDbContext<CatalogDbContext>(
 );
 
 // DAO registry
-builder.Services.AddScoped<ProductTypeDAO>();
+builder.Services.AddScoped<IProductTypeDAO, ProductTypeDAO>();
 
 // Services registry
-builder.Services.AddScoped<ProductTypeService>();
+builder.Services.AddScoped<IProductTypeService, ProductTypeService>();
 
 builder.Services.AddControllers();
 

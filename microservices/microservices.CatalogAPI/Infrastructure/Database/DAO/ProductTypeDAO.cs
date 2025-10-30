@@ -1,11 +1,12 @@
-﻿using microservices.CatalogAPI.Domain.Models;
+﻿using microservices.CatalogAPI.Domain.Interfaces.DAO;
+using microservices.CatalogAPI.Domain.Models;
 using microservices.CatalogAPI.Infrastructure.Database.Contexts;
 using microservices.CatalogAPI.Infrastructure.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace microservices.CatalogAPI.Infrastructure.Database.DAO
 {
-    public class ProductTypeDAO
+    public class ProductTypeDAO : IProductTypeDAO
     {
         private readonly CatalogDbContext _catalogDbContext;
 

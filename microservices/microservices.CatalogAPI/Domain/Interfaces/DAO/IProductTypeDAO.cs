@@ -1,4 +1,6 @@
-namespace microservices.CatalogAPI.Domain.Interfaces
+using microservices.CatalogAPI.Domain.Models;
+
+namespace microservices.CatalogAPI.Domain.Interfaces.DAO
 {
     public interface IProductTypeDAO
     {

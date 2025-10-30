@@ -1,21 +1,17 @@
-﻿using microservices.CatalogAPI.Domain.Models;
-using microservices.CatalogAPI.Infrastructure.Database.DAO;
+﻿using microservices.CatalogAPI.Domain.Interfaces.DAO;
+using microservices.CatalogAPI.Domain.Interfaces.Services;
+using microservices.CatalogAPI.Domain.Models;
 
 namespace microservices.CatalogAPI.Domain.Services
 {
-    public class ProductTypeService
+    public class ProductTypeService : IProductTypeService
     {
         private readonly IProductTypeDAO _productTypeDAO;
 
-        public ProductTypeService(ProductType productTypeDAO)
+        public ProductTypeService(IProductTypeDAO productTypeDAO)
         {
-            _productTypeDAO = new productTypeDAO();
+            _productTypeDAO = productTypeDAO;
         }
-
-        // public ProductTypeService(ProductTypeDAO productTypeDAO)
-        // {
-        //     _productTypeDAO = productTypeDAO;
-        // }
 
         public async Task<List<ProductType>> GetAllProductTypes()
         {
@@ -26,7 +22,7 @@ namespace microservices.CatalogAPI.Domain.Services
 
         public async Task<ProductType> GetSingleProductTypeById(int id)
         {
-            ProductType productType = await _productTypeDAO.GetProductTypeById();
+            ProductType productType = await _productTypeDAO.GetProductTypeById(id);
 
             return productType;
         }
