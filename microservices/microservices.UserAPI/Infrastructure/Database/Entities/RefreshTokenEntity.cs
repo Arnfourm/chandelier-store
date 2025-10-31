@@ -12,7 +12,7 @@ namespace microservices.UserAPI.Infrastructure.Database.Entities
         public Guid Id { get; set; }
 
         [Required, NotNull]
-        public required string RefreshToken { get; set; }
+        public required string Token { get; set; }
 
         public DateTime CreatedTime { get; set; }
         public DateTime ExpireTime {  get; set; }

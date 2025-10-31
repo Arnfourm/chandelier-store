@@ -24,6 +24,7 @@ namespace microservices.UserAPI.Infrastructure.Database.Entities
         [StringLength(100)]
         public required string Surname { get; set; }
 
+        [AllowNull]
         public DateOnly Birthday { get; set; }
 
         public DateTime Registration { get; set; }
@@ -32,13 +33,13 @@ namespace microservices.UserAPI.Infrastructure.Database.Entities
         public Guid PasswordId { get; set; }
 
         [ForeignKey("PasswordId")]
-        public required PasswordEntity Password { get; set; }
+        public PasswordEntity? Password { get; set; }
 
-        [Required, NotNull]
+        [AllowNull]
         public Guid RefreshTokenId { get; set; }
 
         [ForeignKey("RefreshTokenId")]
-        public required RefreshTokenEntity RefreshToken { get; set; }
+        public RefreshTokenEntity? RefreshToken { get; set; }
 
         [Required]
         [Column(TypeName = "smallint")]
