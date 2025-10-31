@@ -8,7 +8,7 @@ namespace microservices.UserAPI.Infrastructure.Database.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         [Column(TypeName = "bytea")]
