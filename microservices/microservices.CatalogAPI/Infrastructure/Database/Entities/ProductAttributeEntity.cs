@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 
 namespace microservices.CatalogAPI.Infrastructure.Database.Entities
 {
@@ -9,19 +8,19 @@ namespace microservices.CatalogAPI.Infrastructure.Database.Entities
     [Table("ProductAttribute")]
     public class ProductAttributeEntity
     {
-        [Required, NotNull]
-        public Guid ProductTypeId;
+        [Required]
+        public Guid ProductId;
 
-        [ForeignKey("ProductTypeId")]
-        public required ProductEntity Product { get; set; }
+        [ForeignKey("ProductId")]
+        public ProductEntity? Product { get; set; }
 
-        [Required, NotNull]
+        [Required]
         public Guid AttributeId;
 
         [ForeignKey("AttributeId")]
-        public required AttributeEntity Attribute { get; set; }
+        public AttributeEntity? Attribute { get; set; }
 
-        [Required, NotNull]
+        [Required]
         [StringLength(200)]
         public required string Value { get; set; }
     }
