@@ -17,30 +17,24 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
 
         public async Task<List<ProductType>> GetProductTypes()
         {
-            var productTypeList = await _catalogDbContext.ProductTypes.ToListAsync();
-
-            if (productTypeList == null)
-            {
-                throw new Exception("Not a single object productType was found");
-            }
-
-            var productTypeReturn = productTypeList
-                .Select(productType => new ProductType(productType.Id, productType.Title))
-                .ToList();
-
-            return productTypeReturn;
-        } 
+            return await _catalogDbContext.ProductTypes
+                .Select(productTypeEntity => new ProductType
+                (
+                    productTypeEntity.Id,
+                    productTypeEntity.Title
+                )).ToListAsync();
+        }
 
         public async Task<ProductType> GetProductTypeById(int id)
         {
-            var productType = await _catalogDbContext.ProductTypes.SingleOrDefaultAsync(productType => productType.Id == id);
+            var productTypeEntity = await _catalogDbContext.ProductTypes.FindAsync(id);
 
-            if (productType == null)
+            if (productTypeEntity == null)
             {
                 throw new Exception($"Product type with id {id} not found");
             }
 
-            return new ProductType(productType.Id, productType.Title);
+            return new ProductType(productTypeEntity.Id, productTypeEntity.Title);
         }
 
         public async Task<int> CreateProductType(ProductType productType)
@@ -51,9 +45,32 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
             };
 
             await _catalogDbContext.ProductTypes.AddAsync(productTypeEntity);
-            await _catalogDbContext.SaveChangesAsync();
+            try
+            {
+                await _catalogDbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error while trying to add new product type. Error message:\n{ex.Message}", ex);
+            }
 
             return productTypeEntity.Id;
+        }
+
+        public async Task DeleteProductTypeById(int id)
+        {
+            await _catalogDbContext.ProductTypes
+                .Where(productTypeEntity => productTypeEntity.Id == id)
+                .ExecuteDeleteAsync();
+
+            try
+            {
+                await _catalogDbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error while trying to delete product type. Error message:\n{ex.Message}", ex);
+            }
         }
     }
 }
