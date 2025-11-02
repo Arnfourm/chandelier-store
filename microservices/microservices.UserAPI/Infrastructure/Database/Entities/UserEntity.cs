@@ -1,7 +1,6 @@
 ﻿using microservices.UserAPI.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 
 namespace microservices.UserAPI.Infrastructure.Database.Entities
 {
@@ -12,30 +11,28 @@ namespace microservices.UserAPI.Infrastructure.Database.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
-        [Required, NotNull]
+        [Required]
         [StringLength(250)]
         public required string Email { get; set; }
 
-        [Required, NotNull]
+        [Required]
         [StringLength(100)]
         public required string Name { get; set; }
 
-        [Required, NotNull]
+        [Required]
         [StringLength(100)]
         public required string Surname { get; set; }
 
-        [AllowNull]
         public DateOnly Birthday { get; set; }
 
         public DateTime Registration { get; set; }
 
-        [Required, NotNull]
+        [Required]
         public Guid PasswordId { get; set; }
 
         [ForeignKey("PasswordId")]
         public PasswordEntity? Password { get; set; }
 
-        [AllowNull]
         public Guid RefreshTokenId { get; set; }
 
         [ForeignKey("RefreshTokenId")]

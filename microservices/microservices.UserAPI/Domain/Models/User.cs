@@ -32,17 +32,11 @@ namespace microservices.UserAPI.Domain.Models
         public User(Guid id, string email, string name,
                     string surname, DateOnly birthday, DateTime registration,
                     Guid passwordId, Guid refreshTokenId, UserRoleEnum userRole)
+                    : this(email, name, surname, birthday, registration, passwordId, 
+                    refreshTokenId, userRole)
         {
             // Валидацию надо сделать
             Id = id;
-            Email = email;
-            Name = name;
-            Surname = surname;
-            Birthday = birthday;
-            Registration = registration;
-            PasswordId = passwordId;
-            RefreshTokenId = refreshTokenId;
-            UserRole = userRole;
         }
 
         public string GetEmail() { return Email; }

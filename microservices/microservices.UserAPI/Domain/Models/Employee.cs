@@ -11,25 +11,14 @@ namespace microservices.UserAPI.Domain.Models
         private string ResidenceAddressHouse;
         private string ResidenceAddressPostalCode;
 
-        public Employee(int code, string country, string district,string addressCity,
-                      string addressStreet, string addressHouse, string addressPostalCode)
+        public Employee(Guid userId, int code, string country, string district,string addressCity,
+                       string addressStreet, string addressHouse, string addressPostalCode)
         {
             if (code < 0) throw new ArgumentOutOfRangeException("Employee code can't be less than zero", nameof(code));
             ValidateResidenceAddress(country, district, addressCity, addressStreet, addressHouse, addressPostalCode);
 
-            Code = code;
-            ResidenceAddressCountry = country;
-            ResidenceddressDistrict = district;
-            ResidenceAddressCity = addressCity;
-            ResidenceAddressStreet = addressStreet;
-            ResidenceAddressHouse = addressHouse;
-            ResidenceAddressPostalCode = addressPostalCode;
-        }
-
-        public Employee(Guid userId, string country, string district, string addressCity,
-                      string addressStreet, string addressHouse, string addressPostalCode)
-        {
             UserId = userId;
+            Code = code;
             ResidenceAddressCountry = country;
             ResidenceddressDistrict = district;
             ResidenceAddressCity = addressCity;
