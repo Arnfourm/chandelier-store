@@ -1,38 +1,41 @@
-namespace namespace.CatalogAPI.Domain.Services
+using microservices.CatalogAPI.Domain.Interfaces.DAO;
+using microservices.CatalogAPI.Domain.Interfaces.Services;
+using microservices.CatalogAPI.Domain.Models;
+
+namespace microservices.CatalogAPI.Domain.Services;
+
+public class ProductService : IProductService
 {
-    public class ProductService : IProductService
+    private readonly IProductDAO _productDAO;
+
+    public ProductService(IProductDAO productDAO)
     {
-        private readonly IProductDAO _productDAO;
+        _productDAO = productDAO;
+    }
 
-        public ProductService(IProductDAO productDAO)
-        {
-            _productDAO = productDAO;
-        }
+    public async Task<List<Product>> GetAllProducts()
+    {
+        List<Product> products = await _productDAO.GetProducts();
 
-        public async Task<List<Product>> GetAllProducts()
-        {
-            List<Product> products = await _productDAO.GetProducts();
+        return products;
+    }
 
-            return products;
-        }
+    public async Task<Product> GetSingleProductById(Guid id)
+    {
+        Product product = await _productDAO.GetProductById(id);
 
-        public async Task<Product> GetSingleProductById(Guid id)
-        {
-            Product product = await _productDAO.GetProductById(id);
+        return product;
+    }
 
-            return product;
-        }
+    public async Task<Guid> CreateNewProduct(Product product)
+    {
+        Guid productId = await _productDAO.CreateProduct(product);
 
-        public async Task<Guid> CreateNewProduct(Product product)
-        {
-            Guid productId = await _productDAO.CreateProduct(product);
+        return productId;
+    }
 
-            return productId;
-        }
-
-        public async Task DeleteSingleProductById(Guid id)
-        {
-            await _productDAO.DeleteProductById(id);
-        }
+    public async Task DeleteSingleProductById(Guid id)
+    {
+        await _productDAO.DeleteProductById(id);
     }
 }

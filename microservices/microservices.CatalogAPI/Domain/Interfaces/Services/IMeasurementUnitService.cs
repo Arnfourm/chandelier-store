@@ -1,3 +1,5 @@
+using microservices.CatalogAPI.Domain.Models;
+
 namespace microservices.CatalogAPI.Domain.Interfaces.Services
 {
     public interface IMeasurementUnitService

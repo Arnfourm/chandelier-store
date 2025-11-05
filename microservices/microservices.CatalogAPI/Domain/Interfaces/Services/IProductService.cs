@@ -1,10 +1,12 @@
-namespace microservices.CatalogAPI.DAO.Interfaces.Services
+using microservices.CatalogAPI.Domain.Models;
+
+namespace microservices.CatalogAPI.Domain.Interfaces.Services
 {
     public interface IProductService
     {
         public Task<List<Product>> GetAllProducts();
-        public Task<Product> GetSingleProductById(id);
+        public Task<Product> GetSingleProductById(Guid id);
         public Task<Guid> CreateNewProduct(Product product);
-        public Task DeleteSingleProductById(id);
+        public Task DeleteSingleProductById(Guid id);
     }
 }

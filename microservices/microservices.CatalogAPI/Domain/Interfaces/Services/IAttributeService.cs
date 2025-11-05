@@ -1,3 +1,5 @@
+using Attribute = microservices.CatalogAPI.Domain.Models.Attribute;
+
 namespace microservices.CatalogAPI.Domain.Interfaces.Services
 {
     public interface IAttributeService

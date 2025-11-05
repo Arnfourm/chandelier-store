@@ -1,8 +1,12 @@
+using microservices.CatalogAPI.Domain.Interfaces.DAO;
+using microservices.CatalogAPI.Domain.Interfaces.Services;
+using microservices.CatalogAPI.Domain.Models;
+
 namespace microservices.CatalogAPI.Domain.Services
 {
     public class AttributeGroupService : IAttributeGroupService
     {
-        private readonly IAttributeGroupDAO _attributeGroupDAO
+        private readonly IAttributeGroupDAO _attributeGroupDAO;
 
         public AttributeGroupService(IAttributeGroupDAO attributeGroupDAO)
         {
@@ -25,7 +29,7 @@ namespace microservices.CatalogAPI.Domain.Services
 
         public async Task<int> CreateNewAttributeGroup(AttributeGroup attributeGroup)
         {
-            int attributeGroupId = await _attributeGroupDAO.CreateAttributeGroups(AttributeGroup attributeGroup);
+            int attributeGroupId = await _attributeGroupDAO.CreateAttributeGroups(attributeGroup);
 
             return attributeGroupId;
         }

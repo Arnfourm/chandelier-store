@@ -47,9 +47,11 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult> DeleteProductType([FromBody] ProductTypeRequest request)
+        public async Task<ActionResult> DeleteProductType(int id)
         {
-                
+            await _productTypeService.DeleteSingleProductTypeById(id);
+
+            return Ok();
         }
     }
 }

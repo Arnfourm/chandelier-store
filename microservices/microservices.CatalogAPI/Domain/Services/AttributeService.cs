@@ -1,3 +1,7 @@
+using microservices.CatalogAPI.Domain.Interfaces.DAO;
+using microservices.CatalogAPI.Domain.Interfaces.Services;
+using Attribute = microservices.CatalogAPI.Domain.Models.Attribute;
+
 namespace microservices.CatalogAPI.Domain.Services
 {
     public class AttributeService : IAttributeService
@@ -32,7 +36,7 @@ namespace microservices.CatalogAPI.Domain.Services
 
         public async Task DeleteSingleAttributeById(Guid id)
         {
-            await _attributeDAO.DeleteAttributeById;
+            await _attributeDAO.DeleteAttributeById(id);
         }
     }
 }

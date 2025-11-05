@@ -1,8 +1,12 @@
+using microservices.CatalogAPI.Domain.Interfaces.DAO;
+using microservices.CatalogAPI.Domain.Interfaces.Services;
+using microservices.CatalogAPI.Domain.Models;
+
 namespace microservices.CatalogAPI.Domain.Services
 {
     public class MeasurementUnitService : IMeasurementUnitService
     {
-        private readonly IMeasurementUnitDAO _measurementUnitDAO
+        private readonly IMeasurementUnitDAO _measurementUnitDAO;
 
         public MeasurementUnitService(IMeasurementUnitDAO measurementUnitDAO)
         {
@@ -18,7 +22,7 @@ namespace microservices.CatalogAPI.Domain.Services
 
         public async Task<MeasurementUnit> GetSingleMeasurementUnitById(int id)
         {
-            Measurement measurementUnit = await _measurementUnitDAO.GetMeasurementUnitById(id);
+            MeasurementUnit measurementUnit = await _measurementUnitDAO.GetMeasurementUnitById(id);
 
             return measurementUnit;
         }
