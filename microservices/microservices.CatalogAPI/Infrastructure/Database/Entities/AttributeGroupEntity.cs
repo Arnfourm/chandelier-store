@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 
 namespace microservices.CatalogAPI.Infrastructure.Database.Entities
 {
@@ -11,7 +10,7 @@ namespace microservices.CatalogAPI.Infrastructure.Database.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Required, NotNull]
+        [Required]
         [StringLength(75)]
         public required string Title { get; set; }
     }

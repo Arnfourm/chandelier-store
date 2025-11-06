@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace microservices.CatalogAPI.Domain.Models
+﻿namespace microservices.CatalogAPI.Domain.Models
 {
     public class ProductType
     {
@@ -9,24 +7,14 @@ namespace microservices.CatalogAPI.Domain.Models
 
         public ProductType(string title)
         {
-            if (string.IsNullOrEmpty(title))
-            {
-                throw new ArgumentNullException("Product title can't be null or empty");
-            }
+            ValidateProductTypeTitle(title);
 
             Title = title;
         }
-
         public ProductType(int id, string title)
+                          : this(title)
         {
             Id = id;
-
-            if (string.IsNullOrEmpty(title))
-            {
-                throw new ArgumentNullException("Product title can't be null or empty");
-            }
-
-            Title = title;
         }
 
         public int GetId() { return Id; }
@@ -34,12 +22,17 @@ namespace microservices.CatalogAPI.Domain.Models
 
         public void SetTitle(string title)
         {
-            if (string.IsNullOrEmpty(title))
-            {
-                throw new ArgumentNullException("Product title can't be null or empty");
-            }
+            ValidateProductTypeTitle(title);
 
             Title = title;
+        }
+
+        private void ValidateProductTypeTitle(string title)
+        {
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                throw new ArgumentException("ProductType title can't be null or empty", nameof(title));
+            }
         }
     }
 }

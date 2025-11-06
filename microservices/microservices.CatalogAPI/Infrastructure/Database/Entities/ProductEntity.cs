@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 
 namespace microservices.CatalogAPI.Infrastructure.Database.Entities
 {
@@ -11,24 +10,26 @@ namespace microservices.CatalogAPI.Infrastructure.Database.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
-        [Required, NotNull]
+        [Required]
         [StringLength(100)]
         public required string Article { get; set; }
 
-        [Required, NotNull]
+        [Required]
         [StringLength(200)]
         public required string Title { get; set; }
 
-        [Required, NotNull]
+        [Required]
         public decimal Price { get; set; }
 
-        [Required, NotNull]
+        public int Quantity { get; set; }
+
+        [Required]
         public int ProductTypeId { get; set; }
 
         [ForeignKey("ProductTypeId")]
-        public required ProductTypeEntity ProductType { get; set; }
+        public ProductTypeEntity? ProductType { get; set; }
 
-        [Required, NotNull]
+        [Required]
         public DateOnly AddedDate { get; set; }
     }
 }
