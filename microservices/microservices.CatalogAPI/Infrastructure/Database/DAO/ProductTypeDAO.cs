@@ -57,6 +57,25 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
             return productTypeEntity.Id;
         }
 
+        public async Task<int> UpdateProductType(ProductType productType)
+        {
+            await _catalogDbContext.ProductTypes
+                .Where(productTypeEntity => productTypeEntity.Id == productType.GetId())
+                .ExecuteUpdateAsync(productTypeSetter => productTypeSetter
+                    .SetProperty(productTypeEntity => productTypeEntity.Title, productType.GetTitle()));
+        
+            try
+            {
+                await _catalogDbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error while trying to update product type. Error message:\n{ex.Message}", ex);
+            }
+
+            return productType.GetId();
+        }
+
         public async Task DeleteProductTypeById(int id)
         {
             await _catalogDbContext.ProductTypes

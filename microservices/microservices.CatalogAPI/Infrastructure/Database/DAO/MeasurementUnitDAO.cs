@@ -17,7 +17,7 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
 
         public async Task<List<MeasurementUnit>> GetMeasurementUnits()
         {
-            return await _catalogDbContext.MeasurementUnit
+            return await _catalogDbContext.MeasurementUnits
                 .Select(measurementUnitEntity => new MeasurementUnit
                 (
                     measurementUnitEntity.Id,
@@ -27,7 +27,7 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
 
         public async Task<MeasurementUnit> GetMeasurementUnitById(int id)
         {
-            var measurementUnitEntity = await _catalogDbContext.MeasurementUnit.FindAsync(id);
+            var measurementUnitEntity = await _catalogDbContext.MeasurementUnits.FindAsync(id);
 
             if (measurementUnitEntity == null)
             {
@@ -44,7 +44,7 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
                 Title = measurementUnit.GetTitle(),
             };
 
-            await _catalogDbContext.MeasurementUnit.AddAsync(measurementUnitEntity);
+            await _catalogDbContext.MeasurementUnits.AddAsync(measurementUnitEntity);
             try
             {
                 await _catalogDbContext.SaveChangesAsync();
@@ -57,9 +57,28 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
             return measurementUnitEntity.Id;
         }
 
+        public async Task<int> UpdateMeasurementUnit(MeasurementUnit measurementUnit)
+        {
+            await _catalogDbContext.MeasurementUnits
+                .Where(measurementUnitEntity => measurementUnitEntity.Id == measurementUnit.GetId())
+                .ExecuteUpdateAsync(measurementUnitSetters => measurementUnitSetters
+                    .SetProperty(measurementUnitEntity => measurementUnitEntity.Title, measurementUnit.GetTitle()));
+
+            try
+            {
+                await _catalogDbContext.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                throw new Exception($"Error while trying to update measurement unit. Error message:\n{ex.Message}", ex);
+            }
+
+            return measurementUnit.GetId();
+        }
+
         public async Task DeleteMeasurementUnitById(int id)
         {
-            await _catalogDbContext.MeasurementUnit
+            await _catalogDbContext.MeasurementUnits
                 .Where(measurementUnitEntity => measurementUnitEntity.Id == id)
                 .ExecuteDeleteAsync();
             try

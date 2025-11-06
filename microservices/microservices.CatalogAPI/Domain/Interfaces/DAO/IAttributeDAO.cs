@@ -7,6 +7,7 @@ namespace microservices.CatalogAPI.Domain.Interfaces.DAO
         public Task<List<Attribute>> GetAttributes();
         public Task<Attribute> GetAttributeById(Guid id);
         public Task<Guid> CreateAttribute(Attribute attribute);
+        public Task<Guid> UpdateAttribute(Attribute attribute);
         public Task DeleteAttributeById(Guid id);
     }
 }

@@ -26,16 +26,6 @@ namespace microservices.CatalogAPI.API.Controllers
             return Ok(response);
         }
 
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<ProductTypeResponse>> GetProductTypeById(int id)
-        {
-            var productType = await _productTypeService.GetSingleProductTypeById(id);
-
-            var response = new ProductTypeResponse(productType.GetId(), productType.GetTitle());
-
-            return Ok(response);
-        }
-
         [HttpPost]
         public async Task<ActionResult<int>> CreateProductType([FromBody] ProductTypeRequest request)
         {

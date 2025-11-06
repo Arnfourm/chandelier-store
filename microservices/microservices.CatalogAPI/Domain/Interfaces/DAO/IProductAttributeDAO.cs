@@ -7,6 +7,7 @@ namespace microservices.CatalogAPI.Domain.Interfaces.DAO
         public Task<List<ProductAttribute>> GetProductAttributeByProductId(Guid productId);
         public Task CreateProductAttribute(ProductAttribute productAttribute);
         public Task DeleteProductAttributeByProductId(Guid productId);
+        public Task UpdateProductAttribute(ProductAttribute productAttribute);
         public Task DeleteProductAttributeByAttributeId(Guid attributeId);
     }
 }

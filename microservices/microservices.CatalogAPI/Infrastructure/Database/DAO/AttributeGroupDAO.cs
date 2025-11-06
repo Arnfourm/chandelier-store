@@ -57,6 +57,25 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
             return attributeGroupEntity.Id;
         }
 
+        public async Task<int> UpdateAttributeGroup(AttributeGroup attributeGroup)
+        {
+            await _catalogDbContext.AttributeGroups
+                .Where(attributeGroupEntity => attributeGroupEntity.Id == attributeGroup.GetId())
+                .ExecuteUpdateAsync(attributeGroupSetters => attributeGroupSetters
+                    .SetProperty(attributeGroupEntity => attributeGroupEntity.Title, attributeGroup.GetTitle()));
+
+            try
+            {
+                await _catalogDbContext.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                throw new Exception($"Error while trying to update attribute group. Error message:\n{ex.Message}", ex);
+            }
+
+            return attributeGroup.GetId();
+        }
+
         public async Task DeleteAttributeGroupById(int id)
         {
             await _catalogDbContext.AttributeGroups

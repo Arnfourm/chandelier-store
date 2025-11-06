@@ -74,10 +74,48 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
             return productEntity.Id;
         }
 
+        public async Task<Guid> UpdateProduct(Product product)
+        {
+            await _catalogDbContext.Products
+                .Where(productEntity => productEntity.Id == product.GetId())
+                .ExecuteUpdateAsync(productSetters => productSetters
+                    .SetProperty(productEntity => productEntity.Article, product.GetArticle())
+                    .SetProperty(productEntity => productEntity.Title, product.GetTitle())
+                    .SetProperty(productEntity => productEntity.Price, product.GetPrice()));
+
+            try
+            {
+                await _catalogDbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error while trying to update general info product. Error message:\n{ex.Message}", ex);
+            }
+
+            return product.GetId();
+        }
+
+        public async Task UpdateProductQuantityById(Guid id, int quantity)
+        {
+            await _catalogDbContext.Products
+                .Where(productEntity => productEntity.Id == id)
+                .ExecuteUpdateAsync(productSetters => productSetters
+                    .SetProperty(productEntity => productEntity.Quantity, quantity));
+
+            try
+            {
+                await _catalogDbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error while trying to update product quantity. Error message:\n{ex.Message}", ex);
+            }
+        }
+
         public async Task DeleteProductById(Guid id)
         {
-            await _catalogDbContext.ProductAttributes
-                .Where(productEntity => productEntity.ProductId == id)
+            await _catalogDbContext.Products
+                .Where(productEntity => productEntity.Id == id)
                 .ExecuteDeleteAsync();
             try
             {

@@ -62,6 +62,24 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
             }
         }
 
+        public async Task UpdateProductAttribute(ProductAttribute productAttribute)
+        {
+            await _catalogDbContext.ProductAttributes
+                .Where(productAttributeEntity => productAttributeEntity.ProductId == productAttribute.GetProductId())
+                .Where(productAttributeEntity => productAttributeEntity.AttributeId == productAttribute.GetAttributeId())
+                .ExecuteUpdateAsync(productAttributeSetter => productAttributeSetter
+                    .SetProperty(productAttributeEntity => productAttributeEntity.Value, productAttribute.GetValue()));
+
+            try
+            {
+                await _catalogDbContext.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                throw new Exception($"Error while trying to update product attribute. Error message:\n{ex.Message}", ex);
+            }
+        }
+
         public async Task DeleteProductAttributeByAttributeId(Guid attributeId)
         {
             await _catalogDbContext.ProductAttributes
