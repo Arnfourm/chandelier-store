@@ -10,22 +10,11 @@ namespace microservices.UserAPI.Domain.Models
         private string DeliveryAddressHouse;
         private string DeliveryAddressPostalCode;
 
-        public Client(string country, string district,string addressCity,
+        public Client(Guid userId, string country, string district,string addressCity,
                       string addressStreet, string addressHouse, string addressPostalCode)
         {
             ValidateClientAddress(country, district, addressCity, addressStreet, addressHouse, addressPostalCode);
-            
-            DeliveryAddressCountry = country;
-            DeliveryAddressDistrict = district;
-            DeliveryAddressCity = addressCity;
-            DeliveryAddressStreet = addressStreet;
-            DeliveryAddressHouse = addressHouse;
-            DeliveryAddressPostalCode = addressPostalCode;
-        }
 
-        public Client(Guid userId, string country, string district, string addressCity,
-                      string addressStreet, string addressHouse, string addressPostalCode)
-        {
             UserId = userId;
             DeliveryAddressCountry = country;
             DeliveryAddressDistrict = district;
