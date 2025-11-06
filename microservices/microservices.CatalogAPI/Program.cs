@@ -19,9 +19,11 @@ builder.Services.AddDbContext<CatalogDbContext>(
 
 // DAO registry
 builder.Services.AddScoped<IProductTypeDAO, ProductTypeDAO>();
+builder.Services.AddScoped<IProductDAO, ProductDAO>();
 
 // Services registry
 builder.Services.AddScoped<IProductTypeService, ProductTypeService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddControllers();
 

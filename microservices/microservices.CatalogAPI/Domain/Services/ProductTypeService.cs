@@ -34,6 +34,13 @@ namespace microservices.CatalogAPI.Domain.Services
             return newProductTypeId;
         }
 
+        public async Task<int> UpdateSingleProductType(ProductType productType)
+        {
+            int updatedProductTypeId = await _productTypeDAO.UpdateProductType(productType);
+
+            return updatedProductTypeId;
+        }
+
         public async Task DeleteSingleProductTypeById(int id)
         {
             await _productTypeDAO.DeleteProductTypeById(id);

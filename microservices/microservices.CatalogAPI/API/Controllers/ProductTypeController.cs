@@ -1,8 +1,9 @@
 ﻿using microservices.CatalogAPI.API.Contracts.Responses;
 using microservices.CatalogAPI.API.Contracts.Requests;
 using microservices.CatalogAPI.Domain.Interfaces.Services;
-using Microsoft.AspNetCore.Mvc;
 using microservices.CatalogAPI.Domain.Models;
+
+using Microsoft.AspNetCore.Mvc;
 
 namespace microservices.CatalogAPI.API.Controllers
 {
@@ -21,7 +22,8 @@ namespace microservices.CatalogAPI.API.Controllers
         {
             var productTypes = await _productTypeService.GetAllProductTypes();
 
-            var response = productTypes.Select(productType => new ProductTypeResponse(productType.GetId(), productType.GetTitle()));
+            var response = productTypes
+                .Select(productType => new ProductTypeResponse(productType.GetId(), productType.GetTitle()));
 
             return Ok(response);
         }
@@ -34,6 +36,16 @@ namespace microservices.CatalogAPI.API.Controllers
             int newProductTypId = await _productTypeService.CreateNewProductType(newProductType);
 
             return Ok(newProductTypId);
+        }
+
+        [HttpPut("id:int")]
+        public async Task<ActionResult<int>> UpdateProductType([FromBody] ProductTypeRequest request, int id)
+        {
+            ProductType updatedProductType = new ProductType(id, request.Title);
+
+            int updatedProductTypeId = await _productTypeService.UpdateSingleProductType(updatedProductType);
+
+            return Ok(updatedProductTypeId);
         }
 
         [HttpDelete("{id:int}")]
