@@ -95,6 +95,7 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
             return product.GetId();
         }
 
+        // Возможно стоит убрать
         public async Task UpdateProductQuantityById(Guid id, int quantity)
         {
             await _catalogDbContext.Products

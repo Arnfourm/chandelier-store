@@ -41,6 +41,11 @@ public class ProductService : IProductService
         return productId;
     }
 
+    public async Task UpdateSingleProductQuantityById(Guid id, int quantity)
+    {
+        await _productDAO.UpdateProductQuantityById(id, quantity);
+    }
+
     public async Task DeleteSingleProductById(Guid id)
     {
         await _productDAO.DeleteProductById(id);

@@ -11,12 +11,14 @@ namespace microservices.CatalogAPI.API.Controllers
    [Route("api/[controller]")]
    public class ProductController : ControllerBase
    {
-       private readonly IProductService _productService;
+        private readonly IProductService _productService;
+        private readonly IProductTypeService _productTypeService;
 
-       public ProductController(IProductService productService)
-       {
-           _productService = productService;
-       }
+        public ProductController(IProductService productService, IProductTypeService productTypeService)
+        {
+            _productService = productService;
+            _productTypeService = productTypeService;
+        }
 
         [HttpGet]
         public async Task<ActionResult<List<Product>>> GetProducts()
@@ -24,17 +26,45 @@ namespace microservices.CatalogAPI.API.Controllers
             var products = await _productService.GetAllProducts();
 
             var response = products
-                .Select(product => new Product(
-                    product.GetId(),
-                    product.GetArticle(),
-                    product.GetTitle(),
-                    product.GetPrice(),
-                    product.GetQuantity(),
-                    product.GetProductTypeId(),
-                    product.GetAddedDate()
-                ));
+                .Select(product => 
+                    ProductType productType = _productTypeService.GetSingleProductTypeByTitle(product.GetProductTypeId());
+                    new ProductResponse(
+                        product.GetId(),
+                        product.GetArticle(),
+                        product.GetTitle(),
+                        product.GetPrice(),
+                        product.GetQuantity(),
+                        productType.GetId(),
+                        product.GetAddedDate()
+                    )
+                );
 
             return Ok(response);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Guid>> CreateProduct([FromBody] ProductRequest request)
+        {
+            Product newProduct = new Product(
+                request.Article,
+                request.Title,
+                request.Price,
+                request.Quantity,
+                request.ProductType,
+                request.AddedDate
+            );
+
+            int newProductId = await _productDAO.CreateNewProduct(newProduct);
+
+            return Ok(newProductId);
+        }
+
+        [HttpDelete("id:Guid")]
+        public async Task<ActionResult> DeleteProduct(int id)
+        {
+            await _productService.DeleteSingleProductById(id);
+
+            return Ok();
         }
    }
 }

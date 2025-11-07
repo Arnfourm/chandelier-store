@@ -27,6 +27,13 @@ namespace microservices.CatalogAPI.Domain.Services
             return productType;
         }
 
+        public async Task<ProductType> GetSingleProductTypeByTitle(string title)
+        {
+            ProductType productType = await _productTypeDAO.GetProductTypeByTitle(title);
+
+            return productType;
+        }
+
         public async Task<int> CreateNewProductType(ProductType productType)
         {
             int newProductTypeId = await _productTypeDAO.CreateProductType(productType);
