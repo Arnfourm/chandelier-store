@@ -3,6 +3,7 @@ using microservices.CatalogAPI.Domain.Models;
 using microservices.CatalogAPI.Infrastructure.Database.Contexts;
 using microservices.CatalogAPI.Infrastructure.Database.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace microservices.CatalogAPI.Infrastructure.Database.DAO
 {
@@ -32,6 +33,30 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
             if (attributeGroupEntity == null)
             {
                 throw new Exception($"Attribute group with id {id} not found");
+            }
+
+            return new AttributeGroup(attributeGroupEntity.Id, attributeGroupEntity.Title);
+        }
+
+        public async Task<List<AttributeGroup>> GetAttributeGroupByIds(List<int> ids)
+        {
+            return await _catalogDbContext.AttributeGroups
+                .Where(attributeGroupEntity => ids.Contains(attributeGroupEntity.Id))
+                .Select(attributeGroupEntity => new AttributeGroup
+                (
+                    attributeGroupEntity.Id,
+                    attributeGroupEntity.Title
+                )).ToListAsync();
+        }
+
+        public async Task<AttributeGroup> GetAttributeGroupByTitle(string title)
+        {
+            var attributeGroupEntity = await _catalogDbContext.AttributeGroups
+                .SingleOrDefaultAsync(attributeGroupEntity => attributeGroupEntity.Title == title);
+
+            if (attributeGroupEntity == null)
+            {
+                throw new Exception($"Attribute group with title {title} not found");
             }
 
             return new AttributeGroup(attributeGroupEntity.Id, attributeGroupEntity.Title);

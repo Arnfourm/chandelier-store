@@ -37,6 +37,17 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
             return new ProductType(productTypeEntity.Id, productTypeEntity.Title);
         }
 
+        public async Task<List<ProductType>> GetProductTypeByIds(List<int> ids)
+        {
+            return await _catalogDbContext.ProductTypes
+                .Where(productTypeEntity => ids.Contains(productTypeEntity.Id))
+                .Select(productTypeEntity => new ProductType
+                (
+                    productTypeEntity.Id,
+                    productTypeEntity.Title
+                )).ToListAsync();
+        }
+
         public async Task<ProductType> GetProductTypeByTitle(string title)
         {
             var productTypeEntity = await _catalogDbContext.ProductTypes
@@ -47,7 +58,7 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
                 throw new Exception($"Product type with title {title} not found");
             }
 
-            return newProductType(productTypeEntity.Id, productTypeEntity.Title);
+            return new ProductType(productTypeEntity.Id, productTypeEntity.Title);
         }
 
         public async Task<int> CreateProductType(ProductType productType)

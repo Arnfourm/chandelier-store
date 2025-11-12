@@ -6,6 +6,7 @@ namespace microservices.CatalogAPI.Domain.Interfaces.DAO
     {
         public Task<List<ProductType>> GetProductTypes();
         public Task<ProductType> GetProductTypeById(int id);
+        public Task<List<ProductType>> GetProductTypeByIds(List<int> ids);
         public Task<ProductType> GetProductTypeByTitle(string title);
         public Task<int> CreateProductType(ProductType productType);
         public Task<int> UpdateProductType(ProductType productType);

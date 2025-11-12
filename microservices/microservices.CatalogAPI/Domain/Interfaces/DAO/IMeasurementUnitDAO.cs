@@ -6,8 +6,10 @@ namespace microservices.CatalogAPI.Domain.Interfaces.DAO
     {
         public Task<List<MeasurementUnit>> GetMeasurementUnits();
         public Task<MeasurementUnit> GetMeasurementUnitById(int id);
-        public Task<int> CreateMeasurementUnit(MeasurementUnit measurementUnit);
-        public Task<int> UpdateMeasurementUnit(MeasurementUnit measurementUnit);
+        public Task<IEnumerable<MeasurementUnit>> GetMeasurementUnitByIds(List<int> ids);
+        public Task<MeasurementUnit> GetMeasurementUnitByTitle(string title);
+        public Task CreateMeasurementUnit(MeasurementUnit measurementUnit);
+        public Task UpdateMeasurementUnit(MeasurementUnit measurementUnit);
         public Task DeleteMeasurementUnitById(int id);
     }
 }

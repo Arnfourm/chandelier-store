@@ -1,4 +1,6 @@
-﻿using microservices.CatalogAPI.Domain.Interfaces.DAO;
+﻿using microservices.CatalogAPI.API.Contracts.Requests;
+using microservices.CatalogAPI.API.Contracts.Responses;
+using microservices.CatalogAPI.Domain.Interfaces.DAO;
 using microservices.CatalogAPI.Domain.Interfaces.Services;
 using microservices.CatalogAPI.Domain.Models;
 
@@ -13,11 +15,15 @@ namespace microservices.CatalogAPI.Domain.Services
             _productTypeDAO = productTypeDAO;
         }
 
-        public async Task<List<ProductType>> GetAllProductTypes()
+        public async Task<IEnumerable<ProductTypeResponse>> GetAllProductTypes()
         {
             List<ProductType> productTypes = await _productTypeDAO.GetProductTypes();
 
-            return productTypes;
+            IEnumerable<ProductTypeResponse> response = productTypes
+                .Select(productType =>
+                    new ProductTypeResponse(productType.GetId(), productType.GetTitle()));
+
+            return response;
         }
 
         public async Task<ProductType> GetSingleProductTypeById(int id)
@@ -27,6 +33,13 @@ namespace microservices.CatalogAPI.Domain.Services
             return productType;
         }
 
+        public async Task<List<ProductType>> GetListProductTypeByIds(List<int> ids)
+        {
+            List<ProductType> productTypes = await _productTypeDAO.GetProductTypeByIds(ids);
+
+            return productTypes;
+        }
+
         public async Task<ProductType> GetSingleProductTypeByTitle(string title)
         {
             ProductType productType = await _productTypeDAO.GetProductTypeByTitle(title);
@@ -34,16 +47,20 @@ namespace microservices.CatalogAPI.Domain.Services
             return productType;
         }
 
-        public async Task<int> CreateNewProductType(ProductType productType)
+        public async Task<int> CreateNewProductType(ProductTypeRequest request)
         {
-            int newProductTypeId = await _productTypeDAO.CreateProductType(productType);
+            ProductType newProductType = new ProductType(request.Title); 
+
+            int newProductTypeId = await _productTypeDAO.CreateProductType(newProductType);
 
             return newProductTypeId;
         }
 
-        public async Task<int> UpdateSingleProductType(ProductType productType)
+        public async Task<int> UpdateSingleProductType(int id, ProductTypeRequest request)
         {
-            int updatedProductTypeId = await _productTypeDAO.UpdateProductType(productType);
+            ProductType updateProductType = new ProductType(id, request.Title);
+
+            int updatedProductTypeId = await _productTypeDAO.UpdateProductType(updateProductType);
 
             return updatedProductTypeId;
         }

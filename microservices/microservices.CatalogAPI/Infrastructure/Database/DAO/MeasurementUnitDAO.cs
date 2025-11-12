@@ -37,7 +37,31 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
             return new MeasurementUnit(measurementUnitEntity.Id, measurementUnitEntity.Title);
         }
 
-        public async Task<int> CreateMeasurementUnit(MeasurementUnit measurementUnit)
+        public async Task<IEnumerable<MeasurementUnit>> GetMeasurementUnitByIds(List<int> ids)
+        {
+            return await _catalogDbContext.MeasurementUnits
+                .Where(measurementUnitEntity => ids.Contains(measurementUnitEntity.Id))
+                .Select(measurementUnitEntity => new MeasurementUnit
+                (
+                    measurementUnitEntity.Id,
+                    measurementUnitEntity.Title
+                )).ToListAsync();
+        }
+
+        public async Task<MeasurementUnit> GetMeasurementUnitByTitle(string title)
+        {
+            var measurementUnitEntity = await _catalogDbContext.MeasurementUnits
+                .SingleOrDefaultAsync(measurementUnitEntity => measurementUnitEntity.Title == title);
+
+            if (measurementUnitEntity == null)
+            {
+                throw new Exception($"Measurement unit with title {title} not found");
+            }
+
+            return new MeasurementUnit(measurementUnitEntity.Id, measurementUnitEntity.Title);
+        }
+
+        public async Task CreateMeasurementUnit(MeasurementUnit measurementUnit)
         {
             var measurementUnitEntity = new MeasurementUnitEntity
             {
@@ -53,11 +77,9 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
             {
                 throw new Exception($"Error while trying to add new measurement unit. Error message:\n{ex.Message}", ex);
             }
-
-            return measurementUnitEntity.Id;
         }
 
-        public async Task<int> UpdateMeasurementUnit(MeasurementUnit measurementUnit)
+        public async Task UpdateMeasurementUnit(MeasurementUnit measurementUnit)
         {
             await _catalogDbContext.MeasurementUnits
                 .Where(measurementUnitEntity => measurementUnitEntity.Id == measurementUnit.GetId())
@@ -72,8 +94,6 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
             {
                 throw new Exception($"Error while trying to update measurement unit. Error message:\n{ex.Message}", ex);
             }
-
-            return measurementUnit.GetId();
         }
 
         public async Task DeleteMeasurementUnitById(int id)

@@ -1,3 +1,5 @@
+using microservices.CatalogAPI.API.Contracts.Requests;
+using microservices.CatalogAPI.API.Contracts.Responses;
 using microservices.CatalogAPI.Domain.Interfaces.DAO;
 using microservices.CatalogAPI.Domain.Interfaces.Services;
 using microservices.CatalogAPI.Domain.Models;
@@ -13,11 +15,19 @@ namespace microservices.CatalogAPI.Domain.Services
             _attributeGroupDAO = attributeGroupDAO;       
         }
 
-        public async Task<List<AttributeGroup>> GetAllAttributeGroups()
+        public async Task<IEnumerable<AttributeGroupResponse>> GetAllAttributeGroups()
         {
             List<AttributeGroup> attributeGroups = await _attributeGroupDAO.GetAttributeGroups();
 
-            return attributeGroups;
+            IEnumerable<AttributeGroupResponse> response = attributeGroups
+                .Select(attributeGroup =>
+                    new AttributeGroupResponse(
+                        attributeGroup.GetId(),
+                        attributeGroup.GetTitle()
+                    )
+                );
+
+            return response;
         }
 
         public async Task<AttributeGroup> GetSingleAttributeGroupById(int id)
@@ -27,11 +37,32 @@ namespace microservices.CatalogAPI.Domain.Services
             return attributeGroup;
         }
 
-        public async Task<int> CreateNewAttributeGroup(AttributeGroup attributeGroup)
+        public async Task<IEnumerable<AttributeGroup>> GetListAttributeGroupByIds(List<int> ids)
         {
-            int attributeGroupId = await _attributeGroupDAO.CreateAttributeGroups(attributeGroup);
+            IEnumerable<AttributeGroup> attributeGroups = await _attributeGroupDAO.GetAttributeGroupByIds(ids);
 
-            return attributeGroupId;
+            return attributeGroups;
+        }
+
+        public async Task<AttributeGroup> GetSingleAttributeGroupByTitle(string title)
+        {
+            AttributeGroup attributeGroup = await _attributeGroupDAO.GetAttributeGroupByTitle(title);
+
+            return attributeGroup;
+        }
+
+        public async Task CreateNewAttributeGroup(AttributeGroupRequest request)
+        {
+            AttributeGroup newAttributeGroup = new AttributeGroup(request.Title);
+
+            await _attributeGroupDAO.CreateAttributeGroups(newAttributeGroup);
+        }
+
+        public async Task UpdateSingleAttributeGroupById(int id, AttributeGroupRequest request)
+        {
+            AttributeGroup updateAttributeGroup = new AttributeGroup(id, request.Title);
+
+            await _attributeGroupDAO.UpdateAttributeGroup(updateAttributeGroup);
         }
 
         public async Task DeleteSingleAttributeGroupById(int id)

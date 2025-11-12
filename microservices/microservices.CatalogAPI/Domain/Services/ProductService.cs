@@ -1,3 +1,5 @@
+using microservices.CatalogAPI.API.Contracts.Requests;
+using microservices.CatalogAPI.API.Contracts.Responses;
 using microservices.CatalogAPI.Domain.Interfaces.DAO;
 using microservices.CatalogAPI.Domain.Interfaces.Services;
 using microservices.CatalogAPI.Domain.Models;
@@ -8,16 +10,41 @@ public class ProductService : IProductService
 {
     private readonly IProductDAO _productDAO;
 
-    public ProductService(IProductDAO productDAO)
+    private readonly IProductTypeService _productTypeService;
+
+    public ProductService(IProductDAO productDAO, IProductTypeService productTypeService)
     {
         _productDAO = productDAO;
+
+        _productTypeService = productTypeService;
     }
 
-    public async Task<List<Product>> GetAllProducts()
+    public async Task<IEnumerable<ProductResponse>> GetAllProducts()
     {
         List<Product> products = await _productDAO.GetProducts();
 
-        return products;
+        List<int> productTypeIds = products.Select(product => product.GetProductTypeId()).ToList();
+
+        List<ProductType> productTypes = await _productTypeService.GetListProductTypeByIds(productTypeIds);
+
+        var productTypeDict = productTypes.ToDictionary(productType => productType.GetId());
+        
+        IEnumerable<ProductResponse> response = products.Select(product =>
+        {
+            var productType = productTypeDict[product.GetProductTypeId()];
+
+            return new ProductResponse(
+                product.GetId(),
+                product.GetArticle(),
+                product.GetTitle(),
+                product.GetPrice(),
+                product.GetQuantity(),
+                productType.GetTitle(),
+                product.GetAddedDate()
+            );
+        });
+
+        return response;
     }
 
     public async Task<Product> GetSingleProductById(Guid id)
@@ -27,18 +54,40 @@ public class ProductService : IProductService
         return product;
     }
 
-    public async Task<Guid> CreateNewProduct(Product product)
+    public async Task<Guid> CreateNewProduct(ProductRequest request)
     {
-        Guid productId = await _productDAO.CreateProduct(product);
+        ProductType productType = await _productTypeService.GetSingleProductTypeByTitle(request.ProductType);
+
+        Product newProduct = new Product(
+            request.Article,
+            request.Title,
+            request.Price,
+            request.Quantity,
+            productType.GetId(),
+            DateOnly.FromDateTime(DateTime.Now)
+        );
+
+        Guid productId = await _productDAO.CreateProduct(newProduct);
 
         return productId;
     }
 
-    public async Task<Guid> UpdateSingleProduct(Product product)
+    public async Task UpdateSingleProductById(Guid id, ProductRequest request)
     {
-        Guid productId = await _productDAO.UpdateProduct(product);
+        ProductType productType = await _productTypeService.GetSingleProductTypeByTitle(request.ProductType);
 
-        return productId;
+        Product updateProduct = new Product
+        (
+            id,
+            request.Article,
+            request.Title,
+            request.Price,
+            request.Quantity,
+            productType.GetId(),
+            DateOnly.FromDateTime(DateTime.Now)
+        );
+
+        await _productDAO.UpdateProduct(updateProduct);
     }
 
     public async Task UpdateSingleProductQuantityById(Guid id, int quantity)

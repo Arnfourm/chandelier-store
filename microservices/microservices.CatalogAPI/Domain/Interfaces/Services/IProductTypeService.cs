@@ -1,14 +1,17 @@
-﻿using microservices.CatalogAPI.Domain.Models;
+﻿using microservices.CatalogAPI.API.Contracts.Requests;
+using microservices.CatalogAPI.API.Contracts.Responses;
+using microservices.CatalogAPI.Domain.Models;
 
 namespace microservices.CatalogAPI.Domain.Interfaces.Services
 {
     public interface IProductTypeService
     {
-        public Task<List<ProductType>> GetAllProductTypes();
+        public Task<IEnumerable<ProductTypeResponse>> GetAllProductTypes();
         public Task<ProductType> GetSingleProductTypeById(int id);
         public Task<ProductType> GetSingleProductTypeByTitle(string title);
-        public Task<int> CreateNewProductType(ProductType productType);
-        public Task<int> UpdateSingleProductType(ProductType productType);
+        public Task<List<ProductType>> GetListProductTypeByIds(List<int> ids);
+        public Task<int> CreateNewProductType(ProductTypeRequest request);
+        public Task<int> UpdateSingleProductType(int id, ProductTypeRequest request);
         public Task DeleteSingleProductTypeById(int id);
     }
 }

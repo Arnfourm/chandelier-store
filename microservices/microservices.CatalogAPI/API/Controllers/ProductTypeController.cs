@@ -18,12 +18,9 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ProductTypeResponse>>> GetProductTypes()
+        public async Task<ActionResult<IEnumerable<ProductTypeResponse>>> GetProductTypes()
         {
-            var productTypes = await _productTypeService.GetAllProductTypes();
-
-            var response = productTypes
-                .Select(productType => new ProductTypeResponse(productType.GetId(), productType.GetTitle()));
+            IEnumerable<ProductTypeResponse> response = await _productTypeService.GetAllProductTypes();
 
             return Ok(response);
         }
@@ -31,21 +28,17 @@ namespace microservices.CatalogAPI.API.Controllers
         [HttpPost]
         public async Task<ActionResult<int>> CreateProductType([FromBody] ProductTypeRequest request)
         {
-            ProductType newProductType = new ProductType(request.Title);
-
-            int newProductTypId = await _productTypeService.CreateNewProductType(newProductType);
+            int newProductTypId = await _productTypeService.CreateNewProductType(request);
 
             return Ok(newProductTypId);
         }
 
-        [HttpPut("id:int")]
+        [HttpPut("{id:int}")]
         public async Task<ActionResult<int>> UpdateProductType([FromBody] ProductTypeRequest request, int id)
         {
-            ProductType updatedProductType = new ProductType(id, request.Title);
+            int updateProductTypeId = await _productTypeService.UpdateSingleProductType(id, request);
 
-            int updatedProductTypeId = await _productTypeService.UpdateSingleProductType(updatedProductType);
-
-            return Ok(updatedProductTypeId);
+            return Ok(updateProductTypeId);
         }
 
         [HttpDelete("{id:int}")]
