@@ -3,7 +3,7 @@
     public record AttributeRequest
     (
         string Title,
-        string AttributeGroup,
-        string MeasurementUnit
+        int AttributeGroupId,
+        int MeasurementUnitId
     );
 }

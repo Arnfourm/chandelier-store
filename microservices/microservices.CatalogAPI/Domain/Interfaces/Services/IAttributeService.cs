@@ -8,6 +8,7 @@ namespace microservices.CatalogAPI.Domain.Interfaces.Services
     {
         public Task<IEnumerable<AttributeResponse>> GetAllAttributes();
         public Task<Attribute> GetSingleAttributeById(Guid id);
+        public Task<List<Attribute>> GetListAttributeByIds(List<Guid> ids);
         public Task CreateNewAttribute(AttributeRequest request);
         public Task UpdateAttribute(Guid id, AttributeRequest request);
         public Task DeleteSingleAttributeById(Guid id);

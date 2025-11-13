@@ -11,12 +11,18 @@ public class ProductService : IProductService
     private readonly IProductDAO _productDAO;
 
     private readonly IProductTypeService _productTypeService;
+    private readonly IDeleteProductAttributeService _deleteProductAttributeService;
 
-    public ProductService(IProductDAO productDAO, IProductTypeService productTypeService)
+    public ProductService(
+        IProductDAO productDAO, 
+        IProductTypeService productTypeService,
+        IDeleteProductAttributeService deleteProductAttributeService
+    )
     {
         _productDAO = productDAO;
 
         _productTypeService = productTypeService;
+        _deleteProductAttributeService = deleteProductAttributeService;
     }
 
     public async Task<IEnumerable<ProductResponse>> GetAllProducts()
@@ -31,7 +37,7 @@ public class ProductService : IProductService
         
         IEnumerable<ProductResponse> response = products.Select(product =>
         {
-            var productType = productTypeDict[product.GetProductTypeId()];
+            ProductType productType = productTypeDict[product.GetProductTypeId()];
 
             return new ProductResponse(
                 product.GetId(),
@@ -39,7 +45,7 @@ public class ProductService : IProductService
                 product.GetTitle(),
                 product.GetPrice(),
                 product.GetQuantity(),
-                productType.GetTitle(),
+                new ProductTypeResponse(productType.GetId(), productType.GetTitle()),
                 product.GetAddedDate()
             );
         });
@@ -56,7 +62,7 @@ public class ProductService : IProductService
 
     public async Task<Guid> CreateNewProduct(ProductRequest request)
     {
-        ProductType productType = await _productTypeService.GetSingleProductTypeByTitle(request.ProductType);
+        ProductType productType = await _productTypeService.GetSingleProductTypeById(request.ProductTypeId);
 
         Product newProduct = new Product(
             request.Article,
@@ -74,7 +80,7 @@ public class ProductService : IProductService
 
     public async Task UpdateSingleProductById(Guid id, ProductRequest request)
     {
-        ProductType productType = await _productTypeService.GetSingleProductTypeByTitle(request.ProductType);
+        ProductType productType = await _productTypeService.GetSingleProductTypeById(request.ProductTypeId);
 
         Product updateProduct = new Product
         (
@@ -97,6 +103,8 @@ public class ProductService : IProductService
 
     public async Task DeleteSingleProductById(Guid id)
     {
+        await _deleteProductAttributeService.DeleteListProductAttributesByProductId(id);
+
         await _productDAO.DeleteProductById(id);
     }
 }

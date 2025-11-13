@@ -19,5 +19,11 @@ namespace microservices.CatalogAPI.Infrastructure.Database.Contexts
         public DbSet<MeasurementUnitEntity> MeasurementUnits { get; set; }
         public DbSet<AttributeEntity> Attributes { get; set; }
         public DbSet<ProductAttributeEntity> ProductAttributes { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ProductAttributeEntity>()
+                .HasKey(pa => new {pa.ProductId, pa.AttributeId });
+        }
     }
 }

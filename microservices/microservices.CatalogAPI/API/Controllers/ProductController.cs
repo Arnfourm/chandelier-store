@@ -11,10 +11,17 @@ namespace microservices.CatalogAPI.API.Controllers
    public class ProductController : ControllerBase
    {
         private readonly IProductService _productService;
+        private readonly IProductAttributeService _productAttributeService;
+        private readonly IDeleteProductAttributeService _deleteProductAttributeService;
 
-        public ProductController(IProductService productService, IProductTypeService productTypeService)
+        public ProductController(
+            IProductService productService, 
+            IProductAttributeService productAttributeService,
+            IDeleteProductAttributeService deleteProductAttributeService)
         {
             _productService = productService;
+            _productAttributeService = productAttributeService;
+            _deleteProductAttributeService = deleteProductAttributeService;
         }
 
         [HttpGet]
@@ -45,6 +52,38 @@ namespace microservices.CatalogAPI.API.Controllers
         public async Task<ActionResult> DeleteProduct(Guid id)
         {
             await _productService.DeleteSingleProductById(id);
+
+            return Ok();
+        }
+
+        [HttpGet("Attribute/{productId:Guid}")]
+        public async Task<ActionResult<IEnumerable<ProductAttributeResponse>>> GetProductAttributes(Guid productId)
+        {
+            IEnumerable<ProductAttributeResponse> response = await _productAttributeService.GetProductAttributeByProductId(productId);
+
+            return Ok(response);
+        }
+
+        [HttpPost("Attribute")]
+        public async Task<ActionResult> CreateProductAttribute([FromBody] ProductAttributeRequest request)
+        {
+            await _productAttributeService.CreateNewSingleProductAttribute(request);
+
+            return Ok();
+        }
+
+        [HttpPut("Attribute")]
+        public async Task<ActionResult> UpdateProductAttribute([FromBody] ProductAttributeRequest request)
+        {
+            await _productAttributeService.UpdateSingleProductAttribute(request);
+
+            return Ok();
+        }
+
+        [HttpDelete("{productId:Guid}/Attribute/{attributeId:Guid}")]
+        public async Task<ActionResult> DeleteProductAttribute(Guid productId, Guid attributeId)
+        {
+            await _deleteProductAttributeService.DeleteSingleProductAttribute(productId, attributeId);
 
             return Ok();
         }

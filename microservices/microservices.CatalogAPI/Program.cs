@@ -23,6 +23,7 @@ builder.Services.AddScoped<IProductDAO, ProductDAO>();
 builder.Services.AddScoped<IAttributeGroupDAO, AttributeGroupDAO>();
 builder.Services.AddScoped<IMeasurementUnitDAO, MeasurementUnitDAO>();
 builder.Services.AddScoped<IAttributeDAO, AttributeDAO>();
+builder.Services.AddScoped<IProductAttributeDAO, ProductAttributeDAO>();
 
 // Services registry
 builder.Services.AddScoped<IProductTypeService, ProductTypeService>();
@@ -30,6 +31,8 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IAttributeGroupService, AttributeGroupService>();
 builder.Services.AddScoped<IMeasurementUnitService, MeasurementUnitService>();
 builder.Services.AddScoped<IAttributeService, AttributeService>();
+builder.Services.AddScoped<IProductAttributeService, ProductAttributeService>();
+builder.Services.AddScoped<IDeleteProductAttributeService, DeleteProductAttributeService>();
 
 builder.Services.AddControllers();
 

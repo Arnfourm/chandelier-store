@@ -13,17 +13,20 @@ namespace microservices.CatalogAPI.Domain.Services
 
         private readonly IAttributeGroupService _attributeGroupService;
         private readonly IMeasurementUnitService _measurementUnitService;
+        private readonly IDeleteProductAttributeService _deleteProductAttributeService;
 
         public AttributeService(
             IAttributeDAO attributeDAO, 
             IAttributeGroupService attributeGroupService, 
-            IMeasurementUnitService measurementUnitService
+            IMeasurementUnitService measurementUnitService,
+            IDeleteProductAttributeService deleteProductAttributeService
         )
         {
             _attributeDAO = attributeDAO;
 
             _attributeGroupService = attributeGroupService;
             _measurementUnitService = measurementUnitService;
+            _deleteProductAttributeService = deleteProductAttributeService;
         }
         
         public async Task<IEnumerable<AttributeResponse>> GetAllAttributes()
@@ -47,8 +50,8 @@ namespace microservices.CatalogAPI.Domain.Services
                 return new AttributeResponse(
                     attribute.GetId(),
                     attribute.GetTitle(),
-                    attributeGroup.GetTitle(),
-                    measurementUnit.GetTitle()
+                    new AttributeGroupResponse(attributeGroup.GetId(), attributeGroup.GetTitle()),
+                    new MeasurementUnitResponse(measurementUnit.GetId(), measurementUnit.GetTitle())
                 );
             });
 
@@ -61,11 +64,18 @@ namespace microservices.CatalogAPI.Domain.Services
 
             return attribute;
         }
+        
+        public async Task<List<Attribute>> GetListAttributeByIds(List<Guid> ids)
+        {
+            List<Attribute> attributes = await _attributeDAO.GetAttributeByIds(ids);
+
+            return attributes;
+        }
 
         public async Task CreateNewAttribute(AttributeRequest request)
         {
-            AttributeGroup attributeGroup = await _attributeGroupService.GetSingleAttributeGroupByTitle(request.AttributeGroup);
-            MeasurementUnit measurementUnit = await _measurementUnitService.GetSingleMeasurementUnitByTitle(request.MeasurementUnit);
+            AttributeGroup attributeGroup = await _attributeGroupService.GetSingleAttributeGroupById(request.AttributeGroupId);
+            MeasurementUnit measurementUnit = await _measurementUnitService.GetSingleMeasurementUnitById(request.MeasurementUnitId);
 
             Attribute newAttribute = new Attribute(
                 request.Title,
@@ -77,8 +87,8 @@ namespace microservices.CatalogAPI.Domain.Services
 
         public async Task UpdateAttribute(Guid id, AttributeRequest request)
         {
-            AttributeGroup attributeGroup = await _attributeGroupService.GetSingleAttributeGroupByTitle(request.AttributeGroup);
-            MeasurementUnit measurementUnit = await _measurementUnitService.GetSingleMeasurementUnitByTitle(request.MeasurementUnit);
+            AttributeGroup attributeGroup = await _attributeGroupService.GetSingleAttributeGroupById(request.AttributeGroupId);
+            MeasurementUnit measurementUnit = await _measurementUnitService.GetSingleMeasurementUnitById(request.MeasurementUnitId);
 
             Attribute updateAttribute = new Attribute(
                 id,
@@ -92,6 +102,8 @@ namespace microservices.CatalogAPI.Domain.Services
 
         public async Task DeleteSingleAttributeById(Guid id)
         {
+            await _deleteProductAttributeService.DeleteListProductAttributesByAttributeId(id);
+
             await _attributeDAO.DeleteAttributeById(id);
         }
     }

@@ -38,6 +38,19 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
 
             return new Attribute(attributeEntity.Id, attributeEntity.Title, attributeEntity.AttributeGroupId, attributeEntity.MeasurementUnitId);
         }
+        
+        public async Task<List<Attribute>> GetAttributeByIds(List<Guid> ids)
+        {
+            return await _catalogDbContext.Attributes
+                .Where(attributeEntity => ids.Contains(attributeEntity.Id))
+                .Select(attributeEntity => new Attribute
+                (
+                    attributeEntity.Id,
+                    attributeEntity.Title,
+                    attributeEntity.AttributeGroupId,
+                    attributeEntity.MeasurementUnitId
+                )).ToListAsync();
+        }
 
         public async Task<Guid> CreateAttribute(Attribute attribute)
         {
@@ -66,7 +79,9 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
             await _catalogDbContext.Attributes
                 .Where(attributeEntity => attributeEntity.Id == attribute.GetId())
                 .ExecuteUpdateAsync(attributeSetters => attributeSetters
-                    .SetProperty(attributeEntity => attributeEntity.Title, attribute.GetTitle()));
+                    .SetProperty(attributeEntity => attributeEntity.Title, attribute.GetTitle())
+                    .SetProperty(attributeEntity => attributeEntity.AttributeGroupId, attribute.GetAttributeGroupId())
+                    .SetProperty(attributeEntity => attributeEntity.MeasurementUnitId, attribute.GetMeasurementUnitId()));
 
             try
             {

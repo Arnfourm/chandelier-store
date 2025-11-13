@@ -81,7 +81,8 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
                 .ExecuteUpdateAsync(productSetters => productSetters
                     .SetProperty(productEntity => productEntity.Article, product.GetArticle())
                     .SetProperty(productEntity => productEntity.Title, product.GetTitle())
-                    .SetProperty(productEntity => productEntity.Price, product.GetPrice()));
+                    .SetProperty(productEntity => productEntity.Price, product.GetPrice())
+                    .SetProperty(productEntity => productEntity.ProductTypeId, product.GetProductTypeId()));
 
             try
             {

@@ -4,7 +4,7 @@
     (
         Guid id,
         string title,
-        string attributeGroup,
-        string measurementUnit
+        AttributeGroupResponse attributeGroup,
+        MeasurementUnitResponse measurementUnit
     );
 }

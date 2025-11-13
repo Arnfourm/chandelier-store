@@ -4,18 +4,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace microservices.CatalogAPI.Infrastructure.Database.Entities
 {
-    [Keyless]
     [Table("ProductAttribute")]
     public class ProductAttributeEntity
     {
         [Required]
-        public Guid ProductId;
+        public Guid ProductId { get; set; }
 
         [ForeignKey("ProductId")]
         public ProductEntity? Product { get; set; }
 
         [Required]
-        public Guid AttributeId;
+        public Guid AttributeId { get; set; }
 
         [ForeignKey("AttributeId")]
         public AttributeEntity? Attribute { get; set; }

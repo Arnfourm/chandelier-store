@@ -47,21 +47,6 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
             }
         }
 
-        public async Task DeleteProductAttributeByProductId(Guid productId)
-        {
-            await _catalogDbContext.ProductAttributes
-                .Where(productAttributeEntity => productAttributeEntity.ProductId == productId)
-                .ExecuteDeleteAsync();
-            try
-            {
-                await _catalogDbContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error while trying to delete product attribute. Error message:\n{ex.Message}", ex);
-            }
-        }
-
         public async Task UpdateProductAttribute(ProductAttribute productAttribute)
         {
             await _catalogDbContext.ProductAttributes
@@ -80,11 +65,42 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
             }
         }
 
+        public async Task DeleteProductAttributeByProductId(Guid productId)
+        {
+            await _catalogDbContext.ProductAttributes
+                .Where(productAttributeEntity => productAttributeEntity.ProductId == productId)
+                .ExecuteDeleteAsync();
+            try
+            {
+                await _catalogDbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error while trying to delete product attribute. Error message:\n{ex.Message}", ex);
+            }
+        }
+
         public async Task DeleteProductAttributeByAttributeId(Guid attributeId)
         {
             await _catalogDbContext.ProductAttributes
                 .Where(productAttributeEntity => productAttributeEntity.AttributeId == attributeId)
                 .ExecuteDeleteAsync();
+            try
+            {
+                await _catalogDbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error while trying to delete product attribute. Error message:\n{ex.Message}", ex);
+            }
+        }
+
+        public async Task DeleteProductAttributeByBothIds(Guid productId, Guid attributeId)
+        {
+            await _catalogDbContext.ProductAttributes
+                .Where(productAttributeEntity => productAttributeEntity.ProductId == productId && productAttributeEntity.AttributeId == attributeId)
+                .ExecuteDeleteAsync();
+
             try
             {
                 await _catalogDbContext.SaveChangesAsync();

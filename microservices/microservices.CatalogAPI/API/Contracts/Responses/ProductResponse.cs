@@ -7,7 +7,7 @@ namespace microservices.CatalogAPI.API.Contracts.Responses
         string Title,
         decimal Price,
         int Quantity,
-        string ProductType,
+        ProductTypeResponse ProductType,
         DateOnly AddedDate
     );
 }
