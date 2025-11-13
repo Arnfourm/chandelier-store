@@ -1,0 +1,6 @@
+@microservice.SupplyAPI_HostAddress = http://localhost:5043
+
+GET {{microservice.SupplyAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
