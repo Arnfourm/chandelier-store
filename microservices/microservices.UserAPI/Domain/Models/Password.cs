@@ -19,13 +19,9 @@ namespace microservices.UserAPI.Domain.Models
         }
 
         public Password(Guid id, byte[] passwordHash, byte[] passwordSaulHash)
+                        : this(passwordHash, passwordSaulHash)
         {
-            if (passwordHash.Length == 0) throw new ArgumentException("Password hash can't be empty", nameof(passwordHash));
-            if (passwordSaulHash.Length == 0) throw new ArgumentException("PasswordSaul hash can't be empty", nameof(passwordSaulHash));
-
             Id = id;
-            PasswordHash = passwordHash;
-            PasswordSaulHash = passwordSaulHash;
         }
 
         public Guid GetId() { return Id; }

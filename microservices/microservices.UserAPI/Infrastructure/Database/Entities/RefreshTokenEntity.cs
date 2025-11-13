@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 
 namespace microservices.UserAPI.Infrastructure.Database.Entities
 {
@@ -11,7 +10,7 @@ namespace microservices.UserAPI.Infrastructure.Database.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
-        [Required, NotNull]
+        [Required]
         public required string Token { get; set; }
 
         public DateTime CreatedTime { get; set; }

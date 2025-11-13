@@ -20,16 +20,9 @@ namespace microservices.UserAPI.Domain.Models
         }
 
         public RefreshToken(Guid id, string token, DateTime createdTime, DateTime expireTime)
+                            : this(token, createdTime, expireTime)
         {
-            if (string.IsNullOrWhiteSpace(token)) throw new ArgumentNullException("Token can't be empty or with only zeros", nameof(token));
-            if (token.Length < 12) throw new ArgumentException("Token lenght can't be less than 12 chars", nameof(token));
-
-            if (expireTime <= createdTime) throw new ArgumentException("Expire date can't be less than created", nameof(expireTime));
-
             Id = id;
-            Token = token;
-            CreatedTime = createdTime;
-            ExpireTime = expireTime;
         }
 
         public Guid GetId() { return Id; }
