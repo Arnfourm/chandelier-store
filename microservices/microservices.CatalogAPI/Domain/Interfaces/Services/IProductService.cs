@@ -6,11 +6,11 @@ namespace microservices.CatalogAPI.Domain.Interfaces.Services
 {
     public interface IProductService
     {
-        public Task<IEnumerable<ProductResponse>> GetAllProducts();
-        public Task<Product> GetSingleProductById(Guid id);
-        public Task<Guid> CreateNewProduct(ProductRequest request);
-        public Task UpdateSingleProductById(Guid id, ProductRequest request);
-        public Task UpdateSingleProductQuantityById(Guid id, int quantity);
-        public Task DeleteSingleProductById(Guid id);
+        Task<IEnumerable<ProductResponse>> GetAllProducts();
+        Task<Product> GetSingleProductById(Guid id);
+        Task<Guid> CreateNewProduct(ProductRequest request);
+        Task UpdateSingleProductById(Guid id, ProductRequest request);
+        Task UpdateSingleProductQuantityById(Guid id, int quantity);
+        Task DeleteSingleProductById(Guid id);
     }
 }

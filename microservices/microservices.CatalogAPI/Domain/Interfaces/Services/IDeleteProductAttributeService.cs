@@ -2,8 +2,8 @@
 {
     public interface IDeleteProductAttributeService
     {
-        public Task DeleteListProductAttributesByProductId(Guid productId);
-        public Task DeleteListProductAttributesByAttributeId(Guid attributeId);
-        public Task DeleteSingleProductAttribute(Guid productId, Guid attributeId);
+        Task DeleteListProductAttributesByProductId(Guid productId);
+        Task DeleteListProductAttributesByAttributeId(Guid attributeId);
+        Task DeleteSingleProductAttribute(Guid productId, Guid attributeId);
     }
 }

@@ -39,32 +39,16 @@ namespace microservices.CatalogAPI.Domain.Services
 
             List<Guid> attributeIds = productAttributes.Select(productAttribute => productAttribute.GetAttributeId()).ToList();
 
-            IEnumerable<Attribute> attributes = await _attributeService.GetListAttributeByIds(attributeIds);
+            IEnumerable<AttributeResponse> attributes = await _attributeService.GetListAttributeResponseByIds(attributeIds);
 
-
-            List<int> attributeGroupIds = attributes.Select(attribute => attribute.GetAttributeGroupId()).ToList();
-            List<int> measurementUnitIds = attributes.Select(attribute => attribute.GetMeasurementUnitId()).ToList();
-
-            IEnumerable<AttributeGroup> attributeGroups = await _attributeGroupService.GetListAttributeGroupByIds(attributeGroupIds);
-            IEnumerable<MeasurementUnit> measurementUnits = await _measurementUnitService.GetListMeasurementUnitByIds(measurementUnitIds);
-
-            var attributeDict = attributes.ToDictionary(attribute => attribute.GetId());
-            var attributeGroupDict = attributeGroups.ToDictionary(attributeGroup => attributeGroup.GetId());
-            var measurementUnitDict = measurementUnits.ToDictionary(measurementUnit => measurementUnit.GetId());
+            var attributeDict = attributes.ToDictionary(attribute => attribute.Id);
 
             IEnumerable<ProductAttributeResponse> response = productAttributes.Select(productAttribute =>
             {
-                Attribute attribute = attributeDict[productAttribute.GetAttributeId()];
-                AttributeGroup attributeGroup = attributeGroupDict[attribute.GetAttributeGroupId()];
-                MeasurementUnit measurementUnit = measurementUnitDict[attribute.GetMeasurementUnitId()];
+                AttributeResponse attributeResponse = attributeDict[productAttribute.GetAttributeId()];
 
                 return new ProductAttributeResponse(
-                    new AttributeResponse(
-                        attribute.GetId(),
-                        attribute.GetTitle(),
-                        new AttributeGroupResponse(attributeGroup.GetId(), attributeGroup.GetTitle()),
-                        new MeasurementUnitResponse(measurementUnit.GetId(), measurementUnit.GetTitle())
-                    ),
+                    attributeResponse,
                     productAttribute.GetValue()
                 );
             });

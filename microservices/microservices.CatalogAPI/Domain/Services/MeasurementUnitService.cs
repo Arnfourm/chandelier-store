@@ -38,11 +38,21 @@ namespace microservices.CatalogAPI.Domain.Services
             return measurementUnit;
         }
 
-        public async Task<IEnumerable<MeasurementUnit>> GetListMeasurementUnitByIds(List<int> ids)
+
+        public async Task<IEnumerable<MeasurementUnitResponse>> GetListMeasurementUnitResponseByIds(List<int> ids)
         {
             IEnumerable<MeasurementUnit> measurementUnits = await _measurementUnitDAO.GetMeasurementUnitByIds(ids);
 
-            return measurementUnits;
+            IEnumerable<MeasurementUnitResponse> measurementUnitResponse = measurementUnits
+                .Select(measurementUnits =>
+                    new MeasurementUnitResponse
+                    (
+                        measurementUnits.GetId(),
+                        measurementUnits.GetTitle()
+                    )
+                );
+
+            return measurementUnitResponse;
         }
 
         public async Task<MeasurementUnit> GetSingleMeasurementUnitByTitle(string title)

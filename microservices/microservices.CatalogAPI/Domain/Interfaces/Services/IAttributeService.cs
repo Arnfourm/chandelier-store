@@ -6,11 +6,11 @@ namespace microservices.CatalogAPI.Domain.Interfaces.Services
 {
     public interface IAttributeService
     {
-        public Task<IEnumerable<AttributeResponse>> GetAllAttributes();
-        public Task<Attribute> GetSingleAttributeById(Guid id);
-        public Task<List<Attribute>> GetListAttributeByIds(List<Guid> ids);
-        public Task CreateNewAttribute(AttributeRequest request);
-        public Task UpdateAttribute(Guid id, AttributeRequest request);
-        public Task DeleteSingleAttributeById(Guid id);
+        Task<IEnumerable<AttributeResponse>> GetAllAttributes();
+        Task<Attribute> GetSingleAttributeById(Guid id);
+        Task<IEnumerable<AttributeResponse>> GetListAttributeResponseByIds(List<Guid> ids);
+        Task CreateNewAttribute(AttributeRequest request);
+        Task UpdateAttribute(Guid id, AttributeRequest request);
+        Task DeleteSingleAttributeById(Guid id);
     }
 }

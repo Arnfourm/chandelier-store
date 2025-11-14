@@ -36,22 +36,22 @@ namespace microservices.CatalogAPI.Domain.Services
             List<int> attributeGroupIds = attributes.Select(attribute => attribute.GetAttributeGroupId()).ToList();
             List<int> measurementUnitIds = attributes.Select(attribute => attribute.GetMeasurementUnitId()).ToList();
 
-            IEnumerable<AttributeGroup> attributeGroups = await _attributeGroupService.GetListAttributeGroupByIds(attributeGroupIds);
-            IEnumerable<MeasurementUnit> measurementUnits = await _measurementUnitService.GetListMeasurementUnitByIds(measurementUnitIds);
+            IEnumerable<AttributeGroupResponse> attributeGroups = await _attributeGroupService.GetListAttributeGroupResponseByIds(attributeGroupIds);
+            IEnumerable<MeasurementUnitResponse> measurementUnits = await _measurementUnitService.GetListMeasurementUnitResponseByIds(measurementUnitIds);
 
-            var attributeGroupDict = attributeGroups.ToDictionary(attributeGroup => attributeGroup.GetId());
-            var measurementUnitDict = measurementUnits.ToDictionary(measurementUnit => measurementUnit.GetId());
+            var attributeGroupDict = attributeGroups.ToDictionary(attributeGroup => attributeGroup.Id);
+            var measurementUnitDict = measurementUnits.ToDictionary(measurementUnit => measurementUnit.Id);
 
             IEnumerable<AttributeResponse> response = attributes.Select(attribute =>
             {
-                AttributeGroup attributeGroup = attributeGroupDict[attribute.GetAttributeGroupId()];
-                MeasurementUnit measurementUnit = measurementUnitDict[attribute.GetMeasurementUnitId()];
+                AttributeGroupResponse attributeGroupResponse = attributeGroupDict[attribute.GetAttributeGroupId()];
+                MeasurementUnitResponse measurementUnitResponse = measurementUnitDict[attribute.GetMeasurementUnitId()];
 
                 return new AttributeResponse(
                     attribute.GetId(),
                     attribute.GetTitle(),
-                    new AttributeGroupResponse(attributeGroup.GetId(), attributeGroup.GetTitle()),
-                    new MeasurementUnitResponse(measurementUnit.GetId(), measurementUnit.GetTitle())
+                    attributeGroupResponse,
+                    measurementUnitResponse
                 );
             });
 
@@ -65,11 +65,33 @@ namespace microservices.CatalogAPI.Domain.Services
             return attribute;
         }
         
-        public async Task<List<Attribute>> GetListAttributeByIds(List<Guid> ids)
+        public async Task<IEnumerable<AttributeResponse>> GetListAttributeResponseByIds(List<Guid> ids)
         {
             List<Attribute> attributes = await _attributeDAO.GetAttributeByIds(ids);
 
-            return attributes;
+            List<int> attributeGroupIds = attributes.Select(attribute => attribute.GetAttributeGroupId()).ToList();
+            List<int> measurementUnitIds = attributes.Select(attribute => attribute.GetMeasurementUnitId()).ToList();
+
+            IEnumerable<AttributeGroupResponse> attributeGroups = await _attributeGroupService.GetListAttributeGroupResponseByIds(attributeGroupIds);
+            IEnumerable<MeasurementUnitResponse> measurementUnits = await _measurementUnitService.GetListMeasurementUnitResponseByIds(measurementUnitIds);
+
+            var attributeGroupDict = attributeGroups.ToDictionary(attributeGroup => attributeGroup.Id);
+            var measurementUnitDict = measurementUnits.ToDictionary(measurementUnit => measurementUnit.Id);
+
+            IEnumerable<AttributeResponse> attributeResponse = attributes.Select(attribute =>
+            {
+                AttributeGroupResponse attributeGroupResponse = attributeGroupDict[attribute.GetAttributeGroupId()];
+                MeasurementUnitResponse measurementUnitResponse = measurementUnitDict[attribute.GetMeasurementUnitId()];
+
+                return new AttributeResponse(
+                    attribute.GetId(),
+                    attribute.GetTitle(),
+                    attributeGroupResponse,
+                    measurementUnitResponse
+                );
+            });
+
+            return attributeResponse;
         }
 
         public async Task CreateNewAttribute(AttributeRequest request)

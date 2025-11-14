@@ -5,8 +5,8 @@ namespace microservices.CatalogAPI.Domain.Interfaces.Services
 {
     public interface IProductAttributeService
     {
-        public Task<IEnumerable<ProductAttributeResponse>> GetProductAttributeByProductId(Guid productId);
-        public Task CreateNewSingleProductAttribute(ProductAttributeRequest request);
-        public Task UpdateSingleProductAttribute(ProductAttributeRequest request);
+        Task<IEnumerable<ProductAttributeResponse>> GetProductAttributeByProductId(Guid productId);
+        Task CreateNewSingleProductAttribute(ProductAttributeRequest request);
+        Task UpdateSingleProductAttribute(ProductAttributeRequest request);
     }
 }
