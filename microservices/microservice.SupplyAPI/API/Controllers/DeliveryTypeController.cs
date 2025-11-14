@@ -1,0 +1,51 @@
+﻿using microservice.SupplyAPI.API.Contracts.Requests;
+using microservice.SupplyAPI.API.Contracts.Responses;
+using microservice.SupplyAPI.Domain.Interfaces.Services;
+using Microsoft.AspNetCore.Mvc;
+
+namespace microservice.SupplyAPI.API.Controllers
+{
+    [ApiController]
+    [Route("api/Supply/[controller]")]
+    public class DeliveryTypeController : ControllerBase
+    {
+        private readonly IDeliveryTypeService _deliveryTypeService;
+
+        public DeliveryTypeController(IDeliveryTypeService service)
+        {
+            _deliveryTypeService = service;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<DeliveryTypeResponse>>> GetDeliveryTypes()
+        {
+            IEnumerable<DeliveryTypeResponse> response = await _deliveryTypeService.GetAllDeliveryType();
+
+            return Ok(response);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CreateDeliveryType([FromBody] DeliveryTypeRequest request)
+        {
+            await _deliveryTypeService.CreateNewDeliveryType(request);
+
+            return Ok();
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> UpdateDeliveryType(int id, [FromBody] DeliveryTypeRequest request)
+        {
+            await _deliveryTypeService.UpdateSingleDeliveryTypeById(id, request);
+
+            return Ok();
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> DeleteDeliveryType(int id)
+        {
+            await _deliveryTypeService.DeleteSingleDeliveryTypeById(id);
+
+            return Ok();
+        }
+    }
+}

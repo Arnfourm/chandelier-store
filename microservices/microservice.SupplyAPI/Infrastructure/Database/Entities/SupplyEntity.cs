@@ -14,7 +14,7 @@ namespace microservice.SupplyAPI.Infrastructure.Database.Entities
         public Guid SupplierId { get; set; }
 
         [ForeignKey("SupplierId")]
-        public SupplyEntity? Supplier { get; set; }
+        public SupplierEntity? Supplier { get; set; }
 
         [Required]
         public DateOnly SupplyDate { get; set; }

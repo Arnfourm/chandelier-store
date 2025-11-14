@@ -1,4 +1,8 @@
+using microservice.SupplyAPI.Domain.Interfaces.DAO;
+using microservice.SupplyAPI.Domain.Interfaces.Services;
+using microservice.SupplyAPI.Domain.Services;
 using microservice.SupplyAPI.Infrastructure.Database.Contexts;
+using microservice.SupplyAPI.Infrastructure.Database.DAO;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +16,16 @@ builder.Services.AddDbContext<SupplyDbContext>(
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
     }
 );
+
+// DAO registration
+builder.Services.AddScoped<IDeliveryTypeDAO, DeliveryTypeDAO>();
+builder.Services.AddScoped<ISupplierDAO, SupplierDAO>();
+builder.Services.AddScoped<ISupplyDAO, SupplyDAO>();
+
+// Service registration
+builder.Services.AddScoped<IDeliveryTypeService, DeliveryTypeService>();
+builder.Services.AddScoped<ISupplierService, SupplierService>();
+builder.Services.AddScoped<ISupplyService, SupplyService>();
 
 builder.Services.AddControllers();
 
