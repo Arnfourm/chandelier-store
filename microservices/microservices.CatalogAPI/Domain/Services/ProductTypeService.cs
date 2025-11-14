@@ -44,13 +44,6 @@ namespace microservices.CatalogAPI.Domain.Services
             return productTypeResponse;
         }
 
-        //public async Task<List<ProductType>> GetListProductTypeByIds(List<int> ids)
-        //{
-        //    List<ProductType> productTypes = await _productTypeDAO.GetProductTypeByIds(ids);
-
-        //    return productTypes;
-        //}
-
         public async Task<ProductType> GetSingleProductTypeByTitle(string title)
         {
             ProductType productType = await _productTypeDAO.GetProductTypeByTitle(title);
