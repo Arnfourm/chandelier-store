@@ -4,11 +4,11 @@ namespace microservices.CatalogAPI.Domain.Interfaces.DAO
 {
     public interface IProductDAO
     {
-        public Task<List<Product>> GetProducts();
-        public Task<Product> GetProductById(Guid id);
-        public Task<Guid> CreateProduct(Product product);
-        public Task<Guid> UpdateProduct(Product product);
-        public Task UpdateProductQuantityById(Guid id, int quantity);
-        public Task DeleteProductById(Guid id);
+        Task<List<Product>> GetProducts();
+        Task<Product> GetProductById(Guid id);
+        Task<Guid> CreateProduct(Product product);
+        Task<Guid> UpdateProduct(Product product);
+        Task UpdateProductQuantityById(Guid id, int quantity);
+        Task DeleteProductById(Guid id);
     }
 }

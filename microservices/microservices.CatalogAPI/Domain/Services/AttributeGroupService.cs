@@ -37,11 +37,19 @@ namespace microservices.CatalogAPI.Domain.Services
             return attributeGroup;
         }
 
-        public async Task<IEnumerable<AttributeGroup>> GetListAttributeGroupByIds(List<int> ids)
+        public async Task<IEnumerable<AttributeGroupResponse>> GetListAttributeGroupResponseByIds(List<int> ids)
         {
             IEnumerable<AttributeGroup> attributeGroups = await _attributeGroupDAO.GetAttributeGroupByIds(ids);
 
-            return attributeGroups;
+            IEnumerable<AttributeGroupResponse> attributeGroupsResponse = attributeGroups
+                .Select(attributeGroup =>
+                    new AttributeGroupResponse(
+                        attributeGroup.GetId(),
+                        attributeGroup.GetTitle()
+                    )
+                );
+
+            return attributeGroupsResponse;
         }
 
         public async Task<AttributeGroup> GetSingleAttributeGroupByTitle(string title)

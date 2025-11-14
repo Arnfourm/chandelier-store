@@ -31,13 +31,13 @@ public class ProductService : IProductService
 
         List<int> productTypeIds = products.Select(product => product.GetProductTypeId()).ToList();
 
-        List<ProductType> productTypes = await _productTypeService.GetListProductTypeByIds(productTypeIds);
+        IEnumerable<ProductTypeResponse> productTypes = await _productTypeService.GetListProductTypeResponseByIds(productTypeIds);
 
-        var productTypeDict = productTypes.ToDictionary(productType => productType.GetId());
+        var productTypeDict = productTypes.ToDictionary(productType => productType.Id);
         
         IEnumerable<ProductResponse> response = products.Select(product =>
         {
-            ProductType productType = productTypeDict[product.GetProductTypeId()];
+            ProductTypeResponse productTypeReponse = productTypeDict[product.GetProductTypeId()];
 
             return new ProductResponse(
                 product.GetId(),
@@ -45,7 +45,7 @@ public class ProductService : IProductService
                 product.GetTitle(),
                 product.GetPrice(),
                 product.GetQuantity(),
-                new ProductTypeResponse(productType.GetId(), productType.GetTitle()),
+                productTypeReponse,
                 product.GetAddedDate()
             );
         });

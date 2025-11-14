@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace microservices.CatalogAPI.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/Catalog/[controller]")]
     public class AttributeGroupController : ControllerBase
     {
         private readonly IAttributeGroupService _attributeGroupService;
