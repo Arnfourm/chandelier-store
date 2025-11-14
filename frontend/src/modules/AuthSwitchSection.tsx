@@ -1,6 +1,5 @@
-import "./AuthSwitchSection.css";
-import { Logo } from "../../components/Logo/Logo";
-import { SwitchButton } from "../../components/SwitchButton/SwitchButton";
+import { Logo } from "../components/Logo";
+import { SwitchButton } from "../components/SwitchButton";
 
 export function AuthSwitchSection({ headingName, text, buttonName }) {
     return (

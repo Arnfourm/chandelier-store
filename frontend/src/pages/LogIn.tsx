@@ -1,5 +1,5 @@
-import { AuthSwitchSection } from "../modules/AuthSwitchSection/AuthSwitchSection";
-import { LoginForm } from "../modules/LoginForm/LoginForm";
+import { AuthSwitchSection } from "../modules/AuthSwitchSection";
+import { LoginForm } from "../modules/LoginForm";
 
 export function LogIn() {
     return (

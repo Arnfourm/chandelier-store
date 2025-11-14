@@ -1,6 +1,5 @@
-import "./LoginForm.css";
-import { FormField } from "../../components/FormField/FormField";
-import { FormButton } from "../../components/FormButton/FormButton";
+import { FormField } from "../components/FormField";
+import { FormButton } from "../components/FormButton";
 
 export function LoginForm() {
     return (
