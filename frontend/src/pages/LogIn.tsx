@@ -8,6 +8,7 @@ export function LogIn() {
                 headingName={"Ещё нет аккаунта?"}
                 text={"Создайте аккаунт, чтобы получить полный доступ к вашим заказам и отзывам"}
                 buttonName={"Зарегистрироваться"}
+                headerClassName="ml-[100px] text-neutral-500"
             />
             <LoginForm />
         </div>

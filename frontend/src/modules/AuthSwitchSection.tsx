@@ -1,11 +1,11 @@
 import { Logo } from "../components/Logo";
 import { SwitchButton } from "../components/SwitchButton";
 
-export function AuthSwitchSection({ headingName, text, buttonName }) {
+export function AuthSwitchSection({ headingName, text, buttonName, headerClassName = "" }) {
     return (
         <div className="h-full w-[35%] bg-stone-900 pt-[35px] flex flex-col">
-            <header className="ml-[100px] text-neutral-400">
-                <Logo />
+            <header>
+                <Logo className={headerClassName} />
             </header>
 
             <div className="flex-1 flex flex-col items-center text-center mt-[315px]">

@@ -1,13 +1,19 @@
-// export function Registration() {
-//     return (
-//         <div className="w-full h-full flex">
+import { AuthSwitchSection } from "../modules/AuthSwitchSection";
+import { RegistrationForm } from "../modules/RegistrationForm";
 
-//             <AuthSwitchSection
-//                 headingName={"Ещё нет аккаунта?"}
-//                 text={"Создайте аккаунт, чтобы получить полный доступ к вашим заказам и отзывам"}
-//                 buttonName={"Зарегистрироваться"}
-//             />
+export function Registration() {
+    return (
+        <div className="w-full h-full flex">
+            <RegistrationForm />
 
-//         </div>
-//     );
-// }
+            <AuthSwitchSection
+                headingName={"Уже есть аккаунт?"}
+                text={
+                    "Войдите в аккаунт, чтобы получить полный доступ к функционалу интернет-магазина!"
+                }
+                buttonName={"Войти"}
+                headerClassName={"ml-[100px] text-neutral-500"}
+            />
+        </div>
+    );
+}
