@@ -2,7 +2,7 @@ import "./Logo.css";
 
 export function Logo() {
     return (
-        <a href="" className="font-bold text-3xl ml-[100px] text-neutral-400">
+        <a href="" className="font-bold text-3xl">
             Империя люстр
         </a>
     );

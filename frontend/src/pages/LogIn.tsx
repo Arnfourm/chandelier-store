@@ -1,10 +1,14 @@
-import { PromoSection } from "../modules/PromoSection/PromoSection";
+import { AuthSwitchSection } from "../modules/AuthSwitchSection/AuthSwitchSection";
 import { LoginForm } from "../modules/LoginForm/LoginForm";
 
 export function LogIn() {
     return (
         <div className="w-full h-full flex">
-            <PromoSection />
+            <AuthSwitchSection
+                headingName={"Ещё нет аккаунта?"}
+                text={"Создайте аккаунт, чтобы получить полный доступ к вашим заказам и отзывам"}
+                buttonName={"Зарегистрироваться"}
+            />
             <LoginForm />
         </div>
     );
