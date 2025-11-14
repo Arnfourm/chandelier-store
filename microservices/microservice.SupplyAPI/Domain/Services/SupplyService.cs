@@ -26,7 +26,7 @@ namespace microservice.SupplyAPI.Domain.Services
 
             List<Guid> supplierIds = supplies.Select(supply => supply.GetSupplierId()).ToList();
 
-            IEnumerable<SupplierResponse> suppliers = await _supplierService.GetListSupplierByIds(supplierIds);
+            IEnumerable<SupplierResponse> suppliers = await _supplierService.GetListSupplierResponseByIds(supplierIds);
 
             var supplierDict = suppliers.ToDictionary(supplier => supplier.Id);
 

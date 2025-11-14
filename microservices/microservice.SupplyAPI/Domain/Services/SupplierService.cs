@@ -52,7 +52,7 @@ namespace microservice.SupplyAPI.Domain.Services
             return supplier;
         }
 
-        public async Task<IEnumerable<SupplierResponse>> GetListSupplierByIds(List<Guid> ids)
+        public async Task<IEnumerable<SupplierResponse>> GetListSupplierResponseByIds(List<Guid> ids)
         {
             List<Supplier> suppliers = await _supplierDAO.GetSupplierByIds(ids);
 
