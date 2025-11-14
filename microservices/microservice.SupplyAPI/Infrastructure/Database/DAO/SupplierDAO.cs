@@ -20,6 +20,7 @@ namespace microservice.SupplyAPI.Infrastructure.Database.DAO
             return await _supplyDbContext.Suppliers
                 .Select(supplierEntity => new Supplier
                 (
+                    supplierEntity.Id,
                     supplierEntity.Name,
                     supplierEntity.DeliveryTypeId
                 )).ToListAsync();
