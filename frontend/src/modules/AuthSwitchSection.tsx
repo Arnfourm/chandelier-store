@@ -10,7 +10,7 @@ export function AuthSwitchSection({
 }) {
     return (
         <div className="h-full w-[35%] bg-stone-900 pt-[35px] flex flex-col">
-            <header>
+            <header className={headerClassName.includes("text-right") ? "text-right" : ""}>
                 <Logo className={headerClassName} />
             </header>
 
