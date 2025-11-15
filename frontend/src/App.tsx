@@ -12,8 +12,8 @@ function App() {
     //return <Registration />;
     //return <Navbar />;
     //return <Footer />;
-    //return <Home />;
-    return <Contacts />;
+    return <Home />;
+    //return <Contacts />;
 }
 
 export default App;
