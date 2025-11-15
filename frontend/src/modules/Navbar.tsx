@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Logo } from "../components/Logo";
 import { LoginButton } from "../components/LoginButton";
 
@@ -8,13 +9,13 @@ export function Navbar() {
 
             <ul className="w-[320px] ml-[-100px] self-center flex justify-between text-xl">
                 <li>
-                    <a href="">Главная</a>
+                    <Link to="/">Главная</Link>
                 </li>
                 <li>
-                    <a href="">Каталог</a>
+                    <Link to="/catalog">Каталог</Link>
                 </li>
                 <li>
-                    <a href="">Контакты</a>
+                    <Link to="/contacts">Контакты</Link>
                 </li>
             </ul>
 

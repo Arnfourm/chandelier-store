@@ -12,6 +12,7 @@ export function Registration() {
                     "Войдите в аккаунт, чтобы получить полный доступ к функционалу интернет-магазина!"
                 }
                 buttonName={"Войти"}
+                buttonRef={"/login"}
                 headerClassName={"ml-[100px] text-neutral-500"}
             />
         </div>

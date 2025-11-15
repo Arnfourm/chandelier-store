@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { FormField } from "../components/FormField";
 import { FormButton } from "../components/FormButton";
 
@@ -25,9 +26,9 @@ export function LoginForm() {
                 className="w-[800px]"
             />
 
-            <a href="" className="mt-[-20px] ml-[-680px] text-x1 text-neutral-400 ">
+            <Link to="/login" className="mt-[-20px] ml-[-680px] text-x1 text-neutral-400 ">
                 Забыли пароль?
-            </a>
+            </Link>
             <FormButton name={"Войти"}></FormButton>
         </form>
     );

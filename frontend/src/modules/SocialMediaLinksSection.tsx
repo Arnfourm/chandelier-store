@@ -6,17 +6,17 @@ export function SocialMediaLinksSection() {
             <Logo className="text-neutral-200 text-4xl text-wrap" />
 
             <div className="flex items-center justify-between opacity-[0.5]">
-                <a href="">
+                <a href="https://vk.com/">
                     <img src="icons/vk-icon.png" alt="VK icon" className="h-[42px] w-[42px]" />
                 </a>
-                <a href="">
+                <a href="https://web.telegram.org/">
                     <img
                         src="icons/telegram-icon.png"
                         alt="Telegram icon"
                         className="h-[35px] w-[35px]"
                     />
                 </a>
-                <a href="">
+                <a href="https://www.whatsapp.com/?lang=ru_RU">
                     <img
                         src="icons/whatsapp-icon.png"
                         alt="WhatsApp icon"
