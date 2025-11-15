@@ -1,3 +1,23 @@
+import { Contact } from "../components/Contact";
+import { Footer } from "../modules/Footer";
+import { Navbar } from "../modules/Navbar";
+
 export function Contacts() {
-    return <h1>Это страница "Контакты"</h1>;
+    return (
+        <>
+            <Navbar />
+            <h1 className="uppercase text-5xl ml-[100px] mt-[40px]">Контакты</h1>
+            <div className="pl-[400px] pr-[400px] flex justify-between">
+                <Contact label={"Телефон"} info={"+7 (910) 888-88-88"} />
+                <Contact label={"Электронная почта"} info={"info@yandex.ru"} />
+                <Contact
+                    label={"Центральный офис"}
+                    info={"г. Владимир, ул. Студеная гора, д. 34 (2 этаж)"}
+                />
+            </div>
+
+            <iframe src="" className="w-full h-[650px] border-2 border-red-400"></iframe>
+            <Footer />
+        </>
+    );
 }
