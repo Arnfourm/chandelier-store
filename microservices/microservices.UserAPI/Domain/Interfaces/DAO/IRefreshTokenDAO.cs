@@ -6,6 +6,8 @@ namespace microservices.UserAPI.Domain.Interfaces.DAO
     {
         public Task<RefreshToken> GetRefreshTokenById(Guid id);
         public Task<Guid> CreateRefreshToken(RefreshToken refreshToken);
+
+        //? public Task<RefreshToken> UpdateRefreshToken(RefreshToken refreshToken);
         public Task DeleteRefreshToken(Guid id);
     }
 }
