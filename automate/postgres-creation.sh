@@ -11,7 +11,15 @@ docker run --name chandelier-store-db -e POSTGRES_USER="luver" -e POSTGRES_PASSW
 # Db migrations to update db
 cd ./microservices/microservices.CatalogAPI/
 
-# !!! Проверить, свежая ли версия миграции
+# ! Приложение должно быть выключено
+# ! Команды вводить в powershell (от администратора)
+# ! Должен быть запущен Docker Desktop
+
 # !!! Освободить порт 5432
 # !!! Создать БД: psql -h localhost -U luver -p 5432 -d postgres, password: 987654321, create database <database_name>
+
+# ! Добавить первую миграцию (иначе нечего обновлять)
+# !!! Проверить, свежая ли версия миграции
+dotnet ef migrations add InitMigration
+
 dotnet ef database update
