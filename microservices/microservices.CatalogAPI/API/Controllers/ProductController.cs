@@ -32,6 +32,14 @@ namespace microservices.CatalogAPI.API.Controllers
             return Ok(response);
         }
 
+        [HttpGet("{id:Guid}")]
+        public async Task<ActionResult<ProductResponse>> GetProduct(Guid id)
+        {
+            ProductResponse response = await _productService.GetSingleProductResponseById(id);
+
+            return Ok(response);
+        }
+
         [HttpPost]
         public async Task<ActionResult<Guid>> CreateProduct([FromBody] ProductRequest request)
         {
