@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:17.5-alpine3.22
+    container_name: chandelier-store-database
+    environment:
+      # POSTGRES_MULTIPLE_DATABASES: chandelier_store_catalog,chandelier_store_user,chandelier_store_supply
+      POSTGRES_DB: chandelier_store_catalog
+      POSTGRES_USER: ${database_user}
+      POSTGRES_PASSWORD: ${database_password}
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${database_user} -d chandelier_store_catalog"]
+      interval: 50s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    ports:
+      - "${database_port}:${database_port}"
+
+volumes:
+  postgres:

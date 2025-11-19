@@ -1,13 +1,13 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER $APP_UID
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
+EXPOSE 5166
+EXPOSE 5168
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Development
 WORKDIR /src
-COPY ["./microservices.UserAPI.csproj", "microservices.UserAPI/"]
+COPY ["microservices.UserAPI/microservices.UserAPI.csproj", "microservices.UserAPI/"]
 RUN dotnet restore "./microservices.UserAPI/microservices.UserAPI.csproj"
 COPY . .
 WORKDIR "/src/microservices.UserAPI"

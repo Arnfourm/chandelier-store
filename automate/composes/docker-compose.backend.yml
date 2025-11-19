@@ -3,12 +3,13 @@ services:
     image: chandelier-store-catalogapi
     container_name: chandelier-store-catalog
     build:
-      context: ./microservices/microservices.CatalogAPI/
-      dockerfile: ./Dockerfile
+      context: ../../microservices/
+      dockerfile: ./microservices.CatalogAPI/Dockerfile
     ports:
       - "5176:5176"
       - "5178:5178"
     environment:
+      ASPNETCORE_HTTP_PORTS: 5176
       ConnectionStrings_DefaultConnection: User ID={database_user};Password={database_password};Host={database_host};Port={database_port};Database=chandelier_store_catalog;
       ASPNETCORE_ENVIRONMENT: Development
 
@@ -16,12 +17,13 @@ services:
     image: chandelier-store-userapi
     container_name: chandelier-store-user
     build:
-      context: ./microservices/microservices.UserAPI/
-      dockerfile: ./Dockerfile
+      context: ../../microservices/
+      dockerfile: ./microservices.UserAPI/Dockerfile
     ports:
       - "5166:5166"
       - "5168:5168"
     environment:
+      ASPNETCORE_HTTP_PORTS: 5166
       ConnectionStrings_DefaultConnection: User ID={database_user};Password={database_password};Host={database_host};Port={database_port};Database=chandelier_store_user;
       ASPNETCORE_ENVIRONMENT: Development
 
@@ -29,41 +31,12 @@ services:
     image: chandelier-store-supplyapi
     container_name: chandelier-store-supply
     build:
-      context: ./microservices/microservice.SupplyAPI/
-      dockerfile: ./Dockerfile
+      context: ../../microservices/
+      dockerfile: ./microservice.SupplyAPI/Dockerfile
     ports:
       - "5156:5156"
       - "5158:5158"
     environment:
+      ASPNETCORE_HTTP_PORTS: 5156
       ConnectionStrings_DefaultConnection: User ID={database_user};Password={database_password};Host={database_host};Port={database_port};Database=chandelier_store_supply;
       ASPNETCORE_ENVIRONMENT: Development
-
-  frontend:
-    image: chandelier-store-frontend
-    container_name: frontend
-    build:
-      context: ./frontend/
-      dockerfile: ./Dockerfile
-    ports:
-      - "5173:5173"
-
-  postgres:
-    image: postgres:17.5-alpine3.22
-    container_name: chandelier_store_database
-    environment:
-      POSTGRES_DB: "chandelier_store_catalog"
-      POSTGRES_USER: $"database_user"
-      POSTGRES_PASSWORD: $"database_password"
-    volumes:
-      - postgres:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${database_user} -d chandelier_store_catalog"]
-      interval: 50s
-      timeout: 10s
-      retries: 5
-      start_period: 30s
-    ports:
-      - "5678:5678"
-
-volumes:
-  postgres:
