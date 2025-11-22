@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.11.35312.102
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11217.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "microservices.CatalogAPI", "microservices.CatalogAPI\microservices.CatalogAPI.csproj", "{B481F725-02C8-4710-A7BC-48D95BAA0F5C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "microservices.UserAPI", "microservices.UserAPI\microservices.UserAPI.csproj", "{17ED1B65-7D59-4CB3-8153-FFB1B6E62860}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "microservice.SupplyAPI", "microservice.SupplyAPI\microservice.SupplyAPI.csproj", "{09CEB560-4B21-413C-8014-02BEBE11988A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "microservices.ApiGateway", "microservices.ApiGateway\microservices.ApiGateway.csproj", "{5AB3DF09-E8EA-44D6-9602-BEED0D211473}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{09CEB560-4B21-413C-8014-02BEBE11988A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09CEB560-4B21-413C-8014-02BEBE11988A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09CEB560-4B21-413C-8014-02BEBE11988A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AB3DF09-E8EA-44D6-9602-BEED0D211473}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AB3DF09-E8EA-44D6-9602-BEED0D211473}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AB3DF09-E8EA-44D6-9602-BEED0D211473}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AB3DF09-E8EA-44D6-9602-BEED0D211473}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

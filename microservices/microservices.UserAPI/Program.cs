@@ -12,7 +12,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<UserDbContext>(
     options =>
     {
-        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+        options.UseNpgsql(builder.Configuration.GetConnectionString("DevelopConnection"));
     }
 );
 
