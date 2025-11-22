@@ -1,0 +1,16 @@
+@microservices.ApiGateway_HostAddress = http://localhost:5270
+@base_api_way = api
+@catalog_api_way = Catalog
+
+GET {{microservices.ApiGateway_HostAddress}}/{{base_api_way}}/{{catalog_api_way}}/Product
+Accept: application/json
+
+###
+
+GET {{microservices.ApiGateway_HostAddress}}/{{base_api_way}}/{{catalog_api_way}}/ProductType
+Accept: application/json
+
+###
+
+GET {{microservices.ApiGateway_HostAddress}}/{{base_api_way}}/{{catalog_api_way}}/Attribute
+Accept: application/json
