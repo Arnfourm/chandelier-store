@@ -89,6 +89,7 @@ namespace microservices.UserAPI.Domain.Services
             var userId = await _userDAO.CreateUser(user);
             return userId;
         }
+
         public async Task UpdateUser(UserRequest request)
         {
             if (request.Id == null)

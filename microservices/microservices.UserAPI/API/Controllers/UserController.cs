@@ -23,5 +23,41 @@ namespace microservices.UserAPI.API.Controllers {
 
             return Ok(response);
         }
+
+        [HttpGet("{id:Guid}")]
+        public async Task<ActionResult<UserResponse>> GetUserById(Guid id)
+        {
+            UserResponse response = await _userService.GetSingleUserById(id);
+            return Ok(response);
+        }
+
+        [HttpGet("email/{email}")]
+        public async Task<ActionResult<UserResponse>> GetUserByEmail(string email)
+        {
+            UserResponse response = await _userService.GetSingleUserByEmail(email);
+            return Ok(response);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CreateUser([FromBody] UserRequest request)
+        {
+            await _userService.CreateNewUser(request);
+            return Ok();
+        }
+
+        [HttpPut("{id:Guid}")]
+        public async Task<ActionResult> UpdateUser(Guid id, [FromBody] UserRequest request)
+        {
+            var updateRequest = request with { Id = id };
+            await _userService.UpdateUser(updateRequest);
+            return Ok();
+        }
+
+        [HttpDelete("{id:Guid}")]
+        public async Task<ActionResult> DeleteUser(Guid id)
+        {
+            await _userService.DeleteSingleUserById(id);
+            return Ok();
+        }
     }
 }
