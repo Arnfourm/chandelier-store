@@ -71,6 +71,15 @@ namespace microservices.UserAPI.Domain.Services
         {
             ValidateCreateRequest(request);
 
+            try
+            {
+                var existingUser = await _userDAO.GetUserByEmail(request.Email);
+                if (existingUser != null)
+                    throw new InvalidOperationException($"User with email {request.Email} already exists");
+            }
+            catch (Exception ex) when (ex.Message.Contains("not found"))
+            { }
+
             var (passwordHash, passwordSalt) = _passwordService.HashPassword(request.Password);
             var password = new Password(passwordHash, passwordSalt);
             var passwordId = await _passwordDAO.CreatePassword(password);
@@ -121,10 +130,6 @@ namespace microservices.UserAPI.Domain.Services
         {
             if (string.IsNullOrWhiteSpace(request.Email))
                 throw new ArgumentException("Email is required");
-
-            var currentUser = await _userDAO.GetUserByEmail(request.Email);
-            if (currentUser != null)
-                throw new InvalidOperationException($"User with email {request.Email} already exists");
 
             if (request.Id != null)
                 throw new ArgumentException("Id must be null for create operation");

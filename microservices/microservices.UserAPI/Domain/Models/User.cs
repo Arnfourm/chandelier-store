@@ -92,8 +92,8 @@ namespace microservices.UserAPI.Domain.Models
             if (registration > DateTime.UtcNow.AddHours(1))
                 throw new ArgumentException("Registration date cannot be in the future", nameof(registration));
 
-            if (passwordId == Guid.Empty) throw new ArgumentException("Password ID cannot be empty", nameof(passwordId));
-            if (refreshTokenId == Guid.Empty) throw new ArgumentException("Refresh token ID cannot be empty", nameof(refreshTokenId));
+            //if (passwordId == Guid.Empty) throw new ArgumentException("Password ID cannot be empty", nameof(passwordId));
+            //if (refreshTokenId == Guid.Empty) throw new ArgumentException("Refresh token ID cannot be empty", nameof(refreshTokenId));
 
             if (!Enum.IsDefined(typeof(UserRoleEnum), userRole)) throw new ArgumentException("Invalid user role", nameof(userRole));
         }

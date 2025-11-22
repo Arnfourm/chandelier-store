@@ -1,11 +1,13 @@
 using microservices.UserAPI.API.Contracts.Requests;
 using microservices.UserAPI.API.Contracts.Responses;
 using microservices.UserAPI.Domain.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace microservices.UserAPI.API.Controllers {
 
     [ApiController]
+    [Authorize]
     [Route("api/Users/[controller]")]
     public class UserController : ControllerBase
     {
