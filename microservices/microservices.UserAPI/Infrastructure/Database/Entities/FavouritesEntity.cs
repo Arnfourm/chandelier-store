@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace microservices.UserAPI.Infrastructure.Database.Entities
 {
     [Table("Favorites")]
-    public class FavouritesEntity
+    public class FavoritesEntity
     {
         [Required]
         public Guid UserId { get; set; }

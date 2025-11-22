@@ -18,7 +18,7 @@ namespace microservices.UserAPI.Infrastructure.Database.Contexts
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<ClientEntity> Clients { get; set; }
         public DbSet<EmployeeEntity> Employees { get; set; }
-        public DbSet<FavouritesEntity> Favorites { get; set; }
+        public DbSet<FavoritesEntity> Favorites { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,7 +28,7 @@ namespace microservices.UserAPI.Infrastructure.Database.Contexts
             modelBuilder.Entity<EmployeeEntity>()
                .HasKey(e => new { e.UserId });
 
-            modelBuilder.Entity<FavouritesEntity>()
+            modelBuilder.Entity<FavoritesEntity>()
                 .HasKey(c => new { c.UserId, c.ProductId });
         }
     }

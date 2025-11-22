@@ -20,6 +20,6 @@ cd ./microservices/microservices.CatalogAPI/
 
 # ! Добавить первую миграцию (иначе нечего обновлять)
 # !!! Проверить, свежая ли версия миграции
-dotnet ef migrations add InitMigration
+# dotnet ef migrations add <название_миграции>
 
 dotnet ef database update

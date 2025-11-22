@@ -78,13 +78,12 @@ namespace microservices.UserAPI.Infrastructure.Database.DAO
 
         public async Task<Guid> CreateUser(User user)
         {
-            // Object password might needs to be
             var userEntity = new UserEntity
             {
                 Email = user.GetEmail(),
                 Name = user.GetName(),
                 Surname = user.GetSurname(),
-                Birthday = user.GetBirthday(),
+                Birthday = (DateOnly)user.GetBirthday(),
                 Registration = user.GetRegistration(),
                 PasswordId = user.GetPasswordId(),
                 RefreshTokenId = user.GetRefreshTokenId(),
