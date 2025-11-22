@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace microservices.UserAPI.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/User/[controller]")]
     [ApiController]
     public class FavouritesController : ControllerBase
     {

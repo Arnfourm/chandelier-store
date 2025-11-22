@@ -4,7 +4,7 @@ using microservices.UserAPI.Infrastructure.Database.Contexts;
 using microservices.UserAPI.Infrastructure.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace microservices.UserAPI.Infrastructure.DataAnnotations.DAO
+namespace microservices.UserAPI.Infrastructure.Database.DAO
 {
     public class UserDAO : IUserDAO
     {
