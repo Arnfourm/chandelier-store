@@ -22,7 +22,8 @@ namespace microservice.SupplyAPI.Infrastructure.Database.DAO
                 .Select(supplyProductEntity => new SupplyProduct
                 (
                     supplyProductEntity.ProductId,
-                    supplyProductEntity.SupplyId
+                    supplyProductEntity.SupplyId,
+                    supplyProductEntity.Quantity
                 )).ToListAsync();
         }
 
@@ -33,7 +34,8 @@ namespace microservice.SupplyAPI.Infrastructure.Database.DAO
                 .Select(supplyProductEntity => new SupplyProduct
                 (
                     supplyProductEntity.ProductId,
-                    supplyProductEntity.SupplyId
+                    supplyProductEntity.SupplyId,
+                    supplyProductEntity.Quantity
                 )).ToListAsync();
         }
 

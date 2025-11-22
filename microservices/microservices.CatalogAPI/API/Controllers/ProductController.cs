@@ -40,6 +40,15 @@ namespace microservices.CatalogAPI.API.Controllers
             return Ok(response);
         }
 
+        // Возможно стоит сделать через метод GetProducts, то есть передавать ids, проверять и запрашивать
+        [HttpGet("ByIds")]
+        public async Task<ActionResult<IEnumerable<ProductResponse>>> GetProductsByIds([FromQuery] List<Guid> ids)
+        {
+            IEnumerable<ProductResponse> response = await _productService.GetListProductResponseByIds(ids);
+
+            return Ok(response);
+        }
+
         [HttpPost]
         public async Task<ActionResult<Guid>> CreateProduct([FromBody] ProductRequest request)
         {
