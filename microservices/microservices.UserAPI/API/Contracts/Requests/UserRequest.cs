@@ -4,14 +4,15 @@ namespace microservices.UserAPI.API.Contracts.Requests
 {
     public record UserRequest
     (
-        Guid Id,
         string Email,
         string Name,
         string Surname,
-        DateOnly Birthday,
-        DateTime Registration,
-        Guid PasswordId,
-        Guid RefreshTokenId,
-        UserRoleEnum UserRole
+        string? Password,
+        DateOnly? Birthday,
+        UserRoleEnum UserRole = UserRoleEnum.Client,
+
+        Guid? Id = null,
+        Guid? PasswordId = null,
+        Guid? RefreshTokenId = null
     );
 }

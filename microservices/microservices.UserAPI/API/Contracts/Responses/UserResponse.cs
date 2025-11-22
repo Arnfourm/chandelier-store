@@ -8,10 +8,8 @@ namespace microservices.UserAPI.API.Contracts.Responses
         string Email,
         string Name,
         string Surname,
-        DateOnly Birthday,
+        DateOnly? Birthday,
         DateTime Registration,
-        Guid PasswordId,
-        Guid RefreshTokenId,
         UserRoleEnum UserRole
     );
 }
