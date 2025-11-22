@@ -10,10 +10,12 @@ namespace microservice.SupplyAPI.API.Controllers
     public class SupplyController : ControllerBase
     {
         private readonly ISupplyService _supplyService;
+        private readonly ISupplyProductService _supplyProductService;
 
-        public SupplyController(ISupplyService supplyService)
+        public SupplyController(ISupplyService supplyService, ISupplyProductService supplyProductService)
         {
             _supplyService = supplyService;
+            _supplyProductService = supplyProductService;
         }
 
         [HttpGet]
@@ -36,6 +38,22 @@ namespace microservice.SupplyAPI.API.Controllers
         public async Task<ActionResult> DeleteSupply(Guid id)
         {
             await _supplyService.DeleteSingleSupplyById(id);
+
+            return Ok();
+        }
+
+        [HttpGet("Product/{supplyId:Guid}")]
+        public async Task<ActionResult<IEnumerable<SupplyProductResponse>>> GetSupplyProductsById(Guid supplyId)
+        {
+            IEnumerable<SupplyProductResponse> response = await _supplyProductService.GetListSupplyProductBySupplyId(supplyId);
+
+            return Ok(response);
+        }
+
+        [HttpPost("Product")]
+        public async Task<ActionResult> CreateSupplyProduct([FromBody] SupplyProductRequest request)
+        {
+            await _supplyProductService.CreateNewSupplyProduct(request);
 
             return Ok();
         }

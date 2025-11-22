@@ -21,11 +21,13 @@ builder.Services.AddDbContext<SupplyDbContext>(
 builder.Services.AddScoped<IDeliveryTypeDAO, DeliveryTypeDAO>();
 builder.Services.AddScoped<ISupplierDAO, SupplierDAO>();
 builder.Services.AddScoped<ISupplyDAO, SupplyDAO>();
+builder.Services.AddScoped<ISupplyProductDAO,  SupplyProductDAO>();
 
 // Service registration
 builder.Services.AddScoped<IDeliveryTypeService, DeliveryTypeService>();
 builder.Services.AddScoped<ISupplierService, SupplierService>();
 builder.Services.AddScoped<ISupplyService, SupplyService>();
+builder.Services.AddScoped<ISupplyProductService, SupplyProductService>();
 
 builder.Services.AddControllers();
 
