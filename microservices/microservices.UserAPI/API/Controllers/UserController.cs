@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace microservices.UserAPI.API.Controllers {
 
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Route("api/Users/[controller]")]
     public class UserController : ControllerBase
     {

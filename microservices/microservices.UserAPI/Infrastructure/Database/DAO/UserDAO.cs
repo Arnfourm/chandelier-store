@@ -80,10 +80,11 @@ namespace microservices.UserAPI.Infrastructure.Database.DAO
         {
             var userEntity = new UserEntity
             {
+                Id = user.GetId(),
                 Email = user.GetEmail(),
                 Name = user.GetName(),
                 Surname = user.GetSurname(),
-                Birthday = (DateOnly)user.GetBirthday(),
+                Birthday = user.GetBirthday(),
                 Registration = user.GetRegistration(),
                 PasswordId = user.GetPasswordId(),
                 RefreshTokenId = user.GetRefreshTokenId(),
@@ -91,6 +92,7 @@ namespace microservices.UserAPI.Infrastructure.Database.DAO
             };
 
             await _userDbContext.Users.AddAsync(userEntity);
+
             try
             {
                 await _userDbContext.SaveChangesAsync();

@@ -1,6 +1,8 @@
-﻿using microservices.UserAPI.API.Contracts.Requests;
+﻿using System.Security.Claims;
+using microservices.UserAPI.API.Contracts.Requests;
 using microservices.UserAPI.API.Contracts.Responses;
 using microservices.UserAPI.Domain.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace microservices.UserAPI.API.Controllers
@@ -16,6 +18,13 @@ namespace microservices.UserAPI.API.Controllers
             _authService = authService;
         }
 
+        [HttpPost("SignUp")]
+        public async Task<ActionResult<AuthResponse>> SignUp([FromBody] UserRequest request)
+        {
+            var response = await _authService.SignUp(request);
+            return Ok(response);
+        }
+
         [HttpPost("LogIn")]
         public async Task<ActionResult<AuthResponse>> LogIn([FromBody] LoginRequest request)
         {
@@ -23,11 +32,30 @@ namespace microservices.UserAPI.API.Controllers
             return Ok(response);
         }
 
-        [HttpPost("SignUp")]
-        public async Task<ActionResult<AuthResponse>> SignUp([FromBody] UserRequest request)
+        [HttpPost("LogOut")]
+        [Authorize]
+        public async Task<ActionResult> Logout()
         {
-            var response = await _authService.SignUp(request);
-            return Ok(response);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null) return Unauthorized();
+
+            var success = await _authService.LogOut(Guid.Parse(userId));
+            return Ok();
+        }
+
+
+        [HttpPost("RefreshToken")]
+        public async Task<ActionResult<AuthResponse>> RefreshToken([FromBody] RefreshTokenRequest request)
+        {
+            try
+            {
+                var response = await _authService.RefreshToken(request);
+                return Ok(response);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
         }
     }
 }

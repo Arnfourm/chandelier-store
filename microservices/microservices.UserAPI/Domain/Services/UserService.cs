@@ -28,11 +28,13 @@ namespace microservices.UserAPI.Domain.Services
             var users = await _userDAO.GetUsers();
             return users.Select(
                 user => new UserResponse(
+                    Id: user.GetId(),
                     Email: user.GetEmail(),
                     Name: user.GetName(),
                     Surname: user.GetSurname(),
                     Birthday: user.GetBirthday(),
-                    Registration: user.GetRegistration()
+                    Registration: user.GetRegistration(),
+                    UserRole: user.GetUserRole()
                 )
             );
         }
@@ -41,12 +43,13 @@ namespace microservices.UserAPI.Domain.Services
         {
             var user = await _userDAO.GetUserById(id);
             return new UserResponse (
-               
+                Id: user.GetId(),
                 Email: user.GetEmail(),
                 Name: user.GetName(),
                 Surname: user.GetSurname(),
                 Birthday: user.GetBirthday(),
-                Registration: user.GetRegistration()
+                Registration: user.GetRegistration(),
+                UserRole: user.GetUserRole()
             );
         }
 
@@ -54,12 +57,13 @@ namespace microservices.UserAPI.Domain.Services
         {
             var user = await _userDAO.GetUserByEmail(email);
             return new UserResponse(
-            
+                Id: user.GetId(),
                 Email: user.GetEmail(),
                 Name: user.GetName(),
                 Surname: user.GetSurname(),
                 Birthday: user.GetBirthday(),
-                Registration: user.GetRegistration()
+                Registration: user.GetRegistration(),
+                UserRole: user.GetUserRole()
             );
         }
 
@@ -85,7 +89,7 @@ namespace microservices.UserAPI.Domain.Services
                 request.Birthday,
                 DateTime.UtcNow,
                 passwordId,
-                Guid.Empty,
+                null,
                 request.UserRole
             );
 
@@ -98,6 +102,7 @@ namespace microservices.UserAPI.Domain.Services
             var currentUser = await _userDAO.GetUserByEmail(request.Email);
 
             var updatedUser = new User(
+                currentUser.GetId(),
                 request.Email ?? currentUser.GetEmail(),
                 request.Name ?? currentUser.GetName(),
                 request.Surname ?? currentUser.GetSurname(),

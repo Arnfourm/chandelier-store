@@ -6,8 +6,11 @@ namespace microservices.UserAPI.Domain.Interfaces.Services
 {
     public interface IAuthService
     {
-        Task<AuthResponse> LogIn(LoginRequest request);
-        //Task LogOut(AuthRequest request);
         Task<AuthResponse> SignUp(UserRequest request);
+        Task<AuthResponse> LogIn(LoginRequest request);
+        Task<bool> LogOut(Guid userId);
+
+        Task<AuthResponse> RefreshToken(RefreshTokenRequest request);
+        //Task<bool> ValidatePasswordAsync(Guid userId, string password);
     }
 }

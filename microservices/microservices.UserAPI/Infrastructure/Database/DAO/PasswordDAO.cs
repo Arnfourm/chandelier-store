@@ -16,7 +16,7 @@ namespace microservices.UserAPI.Infrastructure.Database.DAO
             _userDbContext = userDbContext;
         }
 
-        public async Task<Password> GetPasswordById(Guid id)
+        public async Task<Password> GetPasswordById(Guid? id)
         {
             var passwordEntity = await _userDbContext.Passwords.FindAsync(id);
 

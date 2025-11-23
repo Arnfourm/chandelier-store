@@ -4,7 +4,9 @@ namespace microservices.UserAPI.Domain.Interfaces.Services
 {
     public interface IJwtService
     {
-        string GenerateToken(User user);
+        string GenerateAccessToken(User user);
+        string GenerateRefreshToken();
         Guid? ValidateToken(string token);
+        (Guid userId, string email)? GetUserInfoFromToken(string token);
     }
 }
