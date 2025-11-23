@@ -1,10 +1,13 @@
 import "./App.css";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+
+import { Home } from "./pages/Home";
+import { Catalog } from "./pages/Catalog";
+import { Contacts } from "./pages/Contacts";
 import { LogIn } from "./pages/LogIn";
 import { Registration } from "./pages/Registration";
-import { Home } from "./pages/Home";
-import { Contacts } from "./pages/Contacts";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
-import { Catalog } from "./pages/Catalog";
+import { UserAccount } from "./pages/UserAccount";
+import { AdminPanel } from "./pages/AdminPanel";
 
 function App() {
     return (
@@ -15,6 +18,8 @@ function App() {
                 <Route path="/contacts" component={Contacts} />
                 <Route path="/login" component={LogIn} />
                 <Route path="/reg" component={Registration} />
+                <Route path="/account" component={UserAccount} />
+                <Route path="/employee" component={AdminPanel} />
             </Switch>
         </BrowserRouter>
     );

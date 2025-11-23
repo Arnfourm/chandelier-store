@@ -35,11 +35,6 @@ namespace microservices.UserAPI.Infrastructure.Database.DAO
             var existingFavorite = await _userDbContext.Favorites
                 .FirstOrDefaultAsync(f => f.UserId == userId && f.ProductId == productId);
 
-            if (existingFavorite != null)
-            {
-                throw new Exception($"Product {productId} is already in favorites for user {userId}");
-            }
-
             var favoriteEntity = new FavoritesEntity
             {
                 UserId = userId,
@@ -63,11 +58,6 @@ namespace microservices.UserAPI.Infrastructure.Database.DAO
             var result = await _userDbContext.Favorites
                 .Where(f => f.UserId == userId && f.ProductId == productId)
                 .ExecuteDeleteAsync();
-
-            if (result == 0)
-            {
-                throw new Exception($"Product {productId} not found in favorites for user {userId}");
-            }
 
             try
             {

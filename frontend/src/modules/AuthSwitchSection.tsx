@@ -1,13 +1,21 @@
 import { Logo } from "../components/Logo";
 import { SwitchButton } from "../components/SwitchButton";
 
+interface AuthSwitchSectionProps {
+    headingName: string;
+    text: string;
+    buttonName: string;
+    buttonRef: string;
+    headerClassName: string;
+}
+
 export function AuthSwitchSection({
     headingName,
     text,
     buttonName,
     buttonRef,
     headerClassName = "",
-}) {
+}: AuthSwitchSectionProps) {
     return (
         <div className="h-full w-[35%] bg-stone-900 pt-[35px] flex flex-col">
             <header className={headerClassName.includes("text-right") ? "text-right" : ""}>

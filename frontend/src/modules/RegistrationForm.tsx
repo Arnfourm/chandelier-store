@@ -4,7 +4,7 @@ import { FormButton } from "../components/FormButton";
 export function RegistrationForm() {
     return (
         <form className="flex flex-col flex-1 items-center justify-center text-center gap-y-[35px]">
-            <h1 className="text-stone-900 font-bold text-4xl">Создайте новый аккаунт</h1>
+            <h1 className="text-4xl text-stone-900 font-bold">Создайте новый аккаунт</h1>
 
             <div className="w-[800px] flex">
                 <FormField

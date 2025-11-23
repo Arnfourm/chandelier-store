@@ -69,17 +69,11 @@ namespace microservices.UserAPI.Domain.Services
 
         public async Task<Guid> CreateNewUser(UserRequest request)
         {
-            try
-            {
-                var existingUser = await _userDAO.GetUserByEmail(request.Email);
-                if (existingUser != null)
-                    throw new InvalidOperationException($"User with email {request.Email} already exists");
-            }
-            catch (Exception ex) when (ex.Message.Contains("not found"))
-            { }
-
-            var (passwordHash, passwordSalt) = _passwordService.HashPassword(request.Password);
-            var password = new Password(passwordHash, passwordSalt);
+            var existingUser = await _userDAO.GetUserByEmail(request.Email);
+            if (existingUser != null)
+                throw new InvalidOperationException($"User with email {request.Email} already exists");
+           
+            var password = _passwordService.CreatePassword(request.Password);
             var passwordId = await _passwordDAO.CreatePassword(password);
 
             var user = new User(
