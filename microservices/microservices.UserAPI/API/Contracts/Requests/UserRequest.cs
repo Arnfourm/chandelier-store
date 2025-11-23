@@ -11,7 +11,6 @@ namespace microservices.UserAPI.API.Contracts.Requests
         DateOnly? Birthday,
         UserRoleEnum UserRole = UserRoleEnum.Client,
 
-        Guid? Id = null,
         Guid? PasswordId = null,
         Guid? RefreshTokenId = null
     );

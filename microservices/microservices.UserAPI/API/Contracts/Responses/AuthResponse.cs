@@ -4,7 +4,7 @@
     (
         Guid UserId,
         string Email,
-        string AuthorizationToken,
+        string AccessToken,
         string RefreshToken
     );
 }

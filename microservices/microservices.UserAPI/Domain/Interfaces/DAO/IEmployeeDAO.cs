@@ -4,7 +4,7 @@ namespace microservices.UserAPI.Domain.Interfaces.DAO
 {
     public interface IEmployeeDAO
     {
-        public Task<List<Employee>> GetEmployees();
+        Task<List<Employee>> GetEmployees();
         Task<Employee> GetEmployeeByUserId(Guid userId);
         Task<Guid> CreateEmployee(Employee employee);
         Task UpdateEmployee(Employee employee);

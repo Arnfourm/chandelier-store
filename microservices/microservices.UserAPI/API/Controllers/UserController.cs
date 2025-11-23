@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace microservices.UserAPI.API.Controllers {
 
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("api/Users/[controller]")]
     public class UserController : ControllerBase
     {
@@ -33,7 +33,7 @@ namespace microservices.UserAPI.API.Controllers {
             return Ok(response);
         }
 
-        [HttpGet("email/{email}")]
+        [HttpGet("{email}")]
         public async Task<ActionResult<UserResponse>> GetUserByEmail(string email)
         {
             UserResponse response = await _userService.GetSingleUserByEmail(email);
@@ -48,9 +48,9 @@ namespace microservices.UserAPI.API.Controllers {
         }
 
         [HttpPut("{id:Guid}")]
-        public async Task<ActionResult> UpdateUser(Guid id, [FromBody] UserRequest request)
+        public async Task<ActionResult> UpdateUser(string email, [FromBody] UserRequest request)
         {
-            var updateRequest = request with { Id = id };
+            var updateRequest = request with { Email = email };
             await _userService.UpdateUser(updateRequest);
             return Ok();
         }

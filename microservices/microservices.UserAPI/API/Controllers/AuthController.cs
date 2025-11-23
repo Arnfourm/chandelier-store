@@ -16,14 +16,14 @@ namespace microservices.UserAPI.API.Controllers
             _authService = authService;
         }
 
-        [HttpPost("login")]
+        [HttpPost("LogIn")]
         public async Task<ActionResult<AuthResponse>> LogIn([FromBody] LoginRequest request)
         {
             var response = await _authService.LogIn(request);
             return Ok(response);
         }
 
-        [HttpPost("signup")]
+        [HttpPost("SignUp")]
         public async Task<ActionResult<AuthResponse>> SignUp([FromBody] UserRequest request)
         {
             var response = await _authService.SignUp(request);

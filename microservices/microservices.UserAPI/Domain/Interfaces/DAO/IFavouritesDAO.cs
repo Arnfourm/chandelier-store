@@ -1,6 +1,4 @@
-﻿using microservices.UserAPI.Domain.Models;
-
-namespace microservices.UserAPI.Domain.Interfaces.DAO
+﻿namespace microservices.UserAPI.Domain.Interfaces.DAO
 {
     public interface IFavouritesDAO
     {

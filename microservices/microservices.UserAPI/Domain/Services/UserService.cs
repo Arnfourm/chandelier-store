@@ -28,13 +28,11 @@ namespace microservices.UserAPI.Domain.Services
             var users = await _userDAO.GetUsers();
             return users.Select(
                 user => new UserResponse(
-                    Id: user.GetId(),
                     Email: user.GetEmail(),
                     Name: user.GetName(),
                     Surname: user.GetSurname(),
                     Birthday: user.GetBirthday(),
-                    Registration: user.GetRegistration(),
-                    UserRole: user.GetUserRole()
+                    Registration: user.GetRegistration()
                 )
             );
         }
@@ -43,13 +41,12 @@ namespace microservices.UserAPI.Domain.Services
         {
             var user = await _userDAO.GetUserById(id);
             return new UserResponse (
-                Id: user.GetId(),
+               
                 Email: user.GetEmail(),
                 Name: user.GetName(),
                 Surname: user.GetSurname(),
                 Birthday: user.GetBirthday(),
-                Registration: user.GetRegistration(),
-                UserRole: user.GetUserRole()
+                Registration: user.GetRegistration()
             );
         }
 
@@ -57,20 +54,17 @@ namespace microservices.UserAPI.Domain.Services
         {
             var user = await _userDAO.GetUserByEmail(email);
             return new UserResponse(
-                Id: user.GetId(),
+            
                 Email: user.GetEmail(),
                 Name: user.GetName(),
                 Surname: user.GetSurname(),
                 Birthday: user.GetBirthday(),
-                Registration: user.GetRegistration(),
-                UserRole: user.GetUserRole()
+                Registration: user.GetRegistration()
             );
         }
 
         public async Task<Guid> CreateNewUser(UserRequest request)
         {
-            ValidateCreateRequest(request);
-
             try
             {
                 var existingUser = await _userDAO.GetUserByEmail(request.Email);
@@ -101,13 +95,9 @@ namespace microservices.UserAPI.Domain.Services
 
         public async Task UpdateUser(UserRequest request)
         {
-            if (request.Id == null)
-                throw new ArgumentException("Id is required for update user");
-
-            var currentUser = await _userDAO.GetUserById(request.Id.Value);
+            var currentUser = await _userDAO.GetUserByEmail(request.Email);
 
             var updatedUser = new User(
-                request.Id.Value,
                 request.Email ?? currentUser.GetEmail(),
                 request.Name ?? currentUser.GetName(),
                 request.Surname ?? currentUser.GetSurname(),
@@ -124,24 +114,6 @@ namespace microservices.UserAPI.Domain.Services
         public async Task DeleteSingleUserById(Guid id)
         {
             await _userDAO.DeleteUser(id);
-        }
-
-        private async void ValidateCreateRequest(UserRequest request)
-        {
-            if (string.IsNullOrWhiteSpace(request.Email))
-                throw new ArgumentException("Email is required");
-
-            if (request.Id != null)
-                throw new ArgumentException("Id must be null for create operation");
-
-            if (string.IsNullOrWhiteSpace(request.Password))
-                throw new ArgumentException("Password is required for user creation");            
-
-            if (string.IsNullOrWhiteSpace(request.Name))
-                throw new ArgumentException("Name is required");
-
-            if (string.IsNullOrWhiteSpace(request.Surname))
-                throw new ArgumentException("Surname is required");
         }
     }
 }
