@@ -7,5 +7,7 @@ namespace microservice.SupplyAPI.Domain.Interfaces.Services
     {
         Task<IEnumerable<SupplyProductResponse>> GetListSupplyProductBySupplyId(Guid supplyId);
         Task CreateNewSupplyProduct(SupplyProductRequest request);
+        Task DeleteSupplyProductBySupplyId(Guid supplyId);
+        Task DeleteSupplyProductByBothIds(Guid supplyId, Guid productId);
     }
 }

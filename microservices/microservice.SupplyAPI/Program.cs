@@ -28,6 +28,7 @@ builder.Services.AddScoped<IDeliveryTypeService, DeliveryTypeService>();
 builder.Services.AddScoped<ISupplierService, SupplierService>();
 builder.Services.AddScoped<ISupplyService, SupplyService>();
 builder.Services.AddScoped<ISupplyProductService, SupplyProductService>();
+builder.Services.AddScoped<ISupplyDeleteService, SupplyDeleteService>();
 
 builder.Services.AddControllers();
 

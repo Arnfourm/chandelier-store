@@ -21,8 +21,8 @@ namespace microservice.SupplyAPI.Infrastructure.Database.DAO
                 .Where(supplyProductEntity => supplyProductEntity.SupplyId == supplyId)
                 .Select(supplyProductEntity => new SupplyProduct
                 (
-                    supplyProductEntity.ProductId,
                     supplyProductEntity.SupplyId,
+                    supplyProductEntity.ProductId,
                     supplyProductEntity.Quantity
                 )).ToListAsync();
         }
@@ -33,8 +33,8 @@ namespace microservice.SupplyAPI.Infrastructure.Database.DAO
                 .Where(supplyProductEntity => supplyProductEntity.ProductId == productId)
                 .Select(supplyProductEntity => new SupplyProduct
                 (
-                    supplyProductEntity.ProductId,
                     supplyProductEntity.SupplyId,
+                    supplyProductEntity.ProductId,
                     supplyProductEntity.Quantity
                 )).ToListAsync();
         }

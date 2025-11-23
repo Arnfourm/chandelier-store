@@ -25,14 +25,15 @@ namespace microservice.SupplyAPI.Domain.Services
 
             _supplyService = supplyService;
 
-            _catalogMicroservice = catalogMicroservice["Microservices:CatalogMicroservice"];
+            _catalogMicroservice = catalogMicroservice["Microservices:CatalogMicroservice"] 
+                ?? throw new ArgumentException("Catalog microservice is null");
         }
 
         public async Task<IEnumerable<SupplyProductResponse>> GetListSupplyProductBySupplyId(Guid supplyId)
         {
             List<SupplyProduct> supplyProducts = await _supplyProductDAO.GetSupplyProductBySupplyId(supplyId);
 
-            string productIds = string.Join(",", supplyProducts.Select(supplyProduct => supplyProduct.GetProductId()));
+            string productIds = string.Join("&", supplyProducts.Select(supplyProduct => $"ids={supplyProduct.GetProductId()}"));
 
             IEnumerable<Product> products;
 
@@ -40,19 +41,15 @@ namespace microservice.SupplyAPI.Domain.Services
             {
                 using (HttpClient httpClient = new HttpClient(handler))
                 {
-                    HttpResponseMessage responseProducts = await httpClient.GetAsync($"{_catalogMicroservice}/Product/ByIds?ids={productIds}");
+                    HttpResponseMessage responseProducts = await httpClient.GetAsync($"{_catalogMicroservice}/Product/ByIds?{productIds}");
 
                     if (!responseProducts.IsSuccessStatusCode)
                     {
                         throw new Exception("Failed then tried to get request from Catalog service");
                     };
 
-                    List<ProductDTO> productResponse = await responseProducts.Content.ReadFromJsonAsync<List<ProductDTO>>();
-
-                    if (productResponse == null)
-                    {
-                        throw new Exception($"Failed then tried to get products with ids: {productIds}");
-                    }
+                    List<ProductDTO> productResponse = await responseProducts.Content.ReadFromJsonAsync<List<ProductDTO>>()
+                        ?? new List<ProductDTO>();
 
                     products = productResponse
                         .Select(productDTO => new Product
@@ -107,6 +104,43 @@ namespace microservice.SupplyAPI.Domain.Services
             SupplyProduct newSupplyProduct = new SupplyProduct(request.SupplyId, request.ProductId, request.Quantity);
 
             await _supplyProductDAO.CreateSupplyProduct(newSupplyProduct);
+        }
+
+        public async Task DeleteSupplyProductBySupplyId(Guid supplyId)
+        {
+            Supply supply = await _supplyService.GetSingleSupplyById(supplyId);
+
+            if (supply == null)
+            {
+                throw new Exception($"Supply with id {supplyId} doesn't exist");
+            }
+
+            await _supplyProductDAO.DeleteSupplyProductBySupplyId(supplyId);
+        }
+
+        public async Task DeleteSupplyProductByBothIds(Guid supplyId, Guid productId)
+        {
+            Supply supply = await _supplyService.GetSingleSupplyById(supplyId);
+
+            if (supply == null)
+            {
+                throw new Exception($"Supply with id {supplyId} doesn't exist");
+            }
+
+            using (HttpClientHandler handler = new HttpClientHandler())
+            {
+                using (HttpClient httpClient = new HttpClient(handler))
+                {
+                    HttpResponseMessage responseProducts = await httpClient.GetAsync($"{_catalogMicroservice}/Product/{productId}");
+
+                    if (!responseProducts.IsSuccessStatusCode)
+                    {
+                        throw new Exception($"Product with id {productId} doesn't exist");
+                    }
+                }
+            }
+
+            await _supplyProductDAO.DeleteSupplyProductByBothIds(supplyId, productId);
         }
     }
 }

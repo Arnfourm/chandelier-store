@@ -15,6 +15,7 @@
 
             SupplyId = supplyId;
             ProductId = productId;
+            Quantity = quantity;
         }
 
         public Guid GetSupplyId() { return SupplyId; }
