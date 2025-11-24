@@ -28,8 +28,19 @@ namespace microservices.UserAPI.API.Controllers
         [HttpPost("LogIn")]
         public async Task<ActionResult<AuthResponse>> LogIn([FromBody] LoginRequest request)
         {
-            var response = await _authService.LogIn(request);
-            return Ok(response);
+            try
+            {
+                var response = await _authService.LogIn(request);
+                return Ok(response);
+            }
+            catch (Exception ex) when (ex.Message.Contains("email"))
+            {
+                return Unauthorized(new { message = "Пользователь с таким email не найден" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [HttpPost("LogOut")]

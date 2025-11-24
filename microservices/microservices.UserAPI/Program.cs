@@ -69,6 +69,18 @@ builder.Services.AddDbContext<UserDbContext>(
     }
 );
 
+// Allow Frontend-requests
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
 // DAO registration
 builder.Services.AddScoped<IUserDAO, UserDAO>();
 builder.Services.AddScoped<IClientDAO, ClientDAO>();
@@ -94,6 +106,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowFrontend");
 
 app.UseAuthorization();
 

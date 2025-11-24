@@ -58,6 +58,7 @@ namespace microservices.UserAPI.Domain.Services
             return new AuthResponse(
                 userId,
                 user.GetEmail(),
+                user.GetUserRole(),
                 accessToken,
                 refreshToken
             );
@@ -103,6 +104,7 @@ namespace microservices.UserAPI.Domain.Services
             return new AuthResponse(
                 user.GetId(),
                 user.GetEmail(),
+                user.GetUserRole(),
                 accessToken,
                 refreshToken
             );
@@ -168,6 +170,7 @@ namespace microservices.UserAPI.Domain.Services
             return new AuthResponse(
                 user.GetId(),
                 user.GetEmail(),
+                user.GetUserRole(),
                 newAccessToken,
                 newRefreshToken
             );
