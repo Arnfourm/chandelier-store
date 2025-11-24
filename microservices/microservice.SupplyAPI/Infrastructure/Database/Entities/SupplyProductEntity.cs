@@ -14,5 +14,8 @@ namespace microservice.SupplyAPI.Infrastructure.Database.Entities
 
         [Required]
         public Guid ProductId { get; set; }
+
+        [Required]
+        public int Quantity { get; set; }
     }
 }

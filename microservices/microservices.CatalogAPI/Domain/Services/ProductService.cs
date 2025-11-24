@@ -80,6 +80,34 @@ public class ProductService : IProductService
         return response;
     }
 
+    public async Task<IEnumerable<ProductResponse>> GetListProductResponseByIds(List<Guid> ids)
+    {
+        List<Product> products = await _productDAO.GetProductsByIds(ids);
+
+        List<int> productTypeIds = products.Select(product => product.GetProductTypeId()).ToList();
+
+        IEnumerable<ProductTypeResponse> productTypes = await _productTypeService.GetListProductTypeResponseByIds(productTypeIds);
+
+        var productTypeDict = productTypes.ToDictionary(productType => productType.Id);
+
+        IEnumerable<ProductResponse> response = products.Select(product =>
+        {
+            ProductTypeResponse productTypeResponse = productTypeDict[product.GetProductTypeId()];
+
+            return new ProductResponse(
+                product.GetId(),
+                product.GetArticle(),
+                product.GetTitle(),
+                product.GetPrice(),
+                product.GetQuantity(),
+                productTypeResponse,
+                product.GetAddedDate()
+            );
+        });
+
+        return response;
+    }
+
     public async Task<Guid> CreateNewProduct(ProductRequest request)
     {
         ProductType productType = await _productTypeService.GetSingleProductTypeById(request.ProductTypeId);

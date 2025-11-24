@@ -30,8 +30,8 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
                 )).ToListAsync();
         }
 
-       public async Task<Product> GetProductById(Guid id)
-       {
+        public async Task<Product> GetProductById(Guid id)
+        {
             var productEntity = await _catalogDbContext.Products.FindAsync(id);
 
             if (productEntity == null)
@@ -47,7 +47,23 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
                 productEntity.Quantity,
                 productEntity.ProductTypeId,
                 productEntity.AddedDate);
-       }
+        }
+        
+        public async Task<List<Product>> GetProductsByIds(List<Guid> ids)
+        {
+            return await _catalogDbContext.Products
+                .Where(productEntity => ids.Contains(productEntity.Id))
+                .Select(productEntity => new Product
+                (
+                    productEntity.Id,
+                    productEntity.Article,
+                    productEntity.Title,
+                    productEntity.Price,
+                    productEntity.Quantity,
+                    productEntity.ProductTypeId,
+                    productEntity.AddedDate
+                )).ToListAsync();
+        }
 
         public async Task<Guid> CreateProduct(Product product)
         {
