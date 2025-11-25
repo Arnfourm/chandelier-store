@@ -21,8 +21,9 @@ namespace microservice.SupplyAPI.Infrastructure.Database.DAO
                 .Where(supplyProductEntity => supplyProductEntity.SupplyId == supplyId)
                 .Select(supplyProductEntity => new SupplyProduct
                 (
+                    supplyProductEntity.SupplyId,
                     supplyProductEntity.ProductId,
-                    supplyProductEntity.SupplyId
+                    supplyProductEntity.Quantity
                 )).ToListAsync();
         }
 
@@ -32,8 +33,9 @@ namespace microservice.SupplyAPI.Infrastructure.Database.DAO
                 .Where(supplyProductEntity => supplyProductEntity.ProductId == productId)
                 .Select(supplyProductEntity => new SupplyProduct
                 (
+                    supplyProductEntity.SupplyId,
                     supplyProductEntity.ProductId,
-                    supplyProductEntity.SupplyId
+                    supplyProductEntity.Quantity
                 )).ToListAsync();
         }
 
@@ -42,7 +44,8 @@ namespace microservice.SupplyAPI.Infrastructure.Database.DAO
             SupplyProductEntity supplyProductEntity = new SupplyProductEntity
             {
                 SupplyId = supplyProduct.GetSupplyId(),
-                ProductId = supplyProduct.GetProductId()
+                ProductId = supplyProduct.GetProductId(),
+                Quantity = supplyProduct.GetQuantity()
             };
 
             await _supplyDbContext.SupplyProducts.AddAsync(supplyProductEntity);

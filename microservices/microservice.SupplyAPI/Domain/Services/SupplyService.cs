@@ -3,7 +3,6 @@ using microservice.SupplyAPI.API.Contracts.Responses;
 using microservice.SupplyAPI.Domain.Interfaces.DAO;
 using microservice.SupplyAPI.Domain.Interfaces.Services;
 using microservice.SupplyAPI.Domain.Models;
-using System.Linq;
 
 namespace microservice.SupplyAPI.Domain.Services
 {
@@ -64,11 +63,6 @@ namespace microservice.SupplyAPI.Domain.Services
                 );
 
             await _supplyDAO.CreateSupply(newSupply);
-        }
-
-        public async Task DeleteSingleSupplyById(Guid id)
-        {
-            await _supplyDAO.DeleteSupply(id);
         }
     }
 }

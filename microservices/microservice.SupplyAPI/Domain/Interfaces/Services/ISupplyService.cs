@@ -9,6 +9,5 @@ namespace microservice.SupplyAPI.Domain.Interfaces.Services
         Task<IEnumerable<SupplyResponse>> GetAllSupplies();
         Task<Supply> GetSingleSupplyById(Guid id);
         Task CreateNewSupply(SupplyRequest request);
-        Task DeleteSingleSupplyById(Guid id);
     }
 }

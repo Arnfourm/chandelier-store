@@ -10,10 +10,18 @@ namespace microservice.SupplyAPI.API.Controllers
     public class SupplyController : ControllerBase
     {
         private readonly ISupplyService _supplyService;
+        private readonly ISupplyProductService _supplyProductService;
+        private readonly ISupplyDeleteService _supplyDeleteService;
 
-        public SupplyController(ISupplyService supplyService)
+        public SupplyController(
+            ISupplyService supplyService, 
+            ISupplyProductService supplyProductService,
+            ISupplyDeleteService supplyDeleteService
+        )
         {
             _supplyService = supplyService;
+            _supplyProductService = supplyProductService;
+            _supplyDeleteService = supplyDeleteService;
         }
 
         [HttpGet]
@@ -35,7 +43,31 @@ namespace microservice.SupplyAPI.API.Controllers
         [HttpDelete("{id:Guid}")]
         public async Task<ActionResult> DeleteSupply(Guid id)
         {
-            await _supplyService.DeleteSingleSupplyById(id);
+            await _supplyDeleteService.DeleteSingleSupplyById(id);
+
+            return Ok();
+        }
+
+        [HttpGet("{supplyId:Guid}/Product/")]
+        public async Task<ActionResult<IEnumerable<SupplyProductResponse>>> GetSupplyProductsById(Guid supplyId)
+        {
+            IEnumerable<SupplyProductResponse> response = await _supplyProductService.GetListSupplyProductBySupplyId(supplyId);
+
+            return Ok(response);
+        }
+
+        [HttpPost("Product")]
+        public async Task<ActionResult> CreateSupplyProduct([FromBody] SupplyProductRequest request)
+        {
+            await _supplyProductService.CreateNewSupplyProduct(request);
+
+            return Ok();
+        }
+
+        [HttpDelete("{supplyId:Guid}/Product/{productId:Guid}")]
+        public async Task<ActionResult> DeleteSupplyProduct(Guid supplyId, Guid productId)
+        {
+            await _supplyProductService.DeleteSupplyProductByBothIds(supplyId, productId);
 
             return Ok();
         }

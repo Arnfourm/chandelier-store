@@ -37,7 +37,7 @@ public class ProductService : IProductService
         
         IEnumerable<ProductResponse> response = products.Select(product =>
         {
-            ProductTypeResponse productTypeReponse = productTypeDict[product.GetProductTypeId()];
+            ProductTypeResponse productTypeResponse = productTypeDict[product.GetProductTypeId()];
 
             return new ProductResponse(
                 product.GetId(),
@@ -45,7 +45,7 @@ public class ProductService : IProductService
                 product.GetTitle(),
                 product.GetPrice(),
                 product.GetQuantity(),
-                productTypeReponse,
+                productTypeResponse,
                 product.GetAddedDate()
             );
         });
@@ -58,6 +58,54 @@ public class ProductService : IProductService
         Product product = await _productDAO.GetProductById(id);
 
         return product;
+    }
+
+    public async Task<ProductResponse> GetSingleProductResponseById(Guid id)
+    {
+        Product product = await _productDAO.GetProductById(id);
+
+        ProductTypeResponse productTypeResponse = await _productTypeService.GetSingleProductTypeResponseById(product.GetProductTypeId());
+
+        ProductResponse response = new ProductResponse
+        (
+            product.GetId(),
+            product.GetArticle(),
+            product.GetTitle(),
+            product.GetPrice(),
+            product.GetQuantity(),
+            productTypeResponse,
+            product.GetAddedDate()
+        );
+
+        return response;
+    }
+
+    public async Task<IEnumerable<ProductResponse>> GetListProductResponseByIds(List<Guid> ids)
+    {
+        List<Product> products = await _productDAO.GetProductsByIds(ids);
+
+        List<int> productTypeIds = products.Select(product => product.GetProductTypeId()).ToList();
+
+        IEnumerable<ProductTypeResponse> productTypes = await _productTypeService.GetListProductTypeResponseByIds(productTypeIds);
+
+        var productTypeDict = productTypes.ToDictionary(productType => productType.Id);
+
+        IEnumerable<ProductResponse> response = products.Select(product =>
+        {
+            ProductTypeResponse productTypeResponse = productTypeDict[product.GetProductTypeId()];
+
+            return new ProductResponse(
+                product.GetId(),
+                product.GetArticle(),
+                product.GetTitle(),
+                product.GetPrice(),
+                product.GetQuantity(),
+                productTypeResponse,
+                product.GetAddedDate()
+            );
+        });
+
+        return response;
     }
 
     public async Task<Guid> CreateNewProduct(ProductRequest request)

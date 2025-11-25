@@ -6,12 +6,13 @@ namespace microservices.CatalogAPI.Domain.Interfaces.Services
 {
     public interface IProductTypeService
     {
-        public Task<IEnumerable<ProductTypeResponse>> GetAllProductTypes();
-        public Task<ProductType> GetSingleProductTypeById(int id);
-        public Task<ProductType> GetSingleProductTypeByTitle(string title);
+        Task<IEnumerable<ProductTypeResponse>> GetAllProductTypes();
+        Task<ProductType> GetSingleProductTypeById(int id);
+        Task<ProductType> GetSingleProductTypeByTitle(string title);
+        Task<ProductTypeResponse> GetSingleProductTypeResponseById(int id);
         Task<IEnumerable<ProductTypeResponse>> GetListProductTypeResponseByIds(List<int> ids);
-        public Task<int> CreateNewProductType(ProductTypeRequest request);
-        public Task<int> UpdateSingleProductType(int id, ProductTypeRequest request);
-        public Task DeleteSingleProductTypeById(int id);
+        Task<int> CreateNewProductType(ProductTypeRequest request);
+        Task<int> UpdateSingleProductType(int id, ProductTypeRequest request);
+        Task DeleteSingleProductTypeById(int id);
     }
 }

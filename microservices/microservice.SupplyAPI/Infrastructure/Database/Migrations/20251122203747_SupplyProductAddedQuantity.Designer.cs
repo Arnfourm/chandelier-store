@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using microservice.SupplyAPI.Infrastructure.Database.Contexts;
@@ -11,9 +12,11 @@ using microservice.SupplyAPI.Infrastructure.Database.Contexts;
 namespace microservice.SupplyAPI.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(SupplyDbContext))]
-    partial class SupplyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251122203747_SupplyProductAddedQuantity")]
+    partial class SupplyProductAddedQuantity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
