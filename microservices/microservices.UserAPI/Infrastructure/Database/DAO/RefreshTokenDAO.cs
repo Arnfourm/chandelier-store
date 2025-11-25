@@ -27,6 +27,22 @@ namespace microservices.UserAPI.Infrastructure.Database.DAO
             return new RefreshToken(refreshTokenEntity.Id, refreshTokenEntity.Token, refreshTokenEntity.CreatedTime, refreshTokenEntity.ExpireTime);
         }
 
+        public async Task<RefreshToken> GetRefreshTokenByToken(string token)
+        {
+            var refreshTokenEntity = await _userDbContext.RefreshTokens
+                .FirstOrDefaultAsync(rt => rt.Token == token);
+
+            if (refreshTokenEntity == null)
+                return null;
+
+            return new RefreshToken(
+                refreshTokenEntity.Id,
+                refreshTokenEntity.Token,
+                refreshTokenEntity.CreatedTime,
+                refreshTokenEntity.ExpireTime
+            );
+        }
+
         public async Task<Guid> CreateRefreshToken(RefreshToken refreshToken)
         {
             var refreshTokenEntity = new RefreshTokenEntity
@@ -49,7 +65,27 @@ namespace microservices.UserAPI.Infrastructure.Database.DAO
             return refreshTokenEntity.Id;
         }
 
-        public async Task DeleteRefreshToken(Guid id)
+        public async Task UpdateRefreshToken(RefreshToken refreshToken)
+        {
+            await _userDbContext.RefreshTokens
+                .Where(rt => rt.Id == refreshToken.GetId())
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(rt => rt.Token, refreshToken.GetToken())
+                    .SetProperty(rt => rt.CreatedTime, refreshToken.GetCreatedTime())
+                    .SetProperty(rt => rt.ExpireTime, refreshToken.GetExpireTime())
+                );
+
+            try
+            {
+                await _userDbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error while trying to update refresh token: {ex.Message}", ex);
+            }
+        }
+
+        public async Task DeleteRefreshToken(Guid? id)
         {
             await _userDbContext.RefreshTokens.Where(refreshToken => refreshToken.Id == id).ExecuteDeleteAsync();
 

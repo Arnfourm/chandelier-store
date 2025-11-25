@@ -4,7 +4,7 @@ using microservices.UserAPI.Infrastructure.Database.Contexts;
 using microservices.UserAPI.Infrastructure.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace microservices.UserAPI.Infrastructure.DataAnnotations.DAO
+namespace microservices.UserAPI.Infrastructure.Database.DAO
 {
     public class UserDAO : IUserDAO
     {
@@ -78,9 +78,9 @@ namespace microservices.UserAPI.Infrastructure.DataAnnotations.DAO
 
         public async Task<Guid> CreateUser(User user)
         {
-            // Object password might needs to be
             var userEntity = new UserEntity
             {
+                Id = user.GetId(),
                 Email = user.GetEmail(),
                 Name = user.GetName(),
                 Surname = user.GetSurname(),
@@ -92,6 +92,7 @@ namespace microservices.UserAPI.Infrastructure.DataAnnotations.DAO
             };
 
             await _userDbContext.Users.AddAsync(userEntity);
+
             try
             {
                 await _userDbContext.SaveChangesAsync();
@@ -102,6 +103,28 @@ namespace microservices.UserAPI.Infrastructure.DataAnnotations.DAO
             }
 
             return userEntity.Id;
+        }
+
+        public async Task UpdateUser(User user)
+        {
+            await _userDbContext.Users
+                .Where(userEntity => userEntity.Id == user.GetId())
+                .ExecuteUpdateAsync(userSetters => userSetters
+                .SetProperty(userEntity => userEntity.Email, user.GetEmail())
+                .SetProperty(userEntity => userEntity.Name, user.GetName())
+                .SetProperty(userEntity => userEntity.Surname, user.GetSurname())
+                .SetProperty(userEntity => userEntity.Birthday, user.GetBirthday())
+                .SetProperty(userEntity => userEntity.RefreshTokenId, user.GetRefreshTokenId())
+                .SetProperty(userEntity => userEntity.UserRole, user.GetUserRole()));
+
+            try
+            {
+                await _userDbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error while trying to update user's info. Error message:\n{ex.Message}", ex);
+            }
         }
 
         public async Task DeleteUser(Guid id)

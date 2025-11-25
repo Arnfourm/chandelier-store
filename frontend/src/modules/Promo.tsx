@@ -2,8 +2,8 @@ import { HomeButton } from "../components/HomeButton";
 
 export function Promo() {
     return (
-        <div className="text-center flex flex-col items-center mt-[4%] mb-[6%]">
-            <h2 className="uppercase font-semibold text-5xl w-[74%] mb-[2%] leading-[1.4]">
+        <div className="mt-[4%] mb-[6%] flex flex-col items-center text-center">
+            <h2 className="w-[74%] mb-[2%] leading-[1.4] text-5xl font-semibold uppercase">
                 <span className="text-amber-500">Империя люстр</span> – российская компания по
                 продаже светодиодного оборудования, эксперт в области интерьерного и уличного
                 освещения

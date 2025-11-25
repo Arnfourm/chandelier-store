@@ -2,6 +2,7 @@ using microservices.UserAPI.Domain.Interfaces.DAO;
 using microservices.UserAPI.Domain.Models;
 using microservices.UserAPI.Infrastructure.Database.Contexts;
 using microservices.UserAPI.Infrastructure.Database.Entities;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace microservices.UserAPI.Infrastructure.Database.DAO
@@ -15,7 +16,7 @@ namespace microservices.UserAPI.Infrastructure.Database.DAO
             _userDbContext = userDbContext;
         }
 
-        public async Task<Password> GetPasswordById(Guid id)
+        public async Task<Password> GetPasswordById(Guid? id)
         {
             var passwordEntity = await _userDbContext.Passwords.FindAsync(id);
 
@@ -46,6 +47,24 @@ namespace microservices.UserAPI.Infrastructure.Database.DAO
             }
 
             return passwordEntity.Id;
+        }
+
+        public async Task UpdatePassword(Password password)
+        {
+            await _userDbContext.Passwords
+                .Where(passwordEntity => passwordEntity.Id == password.GetId())
+                .ExecuteUpdateAsync(passwordSetters => passwordSetters
+                .SetProperty(passwordEntity => passwordEntity.PasswordHash, password.GetPasswordHash())
+                .SetProperty(passwordEntity => passwordEntity.PasswordSaulHash, password.GetPasswordSaulHash()));
+
+            try
+            {
+                await _userDbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error while trying to update password. Error message:\n{ex.Message}", ex);
+            }
         }
 
         public async Task DeletePassword(Guid id)

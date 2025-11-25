@@ -23,17 +23,17 @@ namespace microservices.UserAPI.Infrastructure.Database.Entities
         [StringLength(100)]
         public required string Surname { get; set; }
 
-        public DateOnly Birthday { get; set; }
+        public DateOnly? Birthday { get; set; }
 
         public DateTime Registration { get; set; }
 
         [Required]
-        public Guid PasswordId { get; set; }
+        public Guid? PasswordId { get; set; }
 
         [ForeignKey("PasswordId")]
         public PasswordEntity? Password { get; set; }
 
-        public Guid RefreshTokenId { get; set; }
+        public Guid? RefreshTokenId { get; set; }
 
         [ForeignKey("RefreshTokenId")]
         public RefreshTokenEntity? RefreshToken { get; set; }

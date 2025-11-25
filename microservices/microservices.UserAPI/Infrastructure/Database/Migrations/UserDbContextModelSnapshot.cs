@@ -105,9 +105,22 @@ namespace microservices.UserAPI.Infrastructure.Database.Migrations
                     b.ToTable("Employee");
                 });
 
+            modelBuilder.Entity("microservices.UserAPI.Infrastructure.Database.Entities.FavoritesEntity", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("UserId", "ProductId");
+
+                    b.ToTable("Favorites");
+                });
+
             modelBuilder.Entity("microservices.UserAPI.Infrastructure.Database.Entities.PasswordEntity", b =>
                 {
-                    b.Property<Guid>("id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
@@ -119,7 +132,7 @@ namespace microservices.UserAPI.Infrastructure.Database.Migrations
                         .IsRequired()
                         .HasColumnType("bytea");
 
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
                     b.ToTable("Password");
                 });
@@ -136,7 +149,7 @@ namespace microservices.UserAPI.Infrastructure.Database.Migrations
                     b.Property<DateTime>("ExpireTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("RefreshToken")
+                    b.Property<string>("Token")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -151,7 +164,7 @@ namespace microservices.UserAPI.Infrastructure.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateOnly>("Birthday")
+                    b.Property<DateOnly?>("Birthday")
                         .HasColumnType("date");
 
                     b.Property<string>("Email")
@@ -167,7 +180,7 @@ namespace microservices.UserAPI.Infrastructure.Database.Migrations
                     b.Property<Guid>("PasswordId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("RefreshTokenId")
+                    b.Property<Guid?>("RefreshTokenId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("Registration")
@@ -212,6 +225,17 @@ namespace microservices.UserAPI.Infrastructure.Database.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("microservices.UserAPI.Infrastructure.Database.Entities.FavoritesEntity", b =>
+                {
+                    b.HasOne("microservices.UserAPI.Infrastructure.Database.Entities.UserEntity", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("microservices.UserAPI.Infrastructure.Database.Entities.UserEntity", b =>
                 {
                     b.HasOne("microservices.UserAPI.Infrastructure.Database.Entities.PasswordEntity", "Password")
@@ -222,9 +246,7 @@ namespace microservices.UserAPI.Infrastructure.Database.Migrations
 
                     b.HasOne("microservices.UserAPI.Infrastructure.Database.Entities.RefreshTokenEntity", "RefreshToken")
                         .WithMany()
-                        .HasForeignKey("RefreshTokenId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RefreshTokenId");
 
                     b.Navigation("Password");
 

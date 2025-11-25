@@ -4,9 +4,9 @@ namespace microservices.UserAPI.Domain.Interfaces.DAO
 {
     public interface IPasswordDAO
     {
-        public Task<Password> GetPasswordById(Guid id);
-        public Task<Guid> CreatePassword(Password password);
-        public Task DeletePassword(Guid id);
-        //public void UpdatePassword(Guid id, Password password);
+        Task<Password> GetPasswordById(Guid? id);
+        Task<Guid> CreatePassword(Password password);
+        Task UpdatePassword(Password password);
+        Task DeletePassword(Guid id);
     }
 }

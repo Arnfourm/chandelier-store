@@ -5,7 +5,7 @@ namespace microservices.UserAPI.Domain.Models
         private Guid UserId;
         private int Code;
         private string ResidenceAddressCountry;  
-        private string ResidenceddressDistrict;
+        private string ResidenceAddressDistrict;
         private string ResidenceAddressCity;
         private string ResidenceAddressStreet;
         private string ResidenceAddressHouse;
@@ -20,7 +20,7 @@ namespace microservices.UserAPI.Domain.Models
             UserId = userId;
             Code = code;
             ResidenceAddressCountry = country;
-            ResidenceddressDistrict = district;
+            ResidenceAddressDistrict = district;
             ResidenceAddressCity = addressCity;
             ResidenceAddressStreet = addressStreet;
             ResidenceAddressHouse = addressHouse;
@@ -28,8 +28,9 @@ namespace microservices.UserAPI.Domain.Models
         }
 
         public Guid GetUserId() { return UserId; }
+        public int GetCode() { return Code; }
         public string GetResidenceAddressCountry() { return ResidenceAddressCountry; }
-        public string GetResidenceAddressDistrict() { return ResidenceddressDistrict; }
+        public string GetResidenceAddressDistrict() { return ResidenceAddressDistrict; }
         public string GetResidenceAddressCity() { return ResidenceAddressCity; }
         public string GetResidenceAddressStreet() { return ResidenceAddressStreet; }
         public string GetResidenceAddressHouse() { return ResidenceAddressHouse; }
@@ -46,7 +47,7 @@ namespace microservices.UserAPI.Domain.Models
         {
             ValidateResidenceAddress(country, district, addressCity, addressStreet, addressHouse, addressPostalCode);
             ResidenceAddressCountry = country;
-            ResidenceddressDistrict = district;
+            ResidenceAddressDistrict = district;
             ResidenceAddressCity = addressCity;
             ResidenceAddressStreet = addressStreet;
             ResidenceAddressHouse = addressHouse;

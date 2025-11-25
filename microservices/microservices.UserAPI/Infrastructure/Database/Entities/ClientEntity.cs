@@ -11,7 +11,7 @@ namespace microservices.UserAPI.Infrastructure.Database.Entities
         public Guid UserId { get; set; }
 
         [ForeignKey("UserId")]
-        public required UserEntity User { get; set; }
+        public UserEntity? User { get; set; }
 
         [Required]
         [StringLength(125)]
