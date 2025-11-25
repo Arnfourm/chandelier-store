@@ -1,31 +1,43 @@
 {
   "Routes": [
     {
-      "DownstreamPathTemplate": "/api/Catalog/{everything}",
-      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/Supply/{everything}",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5176
+          "Port": 9110
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Supply/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "DELETE", "PUT" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Catalog/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9120
         }
       ],
       "UpstreamPathTemplate": "/api/Catalog/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "DELETE", "PUT" ]
     },
     {
-      "DownstreamPathTemplate": "/api/Supply/{everything}",
-      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/Users/{everything}",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5043
+          "Port": 9130
         }
       ],
-      "UpstreamPathTemplate": "/api/Supply/{everything}",
+      "UpstreamPathTemplate": "/api/Users/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "DELETE", "PUT" ]
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost:5000"
+    "BaseUrl": "https://localhost:9100"
   }
 }

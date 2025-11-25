@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace microservices.UserAPI.API.Controllers
 {
-    [Route("api/Users/[controller]")]
     [ApiController]
+    [Route("api/Users/[controller]")]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -43,8 +43,8 @@ namespace microservices.UserAPI.API.Controllers
             }
         }
 
-        [HttpPost("LogOut")]
         [Authorize]
+        [HttpPost("LogOut")]
         public async Task<ActionResult> Logout()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
