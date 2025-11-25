@@ -24,7 +24,7 @@ services:
     container_name: chandelier-store-gate
     build:
       context: ./microservices/
-      dockerfile: ./microservice.SupplyAPI
+      dockerfile: ./microservices.ApiGateway/Dockerfile
     ports:
       - "9100:9100"
     environment:
@@ -78,22 +78,26 @@ services:
     networks:
       - chandelier-store-network
 
-  # nginx:
-  #   image: nginx:alpine3.22
-  #   container_name: chandelier-store-nginx
-  #   ports:
-  #     - 80:80
-  #   volumes:
-  #     - './nginx.conf:/etc/nginx/nginx.conf'
+  nginx:
+    image: nginx:alpine3.22
+    container_name: chandelier-store-nginx
+    ports:
+      - 8100:8100
+    volumes:
+      - './nginx.conf:/etc/nginx/nginx.conf'
+    networks:
+      - chandelier-store-network
 
-  # frontend:
-  #   image: chandelier-store-frontend
-  #   container_name: frontend
-  #   build:
-  #     context: ./frontend/
-  #     dockerfile: ./Dockerfile
-  #   ports:
-  #     - "5173:5173"
+  frontend:
+    image: chandelier-store-frontend
+    container_name: frontend
+    build:
+      context: ./frontend/
+      dockerfile: ./Dockerfile
+    ports:
+      - "5173:5173"
+    networks:
+      - chandelier-store-network
 
 volumes:
   postgres:
