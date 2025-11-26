@@ -26,9 +26,9 @@ services:
       context: ./microservices/
       dockerfile: ./microservices.ApiGateway/Dockerfile
     ports:
-      - "9100:9100"
+      - "9200:9200"
     environment:
-      ASPNETCORE_HTTPS_PORTS: 9100
+      ASPNETCORE_HTTP_PORTS: 9200
       ASPNETCORE_ENVIRONMENT: Release
     networks: 
       - chandelier-store-network
@@ -40,9 +40,9 @@ services:
       context: ./microservices/
       dockerfile: ./microservice.SupplyAPI/Dockerfile
     ports:
-      - "9110:9110"
+      - "9210:9210"
     environment:
-      ASPNETCORE_HTTPS_PORTS: 9110
+      ASPNETCORE_HTTP_PORTS: 9210
       ConnectionStrings__DefaultConnection: "User ID=${database_user};Password=${database_password};Host=${database_host};Port=${database_port};Database=chandelier_store_supply;"
       ASPNETCORE_ENVIRONMENT: Release
     networks:
@@ -55,9 +55,9 @@ services:
       context: ./microservices/
       dockerfile: ./microservices.CatalogAPI/Dockerfile
     ports:
-      - "9120:9120"
+      - "9220:9220"
     environment:
-      ASPNETCORE_HTTPS_PORTS: 9120
+      ASPNETCORE_HTTP_PORTS: 9220
       ConnectionStrings__DefaultConnection: "User ID=${database_user};Password=${database_password};Host=${database_host};Port=${database_port};Database=chandelier_store_catalog;"
       ASPNETCORE_ENVIRONMENT: Release
     networks:
@@ -70,9 +70,9 @@ services:
       context: ./microservices/
       dockerfile: ./microservices.UserAPI/Dockerfile
     ports:
-      - "9130:9130"
+      - "9230:9230"
     environment:
-      ASPNETCORE_HTTPS_PORTS: 9130
+      ASPNETCORE_HTTP_PORTS: 9230
       ConnectionStrings__DefaultConnection: "User ID=${database_user};Password=${database_password};Host=${database_host};Port=${database_port};Database=chandelier_store_user;"
       ASPNETCORE_ENVIRONMENT: Release
     networks:
@@ -82,7 +82,7 @@ services:
     image: nginx:alpine3.22
     container_name: chandelier-store-nginx
     ports:
-      - 8100:8100
+      - "8100:8100"
     volumes:
       - './nginx.conf:/etc/nginx/nginx.conf'
     networks:
