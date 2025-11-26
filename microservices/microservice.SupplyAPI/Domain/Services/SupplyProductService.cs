@@ -5,8 +5,6 @@ using microservice.SupplyAPI.Domain.DTO.Responses;
 using microservice.SupplyAPI.Domain.Interfaces.DAO;
 using microservice.SupplyAPI.Domain.Interfaces.Services;
 using microservice.SupplyAPI.Domain.Models;
-using System.Reflection.Metadata;
-using System.Text.Json;
 
 namespace microservice.SupplyAPI.Domain.Services
 {
