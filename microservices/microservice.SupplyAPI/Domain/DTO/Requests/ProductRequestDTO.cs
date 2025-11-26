@@ -1,8 +1,7 @@
-﻿namespace microservice.SupplyAPI.Domain.DTO
+﻿namespace microservice.SupplyAPI.Domain.DTO.Requests
 {
-    public class ProductDTO
+    public class ProductRequestDTO
     {
-        public Guid Id { get; set; }
         public required string Article { get; set; }
         public required string Title { get; set; }
         public decimal Price { get; set; }

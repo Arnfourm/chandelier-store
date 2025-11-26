@@ -12,7 +12,6 @@ namespace microservices.CatalogAPI.Domain.Interfaces.Services
         Task<IEnumerable<ProductResponse>> GetListProductResponseByIds(List<Guid> ids);
         Task<Guid> CreateNewProduct(ProductRequest request);
         Task UpdateSingleProductById(Guid id, ProductRequest request);
-        Task UpdateSingleProductQuantityById(Guid id, int quantity);
         Task DeleteSingleProductById(Guid id);
     }
 }
