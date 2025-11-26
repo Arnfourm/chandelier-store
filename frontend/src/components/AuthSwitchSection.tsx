@@ -1,5 +1,5 @@
-import { Logo } from "../components/Logo";
-import { SwitchButton } from "../components/SwitchButton";
+import { Logo } from "./Logo";
+import { SwitchButton } from "./SwitchButton";
 
 interface AuthSwitchSectionProps {
     headingName: string;

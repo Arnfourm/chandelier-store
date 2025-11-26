@@ -1,4 +1,4 @@
-import { FooterContact } from "../components/FooterContact";
+import { FooterContact } from "./FooterContact";
 
 export function ContactsSection() {
     return (

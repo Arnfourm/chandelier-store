@@ -1,7 +1,7 @@
-import { Footer } from "../modules/Footer";
-import { Navbar } from "../modules/Navbar";
-import { Promo } from "../modules/Promo";
-import { Slider } from "../modules/Slider";
+import { Footer } from "../components/Footer";
+import { Navbar } from "../components/Navbar";
+import { Promo } from "../components/Promo";
+import { Slider } from "../components/Slider";
 
 export function Home() {
     return (
