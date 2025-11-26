@@ -15,9 +15,24 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
             _catalogDbContext = catalogDbContext;
         }
 
-        public async Task<List<Product>> GetProducts()
+        public async Task<List<Product>> GetProducts(string? sort)
         {
-            return await _catalogDbContext.Products
+            var query = _catalogDbContext.Products.AsQueryable();
+
+            switch (sort?.ToLower())
+            {
+                case "price-highest":
+                    query = query.OrderByDescending(productEntity => productEntity.Price);
+                    break;
+                case "price-lowest":
+                    query = query.OrderBy(productEntity => productEntity.Price);
+                    break;
+                default:
+                    query = query.OrderByDescending(productEntiy => productEntiy.AddedDate);
+                    break;
+            }
+
+            return await query
                 .Select(productEntity => new Product
                 (
                     productEntity.Id,

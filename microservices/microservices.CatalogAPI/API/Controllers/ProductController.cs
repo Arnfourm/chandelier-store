@@ -25,9 +25,9 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductResponse>>> GetProducts()
+        public async Task<ActionResult<IEnumerable<ProductResponse>>> GetProducts([FromQuery] string? order)
         {
-            IEnumerable<ProductResponse> response = await _productService.GetAllProducts();
+            IEnumerable<ProductResponse> response = await _productService.GetAllProducts(order);
 
             return Ok(response);
         }
