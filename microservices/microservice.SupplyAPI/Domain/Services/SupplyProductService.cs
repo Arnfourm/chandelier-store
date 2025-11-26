@@ -1,9 +1,12 @@
 ﻿using microservice.SupplyAPI.API.Contracts.Requests;
 using microservice.SupplyAPI.API.Contracts.Responses;
-using microservice.SupplyAPI.Domain.DTO;
+using microservice.SupplyAPI.Domain.DTO.Requests;
+using microservice.SupplyAPI.Domain.DTO.Responses;
 using microservice.SupplyAPI.Domain.Interfaces.DAO;
 using microservice.SupplyAPI.Domain.Interfaces.Services;
 using microservice.SupplyAPI.Domain.Models;
+using System.Reflection.Metadata;
+using System.Text.Json;
 
 namespace microservice.SupplyAPI.Domain.Services
 {
@@ -48,8 +51,8 @@ namespace microservice.SupplyAPI.Domain.Services
                         throw new Exception("Failed then tried to get request from Catalog service");
                     };
 
-                    List<ProductDTO> productResponse = await responseProducts.Content.ReadFromJsonAsync<List<ProductDTO>>()
-                        ?? new List<ProductDTO>();
+                    List<ProductResponseDTO> productResponse = await responseProducts.Content.ReadFromJsonAsync<List<ProductResponseDTO>>()
+                        ?? new List<ProductResponseDTO>();
 
                     products = productResponse
                         .Select(productDTO => new Product
@@ -88,22 +91,52 @@ namespace microservice.SupplyAPI.Domain.Services
 
         public async Task CreateNewSupplyProduct(SupplyProductRequest request)
         {
+            ProductRequestDTO productRequestDTO;
+
             using (HttpClientHandler handler = new HttpClientHandler())
             {
                 using (HttpClient httpClient = new HttpClient(handler))
                 {
-                    HttpResponseMessage productResponse = await httpClient.GetAsync($"{_catalogMicroservice}/Product/{request.ProductId}");
+                    HttpResponseMessage responseProduct = await httpClient.GetAsync($"{_catalogMicroservice}/Product/{request.ProductId}");
 
-                    if (!productResponse.IsSuccessStatusCode)
+                    if (!responseProduct.IsSuccessStatusCode)
                     {
                         throw new Exception($"Exception: product with id: {request.ProductId} doesn't exit");
                     }
+
+                    ProductResponseDTO productResponse = await responseProduct.Content.ReadFromJsonAsync<ProductResponseDTO>()
+                        ?? throw new Exception($"Exception: product with id: {request.ProductId} can't be null");
+
+                    productRequestDTO = new ProductRequestDTO
+                    {
+                        Article = productResponse.Article,
+                        Title = productResponse.Title,
+                        Price = productResponse.Price,
+                        Quantity = productResponse.Quantity + request.Quantity,
+                        ProductTypeId = productResponse.ProductType.Id,
+                        AddedDate = productResponse.AddedDate
+                    };
                 }
             }
 
             SupplyProduct newSupplyProduct = new SupplyProduct(request.SupplyId, request.ProductId, request.Quantity);
 
             await _supplyProductDAO.CreateSupplyProduct(newSupplyProduct);
+
+            using (HttpClientHandler handler = new HttpClientHandler())
+            {
+                using (HttpClient httpClient = new HttpClient(handler))
+                {
+                    HttpResponseMessage responsePut = await httpClient.PutAsJsonAsync($"{_catalogMicroservice}/Product/{request.ProductId}", productRequestDTO);
+
+                    if (!responsePut.IsSuccessStatusCode)
+                    {
+                        await DeleteSupplyProductByBothIds(request.SupplyId, request.ProductId);
+
+                        throw new Exception($"Exception: can't update price of product: {request.ProductId}");
+                    }
+                }
+            }
         }
 
         public async Task DeleteSupplyProductBySupplyId(Guid supplyId)

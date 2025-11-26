@@ -98,6 +98,7 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
                     .SetProperty(productEntity => productEntity.Article, product.GetArticle())
                     .SetProperty(productEntity => productEntity.Title, product.GetTitle())
                     .SetProperty(productEntity => productEntity.Price, product.GetPrice())
+                    .SetProperty(productEntity => productEntity.Quantity, product.GetQuantity())
                     .SetProperty(productEntity => productEntity.ProductTypeId, product.GetProductTypeId()));
 
             try
@@ -110,24 +111,6 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
             }
 
             return product.GetId();
-        }
-
-        // Возможно стоит убрать
-        public async Task UpdateProductQuantityById(Guid id, int quantity)
-        {
-            await _catalogDbContext.Products
-                .Where(productEntity => productEntity.Id == id)
-                .ExecuteUpdateAsync(productSetters => productSetters
-                    .SetProperty(productEntity => productEntity.Quantity, quantity));
-
-            try
-            {
-                await _catalogDbContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error while trying to update product quantity. Error message:\n{ex.Message}", ex);
-            }
         }
 
         public async Task DeleteProductById(Guid id)
