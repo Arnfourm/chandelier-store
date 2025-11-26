@@ -19,6 +19,35 @@ services:
     networks:
       - chandelier-store-network
 
+  gateway:
+    image: chandelier-store-gateway
+    container_name: chandelier-store-gate
+    build:
+      context: ./microservices/
+      dockerfile: ./microservices.ApiGateway/Dockerfile
+    ports:
+      - "9200:9200"
+    environment:
+      ASPNETCORE_HTTP_PORTS: 9200
+      ASPNETCORE_ENVIRONMENT: Release
+    networks: 
+      - chandelier-store-network
+
+  supplyAPI:
+    image: chandelier-store-supplyapi
+    container_name: chandelier-store-supply
+    build:
+      context: ./microservices/
+      dockerfile: ./microservice.SupplyAPI/Dockerfile
+    ports:
+      - "9210:9210"
+    environment:
+      ASPNETCORE_HTTP_PORTS: 9210
+      ConnectionStrings__DefaultConnection: "User ID=${database_user};Password=${database_password};Host=${database_host};Port=${database_port};Database=chandelier_store_supply;"
+      ASPNETCORE_ENVIRONMENT: Release
+    networks:
+      - chandelier-store-network
+
   catalogAPI:
     image: chandelier-store-catalogapi
     container_name: chandelier-store-catalog
@@ -26,12 +55,11 @@ services:
       context: ./microservices/
       dockerfile: ./microservices.CatalogAPI/Dockerfile
     ports:
-      - "5176:5176"
-      - "5178:5178"
+      - "9220:9220"
     environment:
-      ASPNETCORE_HTTP_PORTS: 5176
+      ASPNETCORE_HTTP_PORTS: 9220
       ConnectionStrings__DefaultConnection: "User ID=${database_user};Password=${database_password};Host=${database_host};Port=${database_port};Database=chandelier_store_catalog;"
-      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_ENVIRONMENT: Release
     networks:
       - chandelier-store-network
 
@@ -42,47 +70,34 @@ services:
       context: ./microservices/
       dockerfile: ./microservices.UserAPI/Dockerfile
     ports:
-      - "5166:5166"
-      - "5168:5168"
+      - "9230:9230"
     environment:
-      ASPNETCORE_HTTP_PORTS: 5166
+      ASPNETCORE_HTTP_PORTS: 9230
       ConnectionStrings__DefaultConnection: "User ID=${database_user};Password=${database_password};Host=${database_host};Port=${database_port};Database=chandelier_store_user;"
-      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_ENVIRONMENT: Release
     networks:
       - chandelier-store-network
 
-  supplyAPI:
-    image: chandelier-store-supplyapi
-    container_name: chandelier-store-supply
-    build:
-      context: ./microservices/
-      dockerfile: ./microservice.SupplyAPI/Dockerfile
+  nginx:
+    image: nginx:alpine3.22
+    container_name: chandelier-store-nginx
     ports:
-      - "5156:5156"
-      - "5158:5158"
-    environment:
-      ASPNETCORE_HTTP_PORTS: 5156
-      ConnectionStrings__DefaultConnection: "User ID=${database_user};Password=${database_password};Host=${database_host};Port=${database_port};Database=chandelier_store_supply;"
-      ASPNETCORE_ENVIRONMENT: Development
+      - "8100:8100"
+    volumes:
+      - './nginx.conf:/etc/nginx/nginx.conf'
     networks:
       - chandelier-store-network
 
-  # nginx:
-  #   image: nginx:alpine3.22
-  #   container_name: chandelier-store-nginx
-  #   ports:
-  #     - 80:80
-  #   volumes:
-  #     - './nginx.conf:/etc/nginx/nginx.conf'
-
-  # frontend:
-  #   image: chandelier-store-frontend
-  #   container_name: frontend
-  #   build:
-  #     context: ./frontend/
-  #     dockerfile: ./Dockerfile
-  #   ports:
-  #     - "5173:5173"
+  frontend:
+    image: chandelier-store-frontend
+    container_name: frontend
+    build:
+      context: ./frontend/
+      dockerfile: ./Dockerfile
+    ports:
+      - "5173:5173"
+    networks:
+      - chandelier-store-network
 
 volumes:
   postgres:

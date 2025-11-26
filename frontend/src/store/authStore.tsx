@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { authService } from "../services/AuthService";
+import { authService } from "../services/authService";
 import type { AuthResponse } from "../types/contracts/responses/AuthResponse";
 import type { UserRequest } from "../types/contracts/requests/UserRequest";
 
