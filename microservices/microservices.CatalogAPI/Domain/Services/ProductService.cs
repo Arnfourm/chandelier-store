@@ -25,9 +25,9 @@ public class ProductService : IProductService
         _deleteProductAttributeService = deleteProductAttributeService;
     }
 
-    public async Task<IEnumerable<ProductResponse>> GetAllProducts()
+    public async Task<IEnumerable<ProductResponse>> GetAllProducts(string? sort)
     {
-        List<Product> products = await _productDAO.GetProducts();
+        List<Product> products = await _productDAO.GetProducts(sort);
 
         List<int> productTypeIds = products.Select(product => product.GetProductTypeId()).ToList();
 
