@@ -21,14 +21,18 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
 
             switch (sort?.ToLower())
             {
-                case "price-highest":
+                case "price-down":
                     query = query.OrderByDescending(productEntity => productEntity.Price);
                     break;
-                case "price-lowest":
+                case "price-up":
                     query = query.OrderBy(productEntity => productEntity.Price);
                     break;
+                case "new":
+                    query = query.OrderByDescending(productEntity => productEntity.AddedDate);
+                    break;
+                // Сделать по популярности по популярности через параметр объекта (продаж в месяц)
                 default:
-                    query = query.OrderByDescending(productEntiy => productEntiy.AddedDate);
+                    query = query.OrderBy(productEntiy => productEntiy.Title.ToLower());
                     break;
             }
 
