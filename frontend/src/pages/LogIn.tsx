@@ -1,47 +1,40 @@
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
-import { FormField } from "../components/FormField";
-import { FormButton } from "../components/FormButton";
-import { AuthSwitchSection } from "../modules/AuthSwitchSection";
+import { useAuth } from "../context/AuthContext";
+import { AuthSwitchSection } from "../components/AuthSwitchSection";
+import { FormField } from "../components/UI-kit/FormField";
+import { FormButton } from "../components/UI-kit/FormButton";
+
+// Тестовый клиент: test@example.com, password123
+// Тестовый работник: empl@example.com, work111
+// Тестовый админ: admin@example.com, 54321
 
 export function LogIn() {
-    const { login } = useAuth();
-    const navigate = useNavigate();
-
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async (e: FormEvent) => {
+    const auth = useAuth();
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError(null);
-        try {
-            await login(email, password);
 
-            const role = JSON.parse(localStorage.getItem("userRole") || "null");
+        console.log("Отправляем данные формы для логина:", { email, password });
+        setLoading(true);
 
-            if (role === 1) navigate("/account");
-            else if (role === 2 || role === 3) navigate("/employee");
+        const userRole = await auth.login(email, password);
+        setLoading(false);
+
+        if (userRole !== null) {
+            console.log("Логин успешен. Роль пользователя:", userRole);
+
+            if (userRole === 1) navigate("/account");
+            else if (userRole === 2 || userRole === 3) navigate("/employee");
             else navigate("/");
-        } catch (err: unknown) {
-            if (err instanceof Error) {
-                setError(err.message);
-            } else if (typeof err === "object" && err !== null && "response" in err) {
-                const axiosError = err as { response?: { data?: string } };
-                setError(axiosError.response?.data || "Ошибка входа");
-            } else {
-                setError("Произошла неизвестная ошибка");
-            }
+        } else {
+            console.warn("Не удалось войти. Проверьте логин/пароль");
         }
-    };
-
-    const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setEmail(e.target.value);
-    };
-
-    const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setPassword(e.target.value);
     };
 
     return (
@@ -55,23 +48,21 @@ export function LogIn() {
             />
 
             <form
-                className="flex flex-col flex-1 items-center justify-center gap-y-[35px] text-center"
                 onSubmit={handleSubmit}
+                className="flex flex-col flex-1 items-center justify-center gap-y-[35px] text-center"
             >
                 <h1 className="text-4xl text-stone-900 font-bold">Войдите в аккаунт</h1>
                 <p className="w-[630px] mb-[25px] text-xl text-neutral-500">
                     Войдите в аккаунт, чтобы получить полный доступ к функционалу интернет-магазина
                 </p>
 
-                {error && <p className="text-red-500">{error}</p>}
-
                 <FormField
-                    label="Email"
+                    label="Логин"
                     name="email"
                     type="email"
                     placeholder="Введите ваш почтовый адрес"
                     value={email}
-                    onChange={handleEmailChange}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="w-[800px]"
                 />
 
@@ -81,11 +72,15 @@ export function LogIn() {
                     type="password"
                     placeholder="Введите ваш пароль"
                     value={password}
-                    onChange={handlePasswordChange}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="w-[800px]"
                 />
 
-                <FormButton name="Войти" type="submit" />
+                <FormButton
+                    type="submit"
+                    name={!loading ? "Войти" : "Входим..."}
+                    disabled={loading}
+                />
             </form>
         </div>
     );

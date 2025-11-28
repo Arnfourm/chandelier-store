@@ -1,4 +1,4 @@
-import { Logo } from "../components/Logo";
+import { Logo } from "./UI-kit/Logo";
 
 export function SocialMediaLinksSection() {
     return (

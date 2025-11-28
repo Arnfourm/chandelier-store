@@ -1,17 +1,24 @@
+// Разрешает доступ к странице только пользователю с определенной ролью
+
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
-import type { ReactNode } from "react";
+import { useAuth } from "../context/AuthContext";
 
-interface PrivateRouteProps {
-    children: ReactNode;
-    roles?: number[];
-}
+export function PrivateRoute({ children, allowedRoles = [] }) {
+    const { isAuthenticated, role, isInitializing } = useAuth();
 
-export function PrivateRoute({ children, roles }: PrivateRouteProps) {
-    const { user, role } = useAuth();
+    if (isInitializing) {
+        return <div>Загрузка...</div>;
+    }
 
-    if (!user) return <Navigate to="/login" replace />;
-    if (roles && !roles.includes(role!)) return <Navigate to="/" replace />;
+    if (!isAuthenticated) {
+        console.log("Неавторизован, редирект на /login");
+        return <Navigate to="/login" replace />;
+    }
 
-    return <>{children}</>;
+    if (allowedRoles.length && !allowedRoles.includes(role)) {
+        console.log("Нет роли для доступа, редирект на /login");
+        return <Navigate to="/login" replace />;
+    }
+
+    return children;
 }

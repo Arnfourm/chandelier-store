@@ -1,4 +1,4 @@
-import { FooterLink } from "../components/FooterLink";
+import { FooterLink } from "./FooterLink";
 
 export function AboutSection() {
     return (
