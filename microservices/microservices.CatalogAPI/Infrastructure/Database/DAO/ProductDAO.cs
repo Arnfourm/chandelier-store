@@ -46,13 +46,13 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
                     .Where(p => p.ProductType.Title.ToLower() == product_type.ToLower());
             }
 
-            //if (!string.IsNullOrWhiteSpace(room_type))
-            //{
-            //    query = query
-            //        .Where(p => _catalogDbContext.ProductAttributes
-            //        .Any(pa => pa.ProductId == p.Id && pa.Attribute.Title.ToLower() == room_type);
-
-            //}
+            if (!string.IsNullOrWhiteSpace(room_type))
+            {
+                query = query
+                    .Where(p => _catalogDbContext.ProductAttributes
+                        .Include(pa => pa.Attribute)
+                        .Any(pa => pa.ProductId == p.Id && pa.Attribute.Title.ToLower() == "room_type" && pa.Value.ToLower() == room_type.ToLower()));
+            }
 
 
             // == СОРТИРОВКА ==
