@@ -25,9 +25,27 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductResponse>>> GetProducts([FromQuery] string? order)
+        public async Task<ActionResult<IEnumerable<ProductResponse>>> GetProducts(
+                [FromQuery] string? sort,
+                [FromQuery] string? product_type,
+                [FromQuery] int? price_min,
+                [FromQuery] int? price_max,
+                [FromQuery] string? room_type,
+                [FromQuery] string? color,
+                [FromQuery] string? lamp_power,
+                [FromQuery] string? lamp_count
+            )
         {
-            IEnumerable<ProductResponse> response = await _productService.GetAllProducts(order);
+            IEnumerable<ProductResponse> response = await _productService.GetAllProducts(
+                    sort, 
+                    product_type, 
+                    price_min,
+                    price_max,
+                    room_type,
+                    color, 
+                    lamp_power, 
+                    lamp_count
+                );
 
             return Ok(response);
         }

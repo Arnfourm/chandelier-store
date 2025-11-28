@@ -15,10 +15,47 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
             _catalogDbContext = catalogDbContext;
         }
 
-        public async Task<List<Product>> GetProducts(string? sort)
+        public async Task<List<Product>> GetProducts(
+                string? sort,
+                string? product_type,
+                int? price_min,
+                int? price_max,
+                string? room_type,
+                string? color,
+                string? lamp_power,
+                string? lamp_count
+            )
         {
-            var query = _catalogDbContext.Products.AsQueryable();
+            var query = _catalogDbContext.Products.AsQueryable().AsNoTracking();
 
+            // == ФИЛЬТРАЦИЯ ==
+            if (price_min.HasValue)
+            {
+                query = query.Where(p => p.Price >= price_min);
+            }
+
+            if (price_max.HasValue)
+            {
+                query = query.Where(p => p.Price <= price_max);
+            }
+
+            if (!string.IsNullOrWhiteSpace(product_type))
+            {
+                query = query
+                    .Include(p => p.ProductType)
+                    .Where(p => p.ProductType.Title.ToLower() == product_type.ToLower());
+            }
+
+            //if (!string.IsNullOrWhiteSpace(room_type))
+            //{
+            //    query = query
+            //        .Where(p => _catalogDbContext.ProductAttributes
+            //        .Any(pa => pa.ProductId == p.Id && pa.Attribute.Title.ToLower() == room_type);
+
+            //}
+
+
+            // == СОРТИРОВКА ==
             switch (sort?.ToLower())
             {
                 case "price-down":
@@ -35,6 +72,7 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
                     query = query.OrderBy(productEntiy => productEntiy.Title.ToLower());
                     break;
             }
+
 
             return await query
                 .Select(productEntity => new Product
