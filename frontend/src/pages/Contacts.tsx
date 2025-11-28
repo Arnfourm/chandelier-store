@@ -1,11 +1,11 @@
 import { Contact } from "../components/Contact";
 import { Footer } from "../components/Footer";
-import { Navbar } from "../components/Navbar";
+import { Header } from "../components/Header";
 
 export function Contacts() {
     return (
         <>
-            <Navbar />
+            <Header />
             <h1 className="uppercase ml-[100px] mt-10 text-5xl">Контакты</h1>
             <div className="pl-[400px] pr-[400px] flex justify-between">
                 <Contact label={"Телефон"} info={"+7 (910) 888-88-88"} />
