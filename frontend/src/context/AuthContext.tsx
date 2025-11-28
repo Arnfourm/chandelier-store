@@ -1,6 +1,14 @@
-// src/auth/AuthContext.jsx
+/* 
+Контекст авторизации 
+Глобальное хранилище данных для авторизации (или полученные после нее) - токены, информация о пользователе...
+
+AuthProvider - сам склад, из которого достаются данные при помощи хука useAuth
+useEffect - хук, который инициализирует контекст при загрузке страницы
++ методы для авторизации
+*/
+
 import { createContext, useContext, useState, useEffect } from "react";
-import { saveAuth, getAuth, clearAuth } from "./authStorage";
+import { saveAuth, getAuth, clearAuth } from "../storage/AuthStorage";
 
 const AuthContext = createContext(null);
 
@@ -11,28 +19,68 @@ export function useAuth() {
 export function AuthProvider({ children }) {
     const [accessToken, setAccessToken] = useState(null);
     const [refreshToken, setRefreshToken] = useState(null);
-    const [roles, setRoles] = useState([]);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+    const [role, setRole] = useState(null);
+    const [email, setEmail] = useState(null);
+    const [user, setUser] = useState(null);
+
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isInitializing, setIsInitializing] = useState(true);
+
+    const fetchUserProfile = async (token, userEmail) => {
+        if (!userEmail || !token) {
+            console.log("Нет email или токена для профиля");
+            return;
+        }
+
+        try {
+            const resUser = await fetch(
+                `http://localhost:9230/api/Users/User/${encodeURIComponent(userEmail)}`,
+                {
+                    method: "GET",
+                    headers: {
+                        accept: "text/plain",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            if (resUser.ok) {
+                const userDataString = await resUser.text();
+                const userData = JSON.parse(userDataString);
+                setUser({
+                    email: userData.email,
+                    name: userData.name,
+                    surname: userData.surname,
+                    role: userData.userRole,
+                    profile: userData,
+                });
+                setRole(userData.userRole);
+            } else {
+                console.error(resUser.status, await resUser.text());
+            }
+        } catch (err) {
+            console.error("Ошибка профиля:", err);
+        }
+    };
 
     useEffect(() => {
         const auth = getAuth();
         if (auth) {
-            console.log("Инициализация контекста из localStorage:", auth);
             setAccessToken(auth.accessToken);
             setRefreshToken(auth.refreshToken);
+            setIsAuthenticated(true);
 
             const storedRole = localStorage.getItem("userRole");
-            if (storedRole) setRoles([parseInt(storedRole, 10)]);
+            if (storedRole) setRole(parseInt(storedRole, 10));
 
-            setIsAuthenticated(true);
+            const storedEmail = localStorage.getItem("userEmail");
+            fetchUserProfile(auth.accessToken, storedEmail);
         }
         setIsInitializing(false);
     }, []);
 
     const login = async (email, password) => {
-        console.log("Попытка логина с", email, password);
         try {
             const res = await fetch("http://localhost:9230/api/Users/Auth/LogIn", {
                 method: "POST",
@@ -40,22 +88,19 @@ export function AuthProvider({ children }) {
                 body: JSON.stringify({ email, password }),
             });
 
-            if (res.status === 401) {
-                console.warn("Неверные данные для логина");
-                return null;
-            }
+            if (res.status === 401) return null;
 
             const data = await res.json();
-            console.log("Ответ от сервера логина:", data);
-
             setAccessToken(data.accessToken);
             setRefreshToken(data.refreshToken);
-            setRoles([data.userRole]);
+            setRole(data.userRole);
             setIsAuthenticated(true);
 
-            saveAuth({ accessToken: data.accessToken, refreshToken: data.refreshToken });
-            localStorage.setItem("userRole", data.userRole);
+            await fetchUserProfile(data.accessToken, email);
 
+            saveAuth({ accessToken: data.accessToken, refreshToken: data.refreshToken });
+            localStorage.setItem("userEmail", email);
+            localStorage.setItem("userRole", data.userRole);
             return data.userRole;
         } catch (err) {
             console.error("Ошибка логина:", err);
@@ -64,19 +109,19 @@ export function AuthProvider({ children }) {
     };
 
     const logout = () => {
-        console.log("Выход пользователя");
         setAccessToken(null);
         setRefreshToken(null);
-        setRoles([]);
+        setEmail(null);
+        setRole(null);
+        setUser(null);
         setIsAuthenticated(false);
         clearAuth();
+        localStorage.removeItem("userEmail");
         localStorage.removeItem("userRole");
     };
 
     const refresh = async () => {
-        console.log("Попытка обновления токена");
         if (!refreshToken) return false;
-
         try {
             const res = await fetch("http://localhost:9230/api/Users/Auth/RefreshToken", {
                 method: "POST",
@@ -85,25 +130,23 @@ export function AuthProvider({ children }) {
             });
 
             if (!res.ok) {
-                console.warn("Не удалось обновить токен, делаем logout");
                 logout();
                 return false;
             }
 
             const data = await res.json();
-            console.log("Обновленные токены:", data);
-
             setAccessToken(data.accessToken);
             setRefreshToken(data.refreshToken);
-            setRoles([data.userRole]);
+            setRole(data.userRole);
             setIsAuthenticated(true);
+
+            await fetchUserProfile(data.accessToken, email);
 
             saveAuth({ accessToken: data.accessToken, refreshToken: data.refreshToken });
             localStorage.setItem("userRole", data.userRole);
-
             return true;
         } catch (err) {
-            console.error("Ошибка обновления токена:", err);
+            console.error("Ошибка refresh:", err);
             logout();
             return false;
         }
@@ -112,7 +155,9 @@ export function AuthProvider({ children }) {
     const value = {
         accessToken,
         refreshToken,
-        roles,
+        role,
+        email,
+        user,
         isAuthenticated,
         isInitializing,
         login,

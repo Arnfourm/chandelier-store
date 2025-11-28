@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import { Logo } from "./Logo";
 import { LoginButton } from "./LoginButton";
-import { useAuth } from "../auth/AuthContext";
+import { useAuth } from "../context/AuthContext";
 
 export function Navbar() {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, user, role } = useAuth();
 
     return (
         <nav className="h-20 flex items-center justify-between border-b-2 border-b-neutral-200">
@@ -28,16 +28,15 @@ export function Navbar() {
                 </button>
             )}
 
-            {/* {isAuthenticated ? (
-                user.role === 1 ? (
-                    <Link to="/account">{user.name}</Link>
-                ) : user.role === 2 || user.role === 3 ? (
-                    <Link to="/employee">{user.name}</Link>
+            {isAuthenticated ? (
+                role === 1 ? (
+                    <Link to="/account">{user?.name}</Link>
+                ) : role === 2 || role === 3 ? (
+                    <Link to="/employee">{user?.name}</Link>
                 ) : null
             ) : (
-                <LoginButton name="Войти" ref="/login" />
-            )} */}
-            <LoginButton name="Войти" ref="/login" />
+                <Link to="/login">Войти</Link>
+            )}
         </nav>
     );
 }

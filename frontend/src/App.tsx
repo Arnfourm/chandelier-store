@@ -7,8 +7,8 @@ import { Registration } from "./pages/Registration";
 import { UserAccount } from "./pages/UserAccount";
 import { AdminPanel } from "./pages/AdminPanel";
 
-import { PrivateRoute } from "./auth/PrivateRoute";
-import { AuthProvider } from "./auth/AuthContext";
+import { PrivateRoute } from "./components/PrivateRoute";
+import { AuthProvider } from "./context/AuthContext";
 
 function AppRoutes() {
     return (
@@ -23,7 +23,7 @@ function AppRoutes() {
             <Route
                 path="/account"
                 element={
-                    <PrivateRoute roles={[1]}>
+                    <PrivateRoute allowedRoles={[1]}>
                         <UserAccount />
                     </PrivateRoute>
                 }
@@ -32,7 +32,7 @@ function AppRoutes() {
             <Route
                 path="/employee"
                 element={
-                    <PrivateRoute roles={[2, 3]}>
+                    <PrivateRoute allowedRoles={[2, 3]}>
                         <AdminPanel />
                     </PrivateRoute>
                 }

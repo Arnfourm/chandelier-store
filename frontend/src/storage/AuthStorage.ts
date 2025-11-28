@@ -1,4 +1,5 @@
-// Хранилище токенов
+// Методы, связанные с локальным хранилищем, для работы с токенами
+
 export function saveAuth({ accessToken, refreshToken }) {
     console.log("Сохраняем токены в localStorage");
     localStorage.setItem("accessToken", accessToken);
