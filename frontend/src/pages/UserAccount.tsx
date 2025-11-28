@@ -1,4 +1,4 @@
-import { Logo } from "../components/Logo";
+import { Logo } from "../components/UI-kit/Logo";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 

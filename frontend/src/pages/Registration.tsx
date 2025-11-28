@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { AuthSwitchSection } from "../components/AuthSwitchSection";
+import { FormField } from "../components/UI-kit/FormField";
+import { FormButton } from "../components/UI-kit/FormButton";
 
 export function Registration() {
     const [name, setName] = useState("");
@@ -18,14 +20,6 @@ export function Registration() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-
-        console.log("Отправка данных регистрации:", {
-            name,
-            surname,
-            birthday,
-            email,
-            password,
-        });
 
         try {
             const res = await fetch("http://localhost:9230/api/Users/Auth/SignUp", {
@@ -69,8 +63,9 @@ export function Registration() {
             >
                 <h1 className="text-4xl text-stone-900 font-bold">Создайте новый аккаунт</h1>
 
-                <div className="w-[800px] flex gap-x-4">
-                    <input
+                <div className="w-[800px] flex">
+                    <FormField
+                        label="Имя"
                         name="name"
                         type="text"
                         placeholder="Введите ваше имя"
@@ -79,7 +74,8 @@ export function Registration() {
                         className="w-[300px]"
                     />
 
-                    <input
+                    <FormField
+                        label="Фамилия"
                         name="surname"
                         type="text"
                         placeholder="Введите вашу фамилию"
@@ -89,24 +85,28 @@ export function Registration() {
                     />
                 </div>
 
-                <input
+                <FormField
+                    label="Дата рождения"
                     name="birthday"
                     type="date"
+                    placeholder={undefined}
                     value={birthday}
                     onChange={(e) => setBirthday(e.target.value)}
                     className="w-[800px]"
                 />
 
-                <input
+                <FormField
+                    label="Email"
                     name="email"
                     type="email"
-                    placeholder="Введите ваш почтовый адрес"
+                    placeholder="Введите ваш почтовый адрес (логин)"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-[800px]"
                 />
 
-                <input
+                <FormField
+                    label="Пароль"
                     name="password"
                     type="password"
                     placeholder="Введите ваш пароль"
@@ -115,9 +115,11 @@ export function Registration() {
                     className="w-[800px]"
                 />
 
-                <button type="submit" disabled={loading}>
-                    {loading ? "Создаём аккаунт..." : "Зарегистрироваться"}
-                </button>
+                <FormButton
+                    type="submit"
+                    name={loading ? "Создаём аккаунт..." : "Зарегистрироваться"}
+                    disabled={loading}
+                />
             </form>
 
             <AuthSwitchSection

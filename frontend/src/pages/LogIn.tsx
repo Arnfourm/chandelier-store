@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { AuthSwitchSection } from "../components/AuthSwitchSection";
+import { FormField } from "../components/UI-kit/FormField";
+import { FormButton } from "../components/UI-kit/FormButton";
 
 // Тестовый клиент: test@example.com, password123
 // Тестовый работник: empl@example.com, work111
@@ -54,7 +56,8 @@ export function LogIn() {
                     Войдите в аккаунт, чтобы получить полный доступ к функционалу интернет-магазина
                 </p>
 
-                <input
+                <FormField
+                    label="Логин"
                     name="email"
                     type="email"
                     placeholder="Введите ваш почтовый адрес"
@@ -63,7 +66,8 @@ export function LogIn() {
                     className="w-[800px]"
                 />
 
-                <input
+                <FormField
+                    label="Пароль"
                     name="password"
                     type="password"
                     placeholder="Введите ваш пароль"
@@ -72,9 +76,11 @@ export function LogIn() {
                     className="w-[800px]"
                 />
 
-                <button type="submit" disabled={loading}>
-                    {loading ? "Входим..." : "Войти"}
-                </button>
+                <FormButton
+                    type="submit"
+                    name={!loading ? "Войти" : "Входим..."}
+                    disabled={loading}
+                />
             </form>
         </div>
     );

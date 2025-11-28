@@ -1,6 +1,4 @@
-import { Link } from "react-router-dom";
-import { Logo } from "./Logo";
-import { LoginButton } from "./LoginButton";
+import { Logo } from "./UI-kit/Logo";
 import { useAuth } from "../context/AuthContext";
 import { ProfileButton } from "./UI-kit/ProfileButton";
 import { CartButton } from "./UI-kit/CartButton";

@@ -1,4 +1,4 @@
-import { Logo } from "./Logo";
+import { Logo } from "./UI-kit/Logo";
 import { SwitchButton } from "./SwitchButton";
 
 interface AuthSwitchSectionProps {
