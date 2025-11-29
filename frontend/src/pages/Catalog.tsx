@@ -2,7 +2,26 @@ import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
 import { ProductCart } from "../components/UI-kit/ProductCart";
 
+const products = async () => {
+    try {
+        const res = await fetch("http://localhost:9220/api/Catalog/Product", {
+            method: "GET",
+            headers: {
+                accept: "text/plain",
+            },
+        });
+
+        if (res.ok) {
+            console.log(await res.text());
+        }
+    } catch (err) {
+        console.log(err);
+    }
+};
+
 export function Catalog() {
+    products();
+
     return (
         <>
             <Header />
@@ -130,7 +149,12 @@ export function Catalog() {
                         </div>
                     </section>
                     <section>
-                        <ProductCart />
+                        <ProductCart
+                            id={1}
+                            name="LED Светильник"
+                            price={2500}
+                            imgUrl="path/to/image.jpg"
+                        />
                     </section>
                     <section className="w-full h-20 pl-[100px] pr-[100px] flex justify-between items-center border border-gray-300 text-2xl">
                         <button className="text-4xl text-gray-400">&#8249;</button>

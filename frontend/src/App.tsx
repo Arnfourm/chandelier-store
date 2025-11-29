@@ -9,6 +9,7 @@ import { AdminPanel } from "./pages/AdminPanel";
 
 import { PrivateRoute } from "./components/PrivateRoute";
 import { AuthProvider } from "./context/AuthContext";
+import { ShoppingCartProvider } from "./context/ShoppingCartContext";
 
 function AppRoutes() {
     return (
@@ -45,7 +46,9 @@ export default function App() {
     return (
         <BrowserRouter>
             <AuthProvider>
-                <AppRoutes />
+                <ShoppingCartProvider>
+                    <AppRoutes />
+                </ShoppingCartProvider>
             </AuthProvider>
         </BrowserRouter>
     );

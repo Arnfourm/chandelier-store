@@ -66,7 +66,7 @@ export function AuthProvider({ children }) {
 
     useEffect(() => {
         const auth = getAuth();
-        if (auth) {
+        if (auth && localStorage.getItem("userEmail")) {
             setAccessToken(auth.accessToken);
             setRefreshToken(auth.refreshToken);
             setIsAuthenticated(true);
@@ -94,13 +94,15 @@ export function AuthProvider({ children }) {
             setAccessToken(data.accessToken);
             setRefreshToken(data.refreshToken);
             setRole(data.userRole);
-            setIsAuthenticated(true);
 
             await fetchUserProfile(data.accessToken, email);
 
             saveAuth({ accessToken: data.accessToken, refreshToken: data.refreshToken });
             localStorage.setItem("userEmail", email);
             localStorage.setItem("userRole", data.userRole);
+
+            setIsAuthenticated(true);
+
             return data.userRole;
         } catch (err) {
             console.error("Ошибка логина:", err);

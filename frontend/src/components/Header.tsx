@@ -12,7 +12,7 @@ export function Header() {
             <Logo className="pl-[100px]" />
             <Navbar />
             <div className="flex">
-                {isAuthenticated ? <CartButton /> : null}
+                {isAuthenticated && <CartButton />}
 
                 {isAuthenticated ? (
                     role === 1 ? (
