@@ -1,18 +1,9 @@
 import { useShoppingCart } from "../../context/ShoppingCartContext";
-import { useAuth } from "../../context/AuthContext"; // твой контекст авторизации
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { formatCurrency } from "../../utilities/formatCurrency";
 
-import storeItems from "../../data/items.json"; // временно
-
-type ProductCartProps = {
-    id: number;
-    name: string;
-    price: number;
-    imgUrl: string;
-};
-
-export function ProductCart({ id, name, price, imgUrl }: ProductCartProps) {
+export function ProductCard({ id, name, article, price, imgUrl }) {
     const { getItemQuantity, increaseCartQuantity, decreaseCartQuantity, removeFromCart } =
         useShoppingCart();
     const { isAuthenticated } = useAuth();
@@ -29,20 +20,24 @@ export function ProductCart({ id, name, price, imgUrl }: ProductCartProps) {
     };
 
     return (
-        <div className="relative flex flex-col items-start text-center h-[550px] max-w-[520px] border-2 border-gray-300">
+        <div className="relative flex flex-col items-start text-center min-h-[550px] min-w-[520px] border-2 border-gray-300">
             <img
                 src="images/chandelier-cart-test.png"
-                alt={name}
+                alt="Product image"
                 className="w-full h-[300px] self-center object-contain relative z-1"
             />
 
             <div className="w-full relative z-1 flex justify-between items-start mt-5 pl-[30px] pr-[30px]">
                 <div className="flex-1 flex flex-col items-start">
-                    <h3 className="text-2xl mb-1">Название</h3>
-                    <p className="w-[30px] h-[30px] text-gray-400 font-medium text-xl">Модель</p>
+                    <h3 className="text-2xl mb-1">{name}</h3>
+                    <p className="w-full text-gray-400 font-medium text-xl text-start">{article}</p>
                 </div>
                 <button>
-                    <img src="icons/favourite-icon.png" alt="Star icon" />
+                    <img
+                        src="icons/favourite-icon.png"
+                        alt="Star icon"
+                        className="w-[30px] h-[30px]"
+                    />
                 </button>
             </div>
             <p className="text-xl ml-[30px] mt-[15px]">{formatCurrency(price)}</p>
