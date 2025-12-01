@@ -1,5 +1,6 @@
 using microservices.CatalogAPI.API.Contracts.Requests;
 using microservices.CatalogAPI.API.Contracts.Responses;
+using microservices.CatalogAPI.API.Filters;
 using microservices.CatalogAPI.Domain.Interfaces.Services;
 
 using Microsoft.AspNetCore.Mvc;
@@ -25,9 +26,12 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductResponse>>> GetProducts([FromQuery] string? order)
+        public async Task<ActionResult<IEnumerable<ProductResponse>>> GetProducts(
+                [FromQuery] string? sort,
+                [FromQuery] ProductFilter filters
+            )
         {
-            IEnumerable<ProductResponse> response = await _productService.GetAllProducts(order);
+            IEnumerable<ProductResponse> response = await _productService.GetAllProducts(sort, filters);
 
             return Ok(response);
         }

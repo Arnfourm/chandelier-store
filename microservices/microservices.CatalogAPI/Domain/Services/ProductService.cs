@@ -1,5 +1,6 @@
 using microservices.CatalogAPI.API.Contracts.Requests;
 using microservices.CatalogAPI.API.Contracts.Responses;
+using microservices.CatalogAPI.API.Filters;
 using microservices.CatalogAPI.Domain.Interfaces.DAO;
 using microservices.CatalogAPI.Domain.Interfaces.Services;
 using microservices.CatalogAPI.Domain.Models;
@@ -14,7 +15,7 @@ public class ProductService : IProductService
     private readonly IDeleteProductAttributeService _deleteProductAttributeService;
 
     public ProductService(
-        IProductDAO productDAO, 
+        IProductDAO productDAO,
         IProductTypeService productTypeService,
         IDeleteProductAttributeService deleteProductAttributeService
     )
@@ -25,16 +26,19 @@ public class ProductService : IProductService
         _deleteProductAttributeService = deleteProductAttributeService;
     }
 
-    public async Task<IEnumerable<ProductResponse>> GetAllProducts(string? sort)
+    public async Task<IEnumerable<ProductResponse>> GetAllProducts(
+            string? sort,
+            ProductFilter filters
+        )
     {
-        List<Product> products = await _productDAO.GetProducts(sort);
+        List<Product> products = await _productDAO.GetProducts(sort, filters);
 
         List<int> productTypeIds = products.Select(product => product.GetProductTypeId()).ToList();
 
         IEnumerable<ProductTypeResponse> productTypes = await _productTypeService.GetListProductTypeResponseByIds(productTypeIds);
 
         var productTypeDict = productTypes.ToDictionary(productType => productType.Id);
-        
+
         IEnumerable<ProductResponse> response = products.Select(product =>
         {
             ProductTypeResponse productTypeResponse = productTypeDict[product.GetProductTypeId()];

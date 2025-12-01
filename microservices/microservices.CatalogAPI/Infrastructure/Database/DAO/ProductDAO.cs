@@ -1,4 +1,5 @@
-﻿using microservices.CatalogAPI.Domain.Interfaces.DAO;
+﻿using microservices.CatalogAPI.API.Filters;
+using microservices.CatalogAPI.Domain.Interfaces.DAO;
 using microservices.CatalogAPI.Domain.Models;
 using microservices.CatalogAPI.Infrastructure.Database.Contexts;
 using microservices.CatalogAPI.Infrastructure.Database.Entities;
@@ -15,26 +16,16 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
             _catalogDbContext = catalogDbContext;
         }
 
-        public async Task<List<Product>> GetProducts(string? sort)
+        public async Task<List<Product>> GetProducts(
+                string? sort,
+                ProductFilter filters
+            )
         {
-            var query = _catalogDbContext.Products.AsQueryable();
-
-            switch (sort?.ToLower())
-            {
-                case "price-down":
-                    query = query.OrderByDescending(productEntity => productEntity.Price);
-                    break;
-                case "price-up":
-                    query = query.OrderBy(productEntity => productEntity.Price);
-                    break;
-                case "new":
-                    query = query.OrderByDescending(productEntity => productEntity.AddedDate);
-                    break;
-                // Сделать по популярности по популярности через параметр объекта (продаж в месяц)
-                default:
-                    query = query.OrderBy(productEntiy => productEntiy.Title.ToLower());
-                    break;
-            }
+            var query = _catalogDbContext.Products
+                .Filter(filters, _catalogDbContext)
+                .Sort(sort)
+                .AsQueryable()
+                .AsNoTracking();
 
             return await query
                 .Select(productEntity => new Product

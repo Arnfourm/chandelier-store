@@ -1,10 +1,11 @@
-﻿using microservices.CatalogAPI.Domain.Models;
+﻿using microservices.CatalogAPI.API.Filters;
+using microservices.CatalogAPI.Domain.Models;
 
 namespace microservices.CatalogAPI.Domain.Interfaces.DAO
 {
     public interface IProductDAO
     {
-        Task<List<Product>> GetProducts(string? sort);
+        Task<List<Product>> GetProducts(string? sort, ProductFilter filters);
         Task<Product> GetProductById(Guid id);
         Task<List<Product>> GetProductsByIds(List<Guid> ids);
         Task<Guid> CreateProduct(Product product);
