@@ -18,12 +18,14 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
 
         public async Task<List<Product>> GetProducts(
                 string? sort,
-                ProductFilter filters
+                ProductFilter filters,
+                string? search
             )
         {
             var query = _catalogDbContext.Products
                 .Filter(filters, _catalogDbContext)
                 .Sort(sort)
+                .Search(search)
                 .AsQueryable()
                 .AsNoTracking();
 
