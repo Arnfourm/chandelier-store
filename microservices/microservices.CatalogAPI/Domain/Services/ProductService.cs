@@ -28,10 +28,11 @@ public class ProductService : IProductService
 
     public async Task<IEnumerable<ProductResponse>> GetAllProducts(
             string? sort,
-            ProductFilter filters
+            ProductFilter filters,
+            string? search
         )
     {
-        List<Product> products = await _productDAO.GetProducts(sort, filters);
+        List<Product> products = await _productDAO.GetProducts(sort, filters, search);
 
         List<int> productTypeIds = products.Select(product => product.GetProductTypeId()).ToList();
 

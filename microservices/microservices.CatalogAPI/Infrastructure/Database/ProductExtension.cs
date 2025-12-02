@@ -106,7 +106,7 @@ namespace microservices.CatalogAPI.Infrastructure.Database
                 case "new":
                     query = query.OrderByDescending(productEntity => productEntity.AddedDate);
                     break;
-                // Сделать по популярности по популярности через параметр объекта (продаж в месяц)
+                // Made as "Popular" via special attribute in Product model "Sells per month"
                 default:
                     query = query.OrderBy(productEntiy => productEntiy.Title.ToLower());
                     break;
@@ -115,9 +115,20 @@ namespace microservices.CatalogAPI.Infrastructure.Database
             return query;
         }
 
+        // Searc by product title (upgrade in the future)
+        public static IQueryable<ProductEntity> Search(this IQueryable<ProductEntity> query, string? search)
+        {
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(p => p.Title.ToLower().Contains(search.ToLower()));
+            }
+
+            return query;
+        }
+
         private static (int? min, int? max) ParseRange(string range)
         {
-            if (string.IsNullOrEmpty(range) || !range.Contains("-"))
+            if (string.IsNullOrWhiteSpace(range) || !range.Contains("-"))
             {
                 return (null, null);
             }

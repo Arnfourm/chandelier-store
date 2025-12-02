@@ -28,10 +28,11 @@ namespace microservices.CatalogAPI.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductResponse>>> GetProducts(
                 [FromQuery] string? sort,
+                [FromQuery] string? search,
                 [FromQuery] ProductFilter filters
             )
         {
-            IEnumerable<ProductResponse> response = await _productService.GetAllProducts(sort, filters);
+            IEnumerable<ProductResponse> response = await _productService.GetAllProducts(sort, filters, search);
 
             return Ok(response);
         }
@@ -44,7 +45,7 @@ namespace microservices.CatalogAPI.API.Controllers
             return Ok(response);
         }
 
-        // Возможно стоит сделать через метод GetProducts, то есть передавать ids, проверять и запрашивать
+        // Perhabs needs to remove method and move get by several ids with main method GetProducts()
         [HttpGet("ByIds")]
         public async Task<ActionResult<IEnumerable<ProductResponse>>> GetProductsByIds([FromQuery] List<Guid> ids)
         {
