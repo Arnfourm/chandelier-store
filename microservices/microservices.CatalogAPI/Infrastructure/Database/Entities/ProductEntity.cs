@@ -23,9 +23,6 @@ namespace microservices.CatalogAPI.Infrastructure.Database.Entities
 
         public int Quantity { get; set; }
 
-        // [Required]
-        // public required string mainImgPath { get; set; }
-
         public int? LampPower { get; set; }
 
         public int? LampCount { get; set; }
@@ -35,6 +32,8 @@ namespace microservices.CatalogAPI.Infrastructure.Database.Entities
 
         [ForeignKey("ProductTypeId")]
         public ProductTypeEntity? ProductType { get; set; }
+
+        public string? MainImgPath { get; set; }
 
         [Required]
         public DateOnly AddedDate { get; set; }

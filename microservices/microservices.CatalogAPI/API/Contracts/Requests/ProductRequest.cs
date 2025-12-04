@@ -8,6 +8,7 @@ namespace microservices.CatalogAPI.API.Contracts.Requests
         int Quantity,
         int? LampPower,
         int? LampCount,
-        int ProductTypeId
+        int ProductTypeId,
+        IFormFile? Image
     );
 }

@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using microservices.CatalogAPI.API.Contracts.Requests;
 using microservices.CatalogAPI.API.Contracts.Responses;
 using microservices.CatalogAPI.API.Filters;
@@ -14,16 +15,20 @@ public class ProductService : IProductService
     private readonly IProductTypeService _productTypeService;
     private readonly IDeleteProductAttributeService _deleteProductAttributeService;
 
+    private readonly IWebHostEnvironment _env;
     public ProductService(
         IProductDAO productDAO,
         IProductTypeService productTypeService,
-        IDeleteProductAttributeService deleteProductAttributeService
+        IDeleteProductAttributeService deleteProductAttributeService,
+        IWebHostEnvironment env
     )
     {
         _productDAO = productDAO;
 
         _productTypeService = productTypeService;
         _deleteProductAttributeService = deleteProductAttributeService;
+
+        _env = env;
     }
 
     public async Task<IEnumerable<ProductResponse>> GetAllProducts(
@@ -53,6 +58,7 @@ public class ProductService : IProductService
                 product.GetLampPower(),
                 product.GetLampCount(),
                 productTypeResponse,
+                product.GetMainImgPath(),
                 product.GetAddedDate()
             );
         });
@@ -83,6 +89,7 @@ public class ProductService : IProductService
             product.GetLampPower(),
             product.GetLampCount(),
             productTypeResponse,
+            product.GetMainImgPath(),
             product.GetAddedDate()
         );
 
@@ -112,6 +119,7 @@ public class ProductService : IProductService
                 product.GetLampPower(),
                 product.GetLampCount(),
                 productTypeResponse,
+                product.GetMainImgPath(),
                 product.GetAddedDate()
             );
         });
@@ -123,6 +131,8 @@ public class ProductService : IProductService
     {
         ProductType productType = await _productTypeService.GetSingleProductTypeById(request.ProductTypeId);
 
+        string? imagePath = await ResolveImage(request);
+
         Product newProduct = new Product(
             request.Article,
             request.Title,
@@ -131,6 +141,7 @@ public class ProductService : IProductService
             request.LampPower,
             request.LampCount,
             productType.GetId(),
+            imagePath,
             DateOnly.FromDateTime(DateTime.Now)
         );
 
@@ -142,6 +153,9 @@ public class ProductService : IProductService
     public async Task UpdateSingleProductById(Guid id, ProductRequest request)
     {
         ProductType productType = await _productTypeService.GetSingleProductTypeById(request.ProductTypeId);
+        Product product = await GetSingleProductById(id);
+
+        string? imagePath = await ResolveImage(request);
 
         Product updateProduct = new Product
         (
@@ -153,7 +167,8 @@ public class ProductService : IProductService
             request.LampPower,
             request.LampCount,
             productType.GetId(),
-            DateOnly.FromDateTime(DateTime.Now)
+            imagePath,
+            product.GetAddedDate()
         );
 
         await _productDAO.UpdateProduct(updateProduct);
@@ -164,5 +179,46 @@ public class ProductService : IProductService
         await _deleteProductAttributeService.DeleteListProductAttributesByProductId(id);
 
         await _productDAO.DeleteProductById(id);
+    }
+
+    private async Task<string?> ResolveImage(ProductRequest request)
+    {        
+        if (request.Image != null && request.Image.Length > 0)
+        { 
+            string[] extentionsList = [".png", ".jpg", ".jpeg"];
+            string imagesDir = "images";
+            string imageFilename = request.Image.FileName.ToLower();
+
+            if (!extentionsList.Contains(Path.GetExtension(imageFilename)))
+            {
+                throw new ValidationException("Image should be with extension .png, .jpg or .jpeg");
+            }
+
+            var uploadDir = Path.Combine(_env.WebRootPath, imagesDir);
+            string filename = $"{request.Article}-{imageFilename}";
+                
+            var filePath = Path.Combine(uploadDir, filename);
+
+            if (!File.Exists(filePath))
+            {
+                using (Stream fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    try
+                    {
+                        await request.Image.CopyToAsync(fileStream);
+                    } 
+                    catch (Exception ex)
+                    {
+                        throw new ArgumentException("Exception while saving image to server: ", ex);
+                    }
+                }
+            }
+
+            return Path.Combine(imagesDir, filename).Replace("\\", "/");   
+        }
+        else
+        {
+            return null;
+        }
     }
 }

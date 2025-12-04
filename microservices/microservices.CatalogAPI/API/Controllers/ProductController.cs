@@ -55,7 +55,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Guid>> CreateProduct([FromBody] ProductRequest request)
+        public async Task<ActionResult<Guid>> CreateProduct([FromForm] ProductRequest request)
         {
             Guid newProductId = await _productService.CreateNewProduct(request);
 
@@ -63,7 +63,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpPut("{id:Guid}")]
-        public async Task<ActionResult> UpdateProduct(Guid id, [FromBody] ProductRequest request)
+        public async Task<ActionResult> UpdateProduct(Guid id, [FromForm] ProductRequest request)
         {
             await _productService.UpdateSingleProductById(id, request);
 

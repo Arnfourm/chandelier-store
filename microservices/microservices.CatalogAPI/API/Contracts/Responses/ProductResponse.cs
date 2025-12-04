@@ -10,6 +10,7 @@ namespace microservices.CatalogAPI.API.Contracts.Responses
         int? LampPower,
         int? LampCount,
         ProductTypeResponse ProductType,
+        string? MainImgPath,
         DateOnly AddedDate
     );
 }

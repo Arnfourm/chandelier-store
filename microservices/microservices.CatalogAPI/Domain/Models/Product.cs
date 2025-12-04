@@ -10,11 +10,12 @@
         private int? LampPower;
         private int? LampCount;
         private int ProductTypeId;
+        private string? MainImgPath;
         private DateOnly AddedDate;
 
         public Product(string article, string title, decimal price, 
                         int quantity, int? lampPower, int? lampCount, 
-                        int productTypeId, DateOnly addedDate)
+                        int productTypeId, string? mainImgPath, DateOnly addedDate)
         {
             if (string.IsNullOrWhiteSpace(article)) throw new ArgumentException("Product article can't be null or empty: ", nameof(article));
             if (string.IsNullOrEmpty(title)) throw new ArgumentException("Product title can't be null or empty: ", nameof(title));
@@ -35,13 +36,14 @@
             LampPower = lampPower;
             LampCount = lampCount;
             ProductTypeId = productTypeId;
+            MainImgPath = mainImgPath;
             AddedDate = addedDate;
         }
 
         public Product(Guid id, string article, string title, decimal price, 
                         int quantity, int? lampPower, int? lampCount,
-                        int productTypeId, DateOnly addedDate) 
-                        : this(article, title, price, quantity, lampPower, lampCount, productTypeId, addedDate)        
+                        int productTypeId, string? mainImgPath, DateOnly addedDate) 
+                        : this(article, title, price, quantity, lampPower, lampCount, productTypeId, mainImgPath, addedDate)        
         {
             Id = id;
         }
@@ -54,6 +56,7 @@
         public int? GetLampPower() { return LampPower; }
         public int? GetLampCount() { return LampCount; }
         public int GetProductTypeId() { return ProductTypeId; }
+        public string? GetMainImgPath() { return MainImgPath; }
         public DateOnly GetAddedDate() { return AddedDate; }
 
         public void SetArticle(string article) { 
@@ -79,17 +82,21 @@
             
             Quantity = quantity;
         }
-        public void SetLampPower(int? lampPower)
+        public void SetLampPower(int lampPower)
         {
-            if (lampPower != null && lampPower <= 0) throw new ArgumentException("Product lamp power can't be zero or less", nameof(lampPower));
+            if (lampPower <= 0) throw new ArgumentException("Product lamp power can't be zero or less", nameof(lampPower));
             
             LampPower = lampPower;
         }
-        public void SetLampCount(int? lampCount)
+        public void SetLampCount(int lampCount)
         {
-            if (lampCount != null && lampCount <= 0) throw new ArgumentException("Product lamp count can't be zero or less", nameof(lampCount));
+            if (lampCount <= 0) throw new ArgumentException("Product lamp count can't be zero or less", nameof(lampCount));
 
             LampCount = lampCount;
+        }
+        public void SetMainImgPath(string mainImgPath)
+        {
+            MainImgPath = mainImgPath;
         }
         public void SetProductTypeId(int productTypeId)
         {
