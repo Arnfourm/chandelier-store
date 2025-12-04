@@ -6,6 +6,8 @@ namespace microservices.CatalogAPI.API.Contracts.Requests
         string Title,
         decimal Price,
         int Quantity,
+        int? LampPower,
+        int? LampCount,
         int ProductTypeId
     );
 }

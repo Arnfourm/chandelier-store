@@ -1,7 +1,9 @@
-﻿using microservices.CatalogAPI.API.Filters;
+﻿using System.Net.Quic;
+using microservices.CatalogAPI.API.Filters;
 using microservices.CatalogAPI.Infrastructure.Database.Contexts;
 using microservices.CatalogAPI.Infrastructure.Database.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace microservices.CatalogAPI.Infrastructure.Database
 {
@@ -24,6 +26,7 @@ namespace microservices.CatalogAPI.Infrastructure.Database
             {
                 (lamp_count_min, lamp_count_max) = ParseRange(filters.lamp_count);
             }
+
 
             if (filters.price_min.HasValue)
             {
@@ -58,37 +61,25 @@ namespace microservices.CatalogAPI.Infrastructure.Database
                         .Any(pa => pa.ProductId == p.Id && pa.Attribute.Title.ToLower() == "цвет" && pa.Value.ToLower() == filters.color.ToLower()));
             }
 
-            //if (lamp_power_min.HasValue)
-            //{
-            //    query = query
-            //        .Where(p => _catalogDbContext.ProductAttributes
-            //            .Include(pa => pa.Attribute)
-            //            .Any(pa => pa.ProductId == p.Id && pa.Attribute.Title.ToLower() == "мощность ламп" && Convert.ToInt32(pa.Value) >= lamp_power_min));
-            //}
+            if (lamp_power_min.HasValue)
+            {
+                query = query.Where(p => p.LampPower >= lamp_power_min);
+            }
 
-            //if (lamp_power_max.HasValue)
-            //{
-            //    query = query
-            //        .Where(p => _catalogDbContext.ProductAttributes
-            //            .Include(pa => pa.Attribute)
-            //            .Any(pa => pa.ProductId == p.Id && pa.Attribute.Title.ToLower() == "мощность ламп" && Convert.ToInt32(pa.Value) <= lamp_power_max));
-            //}
+            if (lamp_power_max.HasValue)
+            {
+                query = query.Where(p => p.LampPower <= lamp_power_max);
+            }
 
-            //if (lamp_count_min.HasValue)
-            //{
-            //    query = query
-            //        .Where(p => _catalogDbContext.ProductAttributes
-            //            .Include(pa => pa.Attribute)
-            //            .Any(pa => pa.ProductId == p.Id && pa.Attribute.Title.ToLower() == "количество ламп" && Convert.ToInt32(pa.Value) >= lamp_count_min));
-            //}
+            if (lamp_count_min.HasValue)
+            {
+                query = query.Where(p => p.LampCount >= lamp_count_min);
+            }
 
-            //if (lamp_count_max.HasValue)
-            //{
-            //    query = query
-            //        .Where(p => _catalogDbContext.ProductAttributes
-            //            .Include(pa => pa.Attribute)
-            //            .Any(pa => pa.ProductId == p.Id && pa.Attribute.Title.ToLower() == "количество ламп" && Convert.ToInt32(pa.Value) <= lamp_count_max));
-            //}
+            if (lamp_count_max.HasValue)
+            {
+                query = query.Where(p => p.LampCount <= lamp_count_max);
+            }
 
             return query;
         }
@@ -115,7 +106,7 @@ namespace microservices.CatalogAPI.Infrastructure.Database
             return query;
         }
 
-        // Searc by product title (upgrade in the future)
+        // Search by product title (upgrade in the future)
         public static IQueryable<ProductEntity> Search(this IQueryable<ProductEntity> query, string? search)
         {
             if (!string.IsNullOrWhiteSpace(search))

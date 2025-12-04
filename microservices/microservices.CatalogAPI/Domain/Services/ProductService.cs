@@ -50,6 +50,8 @@ public class ProductService : IProductService
                 product.GetTitle(),
                 product.GetPrice(),
                 product.GetQuantity(),
+                product.GetLampPower(),
+                product.GetLampCount(),
                 productTypeResponse,
                 product.GetAddedDate()
             );
@@ -78,6 +80,8 @@ public class ProductService : IProductService
             product.GetTitle(),
             product.GetPrice(),
             product.GetQuantity(),
+            product.GetLampPower(),
+            product.GetLampCount(),
             productTypeResponse,
             product.GetAddedDate()
         );
@@ -105,6 +109,8 @@ public class ProductService : IProductService
                 product.GetTitle(),
                 product.GetPrice(),
                 product.GetQuantity(),
+                product.GetLampPower(),
+                product.GetLampCount(),
                 productTypeResponse,
                 product.GetAddedDate()
             );
@@ -122,6 +128,8 @@ public class ProductService : IProductService
             request.Title,
             request.Price,
             request.Quantity,
+            request.LampPower,
+            request.LampCount,
             productType.GetId(),
             DateOnly.FromDateTime(DateTime.Now)
         );
@@ -142,6 +150,8 @@ public class ProductService : IProductService
             request.Title,
             request.Price,
             request.Quantity,
+            request.LampPower,
+            request.LampCount,
             productType.GetId(),
             DateOnly.FromDateTime(DateTime.Now)
         );

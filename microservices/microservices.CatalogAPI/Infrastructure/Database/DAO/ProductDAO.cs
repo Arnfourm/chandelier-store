@@ -37,6 +37,8 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
                     productEntity.Title,
                     productEntity.Price,
                     productEntity.Quantity,
+                    productEntity.LampPower,
+                    productEntity.LampCount,
                     productEntity.ProductTypeId,
                     productEntity.AddedDate
                 )).ToListAsync();
@@ -57,6 +59,8 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
                 productEntity.Title,
                 productEntity.Price,
                 productEntity.Quantity,
+                productEntity.LampPower,
+                productEntity.LampCount,
                 productEntity.ProductTypeId,
                 productEntity.AddedDate);
         }
@@ -72,6 +76,8 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
                     productEntity.Title,
                     productEntity.Price,
                     productEntity.Quantity,
+                    productEntity.LampPower,
+                    productEntity.LampCount,
                     productEntity.ProductTypeId,
                     productEntity.AddedDate
                 )).ToListAsync();
@@ -85,6 +91,8 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
                 Title = product.GetTitle(),
                 Price = product.GetPrice(),
                 Quantity = product.GetQuantity(),
+                LampPower = product.GetLampPower(),
+                LampCount = product.GetLampCount(),
                 ProductTypeId = product.GetProductTypeId(),
                 AddedDate = product.GetAddedDate(),
             };
@@ -111,6 +119,8 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
                     .SetProperty(productEntity => productEntity.Title, product.GetTitle())
                     .SetProperty(productEntity => productEntity.Price, product.GetPrice())
                     .SetProperty(productEntity => productEntity.Quantity, product.GetQuantity())
+                    .SetProperty(productEntity => productEntity.LampPower, product.GetLampPower())
+                    .SetProperty(productEntity => productEntity.LampCount, product.GetLampCount())
                     .SetProperty(productEntity => productEntity.ProductTypeId, product.GetProductTypeId()));
 
             try

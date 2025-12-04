@@ -23,6 +23,13 @@ namespace microservices.CatalogAPI.Infrastructure.Database.Entities
 
         public int Quantity { get; set; }
 
+        // [Required]
+        // public required string mainImgPath { get; set; }
+
+        public int? LampPower { get; set; }
+
+        public int? LampCount { get; set; }
+
         [Required]
         public int ProductTypeId { get; set; }
 
