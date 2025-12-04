@@ -37,7 +37,10 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
                     productEntity.Title,
                     productEntity.Price,
                     productEntity.Quantity,
+                    productEntity.LampPower,
+                    productEntity.LampCount,
                     productEntity.ProductTypeId,
+                    productEntity.MainImgPath,
                     productEntity.AddedDate
                 )).ToListAsync();
         }
@@ -57,8 +60,12 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
                 productEntity.Title,
                 productEntity.Price,
                 productEntity.Quantity,
+                productEntity.LampPower,
+                productEntity.LampCount,
                 productEntity.ProductTypeId,
-                productEntity.AddedDate);
+                productEntity.MainImgPath,
+                productEntity.AddedDate
+            );
         }
         
         public async Task<List<Product>> GetProductsByIds(List<Guid> ids)
@@ -72,7 +79,10 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
                     productEntity.Title,
                     productEntity.Price,
                     productEntity.Quantity,
+                    productEntity.LampPower,
+                    productEntity.LampCount,
                     productEntity.ProductTypeId,
+                    productEntity.MainImgPath,
                     productEntity.AddedDate
                 )).ToListAsync();
         }
@@ -85,7 +95,10 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
                 Title = product.GetTitle(),
                 Price = product.GetPrice(),
                 Quantity = product.GetQuantity(),
+                LampPower = product.GetLampPower(),
+                LampCount = product.GetLampCount(),
                 ProductTypeId = product.GetProductTypeId(),
+                MainImgPath = product.GetMainImgPath(),
                 AddedDate = product.GetAddedDate(),
             };
 
@@ -111,6 +124,9 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
                     .SetProperty(productEntity => productEntity.Title, product.GetTitle())
                     .SetProperty(productEntity => productEntity.Price, product.GetPrice())
                     .SetProperty(productEntity => productEntity.Quantity, product.GetQuantity())
+                    .SetProperty(productEntity => productEntity.LampPower, product.GetLampPower())
+                    .SetProperty(productEntity => productEntity.LampCount, product.GetLampCount())
+                    .SetProperty(productEntity => productEntity.MainImgPath, product.GetMainImgPath())
                     .SetProperty(productEntity => productEntity.ProductTypeId, product.GetProductTypeId()));
 
             try

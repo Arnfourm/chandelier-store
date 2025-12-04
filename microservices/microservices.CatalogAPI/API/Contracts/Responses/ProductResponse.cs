@@ -7,7 +7,10 @@ namespace microservices.CatalogAPI.API.Contracts.Responses
         string Title,
         decimal Price,
         int Quantity,
+        int? LampPower,
+        int? LampCount,
         ProductTypeResponse ProductType,
+        string? MainImgPath,
         DateOnly AddedDate
     );
 }
