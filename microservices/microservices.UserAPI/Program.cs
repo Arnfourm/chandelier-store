@@ -62,10 +62,14 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+var connectionString = builder.Environment.IsDevelopment() 
+    ? builder.Configuration.GetConnectionString("DevelopConnection")
+    : builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<UserDbContext>(
     options =>
     {
-        options.UseNpgsql(builder.Configuration.GetConnectionString("DevelopConnection"));
+        options.UseNpgsql(connectionString);
     }
 );
 

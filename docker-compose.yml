@@ -9,7 +9,7 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${database_user} -d chandelier_store_catalog"]
+      test: ["CMD-SHELL", "pg_isready -U ${database_user} -d postgres"]
       interval: 50s
       timeout: 10s
       retries: 5
@@ -45,6 +45,8 @@ services:
       ASPNETCORE_HTTP_PORTS: 9210
       ConnectionStrings__DefaultConnection: "User ID=${database_user};Password=${database_password};Host=${database_host};Port=${database_port};Database=chandelier_store_supply;"
       ASPNETCORE_ENVIRONMENT: Release
+      AllowedHosts: "gateway;supplyAPI"
+      Microservices__CatalogMicroservice: "catalogAPI/api/Catalog"
     networks:
       - chandelier-store-network
 
@@ -60,6 +62,9 @@ services:
       ASPNETCORE_HTTP_PORTS: 9220
       ConnectionStrings__DefaultConnection: "User ID=${database_user};Password=${database_password};Host=${database_host};Port=${database_port};Database=chandelier_store_catalog;"
       ASPNETCORE_ENVIRONMENT: Release
+      AllowedHosts: "gateway;catalogAPI;supplyAPI"
+    volumes:
+      - catalog:/var/wwwroot/images
     networks:
       - chandelier-store-network
 
@@ -75,8 +80,41 @@ services:
       ASPNETCORE_HTTP_PORTS: 9230
       ConnectionStrings__DefaultConnection: "User ID=${database_user};Password=${database_password};Host=${database_host};Port=${database_port};Database=chandelier_store_user;"
       ASPNETCORE_ENVIRONMENT: Release
+      AllowedHosts: "gateway;userAPI"
     networks:
       - chandelier-store-network
+
+  # orderAPI:
+  #   image: chandelier-store-orderapi
+  #   container_name: chandelier-store-order
+  #   build:
+  #     context: ./microservices/
+  #     dockerfile: ./microservices.OrderAPI/Dockerfile
+  #   ports:
+  #     - "9240:9240"
+  #   environment:
+  #     ASPNETCORE_HTTP_PORTS: 9240
+  #     ConnectionStrings_DefaultConnection: "User ID=${database_user};Password=${database_password};Host=${database_host};Port=${database_port};Database=chandelier_store_order;"
+  #     ASPNETCORE_ENVIRONMENT: Release
+  #     AllowedHosts: chandelier-store.com
+  #   networks:
+  #     - chandelier-store-network
+
+  # reviewAPI:
+  #   image: chandelier_store_reviewapi
+  #   container_name: chandelier-store-review
+  #   build:
+  #     context: ./microservices/
+  #     dockerfile: ./microservices.ReviewAPI/Dockerfile
+  #   ports:
+  #     - "9250:9250"
+  #   environment:
+  #     ASPNETCORE_HTTP_PORTS: 9250
+  #     ConnectionStrings__DefaultConnection: "User ID=${database_user};Password=${database_password};Host=${database_host};Port=${database_port};Database=chandelier_store_review;"
+  #     ASPNETCORE_ENVIRONMENT: Release
+  #     AllowedHosts: chandelier-store.com
+  #   networks:
+  #     - chandelier-store-network
 
   nginx:
     image: nginx:alpine3.22
@@ -88,19 +126,20 @@ services:
     networks:
       - chandelier-store-network
 
-  frontend:
-    image: chandelier-store-frontend
-    container_name: frontend
-    build:
-      context: ./frontend/
-      dockerfile: ./Dockerfile
-    ports:
-      - "5173:5173"
-    networks:
-      - chandelier-store-network
+  # frontend:
+  #   image: chandelier-store-frontend
+  #   container_name: frontend
+  #   build:
+  #     context: ./frontend/
+  #     dockerfile: ./Dockerfile
+  #   ports:
+  #     - "5173:5173"
+  #   networks:
+  #     - chandelier-store-network
 
 volumes:
   postgres:
+  catalog:
 
 networks:
   chandelier-store-network:
