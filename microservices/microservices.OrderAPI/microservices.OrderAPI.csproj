@@ -20,11 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="API\Contracts\Requests\" />
-    <Folder Include="API\Contracts\Responses\" />
-    <Folder Include="API\Controllers\" />
-    <Folder Include="Domain\Interfaces\Services\" />
-    <Folder Include="Domain\Services\" />
     <Folder Include="Infrastructure\Database\Migrations\" />
   </ItemGroup>
 
