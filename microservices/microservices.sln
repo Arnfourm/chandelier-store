@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "microservice.SupplyAPI", "m
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "microservices.ApiGateway", "microservices.ApiGateway\microservices.ApiGateway.csproj", "{5AB3DF09-E8EA-44D6-9602-BEED0D211473}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "microservices.OrderAPI", "microservices.OrderAPI\microservices.OrderAPI.csproj", "{CED5A94D-FF35-4464-AFCA-A0A5CC530727}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{5AB3DF09-E8EA-44D6-9602-BEED0D211473}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AB3DF09-E8EA-44D6-9602-BEED0D211473}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5AB3DF09-E8EA-44D6-9602-BEED0D211473}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CED5A94D-FF35-4464-AFCA-A0A5CC530727}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CED5A94D-FF35-4464-AFCA-A0A5CC530727}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CED5A94D-FF35-4464-AFCA-A0A5CC530727}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CED5A94D-FF35-4464-AFCA-A0A5CC530727}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
