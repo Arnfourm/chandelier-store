@@ -3,7 +3,6 @@
     public record OrderResponse
     (
         Guid Id,
-        Guid UserId,
         decimal TotalAmount,
         StatusResponse Status,
         DeliveryTypeResponse DeliveryType,

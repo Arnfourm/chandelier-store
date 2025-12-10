@@ -1,33 +1,59 @@
-﻿using microservices.OrderAPI.API.Contracts.Requests;
+﻿using System.Net.Http.Headers;
+using microservices.OrderAPI.API.Contracts.Requests;
 using microservices.OrderAPI.API.Contracts.Responses;
 using microservices.OrderAPI.Domain.Interfaces.DAO;
 using microservices.OrderAPI.Domain.Interfaces.Services;
 using microservices.OrderAPI.Domain.Models;
-using microservices.OrderAPI.Infrastructure.Database.DAO;
 
 namespace microservices.OrderAPI.Domain.Services
 {
-    public class OrderService
+    public class OrderService : IOrderService
     {
         private readonly IOrderDAO _orderDAO;
 
         private readonly IDeliveryTypeService _deliveryTypeService;
         private readonly IStatusService _statusService;
+        private readonly ITokenService _tokenService;
+
+        private readonly string _userService;
 
         public OrderService(
             IOrderDAO orderDAO, 
             IDeliveryTypeService deliveryTypeService,
-            IStatusService statusService
+            IStatusService statusService,
+            ITokenService tokenService,
+            IConfiguration config
         )
         {
             _orderDAO = orderDAO;
 
             _deliveryTypeService = deliveryTypeService;
             _statusService = statusService;
+            _tokenService = tokenService;
+
+            _userService = config["Microservices:UserMicroservice:Url"]
+                ?? throw new ArgumentException("User microservice url is null");
         }
 
         public async Task<IEnumerable<OrderResponse>> GetAllOrderResponse()
         {
+            string token = await _tokenService.GetTokenAsync();
+
+            using (HttpClientHandler handler = new HttpClientHandler())
+            {
+                using (HttpClient httpClient = new HttpClient(handler))
+                {
+                    var userRequest = new HttpRequestMessage(HttpMethod.Get, $"{_userService}/User/");
+
+                    userRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                    HttpResponseMessage userResponse = await httpClient.SendAsync(userRequest);
+
+                    if (!userResponse.IsSuccessStatusCode) 
+                        throw new Exception($"Can't send request to user service");
+                }   
+            }
+
             List<Order> orders = await _orderDAO.GetOrders();
 
             List<int> statusIds = orders.Select(order => order.GetStatusId()).ToList();
@@ -48,7 +74,6 @@ namespace microservices.OrderAPI.Domain.Services
                         return new OrderResponse
                         (
                                 order.GetId(),
-                                order.GetUserId(),
                                 order.GetTotalAmount(),
                                 statusResponse,
                                 deliveryTypeResponse,

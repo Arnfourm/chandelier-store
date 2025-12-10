@@ -3,7 +3,8 @@
     
     public record OrderRequest
     (
-        // Take user id from cookie
+        // Take user id from cookie in future
+        Guid UserId,
         decimal TotalAmount,
         int StatusId,
         int DeliveryTypeId
