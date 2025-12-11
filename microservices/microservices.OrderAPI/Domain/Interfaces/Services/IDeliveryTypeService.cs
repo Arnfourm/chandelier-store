@@ -8,6 +8,7 @@ namespace microservices.OrderAPI.Domain.Interfaces.Services
     {
         Task<IEnumerable<DeliveryTypeResponse>> GetAllDeliveryTypeResponse();
         Task<DeliveryType> GetSingleDeliveryTypeById(int id);
+        Task<DeliveryTypeResponse> GetDeliveryTypeResponseByIdAsync(int id);
         Task<IEnumerable<DeliveryTypeResponse>> GetDeliveryTypeResponseByIds(List<int> ids);
         Task<DeliveryTypeResponse> CreateNewDeliveryType(DeliveryTypeRequest request);
         Task UpdateSingleDeliveryTypeById(int id, DeliveryTypeRequest request);

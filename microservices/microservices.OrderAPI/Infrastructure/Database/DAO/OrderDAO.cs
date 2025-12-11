@@ -64,7 +64,7 @@ namespace microservices.OrderAPI.Infrastructure.Database.DAO
                 )).ToListAsync();
         }
 
-        public async Task CreateOrder(Order order)
+        public async Task<Order> CreateOrder(Order order)
         {
             OrderEntity orderEntity = new OrderEntity
             {
@@ -84,6 +84,16 @@ namespace microservices.OrderAPI.Infrastructure.Database.DAO
             {
                 throw new ArgumentException($"Error while trying to add new order. Error message:\n{ex.Message}", ex);
             }
+
+            return new Order
+            (
+                orderEntity.Id,
+                orderEntity.UserId,
+                orderEntity.TotalAmount,
+                orderEntity.StatusId,
+                orderEntity.DeliveryTypeId,
+                orderEntity.CreationDate
+            );
         }
 
         public async Task UpdateOrder(Order order)

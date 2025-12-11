@@ -37,6 +37,19 @@ namespace microservices.OrderAPI.Domain.Services
             return deliveryType;
         }
 
+        public async Task<DeliveryTypeResponse> GetDeliveryTypeResponseByIdAsync(int id)
+        {
+            DeliveryType deliveryType = await _deliveryTypeDAO.GetDeliveryTypeById(id);
+
+            DeliveryTypeResponse deliveryTypeResponse = new DeliveryTypeResponse
+            (
+                deliveryType.GetId(),
+                deliveryType.GetTitle()
+            );
+
+            return deliveryTypeResponse;
+        }
+
         public async Task<IEnumerable<DeliveryTypeResponse>> GetDeliveryTypeResponseByIds(List<int> ids)
         {
             List<DeliveryType> deliveryTypes = await _deliveryTypeDAO.GetDeliveryTypeByIds(ids);

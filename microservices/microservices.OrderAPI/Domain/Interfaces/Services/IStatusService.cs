@@ -8,6 +8,7 @@ namespace microservices.OrderAPI.Domain.Interfaces.Services
     {
         Task<IEnumerable<StatusResponse>> GetAllStatusResponses();
         Task<Status> GetStatusById(int id);
+        Task<StatusResponse> GetStatusResponseByIdAsync(int id);
         Task<IEnumerable<StatusResponse>> GetStatusResponsesByIds(List<int> ids);
         Task<StatusResponse> CreateNewStatus(StatusRequest request);
         Task UpdateStatusById(int id, StatusRequest request);

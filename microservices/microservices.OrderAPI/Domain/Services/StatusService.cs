@@ -37,6 +37,19 @@ namespace microservices.OrderAPI.Domain.Services
             return status;
         }
 
+        public async Task<StatusResponse> GetStatusResponseByIdAsync(int id)
+        {
+            Status status = await _statusDAO.GetStatusById(id);
+
+            StatusResponse statusResponse = new StatusResponse
+            (
+                status.GetId(),
+                status.GetTitle()
+            );
+
+            return statusResponse;
+        }
+
         public async Task<IEnumerable<StatusResponse>> GetStatusResponsesByIds(List<int> ids)
         {
             List<Status> statuses = await _statusDAO.GetStatusByIds(ids);

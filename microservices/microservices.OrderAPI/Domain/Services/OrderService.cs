@@ -35,7 +35,7 @@ namespace microservices.OrderAPI.Domain.Services
                 ?? throw new ArgumentException("User microservice url is null");
         }
 
-        public async Task<IEnumerable<OrderResponse>> GetAllOrderResponse()
+        public async Task<IEnumerable<OrderResponse>> GetAllOrderResponseAsync()
         {
             string token = await _tokenService.GetTokenAsync();
 
@@ -85,25 +85,56 @@ namespace microservices.OrderAPI.Domain.Services
             return response;
         }
 
-        public async Task<Order> GetOrderById(Guid Id)
+        public async Task<Order> GetOrderByIdAsync(Guid Id)
         {
             Order order = await _orderDAO.GetOrderById(Id);
 
             return order;
         }
 
-        //public async Task<OrderResponse> CreateNewOrder(OrderRequest request)
-        //{
-        //    // Check is user exist
+        public async Task<OrderResponse> CreateNewOrderAsync(OrderRequest request)
+        {
+            string token = await _tokenService.GetTokenAsync();
 
-        //    Order newOrder = new Order
-        //    (
-        //        // UserId
-        //        request.TotalAmount,
-        //        request.StatusId,
-        //        request.DeliveryTypeId,
-        //        new DateTime(DateTime.Now)
-        //    );
-        //}
+            using (HttpClientHandler handler = new HttpClientHandler())
+            {
+                using (HttpClient httpClient = new HttpClient(handler))
+                {
+                    var userRequest = new HttpRequestMessage(HttpMethod.Get, $"{_userService}/User/{request.UserId}");
+
+                    userRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                    HttpResponseMessage userResponse = await httpClient.SendAsync(userRequest);
+
+                    if (!userResponse.IsSuccessStatusCode) 
+                        throw new ArgumentException($"User with id {request.UserId} not found");
+                }
+            }
+
+            Order newOrder = new Order
+            (
+                request.UserId,
+                request.TotalAmount,
+                request.StatusId,
+                request.DeliveryTypeId,
+                DateTime.UtcNow
+            );
+
+            Order order = await _orderDAO.CreateOrder(newOrder);
+
+            StatusResponse statusResponse = await _statusService.GetStatusResponseByIdAsync(order.GetStatusId());
+            DeliveryTypeResponse deliveryTypeResponse = await _deliveryTypeService.GetDeliveryTypeResponseByIdAsync(order.GetDeliveryTypeId());
+
+            OrderResponse orderResponse = new OrderResponse
+            (
+                order.GetId(),
+                order.GetTotalAmount(),
+                statusResponse,
+                deliveryTypeResponse,
+                order.GetCreationDate()
+            );
+
+            return orderResponse;
+        }
     }
 }
