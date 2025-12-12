@@ -1,0 +1,6 @@
+@microservices.AnalizeAPI_HostAddress = http://localhost:5167
+
+GET {{microservices.AnalizeAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
