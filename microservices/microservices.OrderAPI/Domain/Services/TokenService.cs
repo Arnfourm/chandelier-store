@@ -36,8 +36,6 @@ namespace microservices.OrderAPI.Domain.Services
                 {
                     HttpResponseMessage response = await httpClient.PostAsJsonAsync($"{_userService}/Auth/LogIn", loginRequest);
 
-                    Console.WriteLine(loginRequest.Email + "; " + loginRequest.Password);
-
                     if (!response.IsSuccessStatusCode)
                     {
                         throw new Exception($"Unable to login as microservice");

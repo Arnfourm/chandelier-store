@@ -17,7 +17,7 @@ namespace microservices.OrderAPI.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<OrderResponse>>> GetOrderResponsesAsync()
+        public async Task<ActionResult<IEnumerable<OrderResponse>>> GetOrdersAsync()
         {
             IEnumerable<OrderResponse> response = await _orderService.GetAllOrderResponseAsync();
 
@@ -29,7 +29,23 @@ namespace microservices.OrderAPI.API.Controllers
         {
             OrderResponse orderResponse = await _orderService.CreateNewOrderAsync(orderRequest);
 
-            return orderResponse;
+            return Ok(orderResponse);
+        }
+
+        [HttpPut("{id:Guid}")]
+        public async Task<ActionResult> UpdateOrderAsync(Guid id, [FromBody] OrderRequest orderRequest)
+        {
+            await _orderService.UpdateSingleOrderByIdAsync(id, orderRequest);
+
+            return Ok();
+        }
+
+        [HttpDelete("{id:Guid}")]
+        public async Task<ActionResult> DeleteOrderAsync(Guid id)
+        {
+            await _orderService.DeleteSingleOrderByIdAsync(id);
+
+            return Ok();
         }
     }
 }

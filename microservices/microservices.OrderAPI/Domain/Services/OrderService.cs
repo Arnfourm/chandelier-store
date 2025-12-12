@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using microservices.OrderAPI.API.Contracts.Requests;
 using microservices.OrderAPI.API.Contracts.Responses;
+using microservices.OrderAPI.Domain.DTO.Responses;
 using microservices.OrderAPI.Domain.Interfaces.DAO;
 using microservices.OrderAPI.Domain.Interfaces.Services;
 using microservices.OrderAPI.Domain.Models;
@@ -135,6 +136,61 @@ namespace microservices.OrderAPI.Domain.Services
             );
 
             return orderResponse;
+        }
+
+        public async Task UpdateSingleOrderByIdAsync(Guid id, OrderRequest request)
+        {
+            Order checkOrder = await _orderDAO.GetOrderById(id);
+
+            if (checkOrder == null)
+                throw new ArgumentException($"Order with id: {id} not found");
+
+            if (request.UserId != checkOrder.GetUserId())
+                throw new ArgumentException($"User id: {request.UserId} is uncorrect");
+
+            string token = await _tokenService.GetTokenAsync();
+
+            using (HttpClientHandler handler = new HttpClientHandler())
+            {
+                using (HttpClient httpClient = new HttpClient(handler))
+                {
+                    var userRequest = new HttpRequestMessage(HttpMethod.Get, $"{_userService}/User/{request.UserId}");
+
+                    userRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                    HttpResponseMessage response = await httpClient.SendAsync(userRequest);
+
+                    if (!response.IsSuccessStatusCode) 
+                        throw new ArgumentException($"User with id {request.UserId} not found");
+                }
+            }
+
+            Status checkStatus = await _statusService.GetStatusById(request.StatusId);
+            
+            if (checkStatus == null)
+                throw new ArgumentException($"Status with id: {id} not found");
+            
+            DeliveryType checkDeliveryType = await _deliveryTypeService.GetSingleDeliveryTypeById(request.DeliveryTypeId);
+
+            if (checkDeliveryType == null)
+                throw new ArgumentException($"Delivery type with id: {id} not found");
+
+            Order updateOrder = new Order
+            (
+                checkOrder.GetId(),
+                checkOrder.GetUserId(),
+                request.TotalAmount,
+                checkStatus.GetId(),
+                checkDeliveryType.GetId(),
+                checkOrder.GetCreationDate()
+            );
+
+            await _orderDAO.UpdateOrder(updateOrder);
+        }
+
+        public async Task DeleteSingleOrderByIdAsync(Guid id)
+        {
+            await _orderDAO.DeleteOrder(id);
         }
     }
 }

@@ -98,9 +98,13 @@ namespace microservices.OrderAPI.Infrastructure.Database.DAO
 
         public async Task UpdateOrder(Order order)
         {
+
+            Console.WriteLine("Data db: " + order.GetId() + " second: "  + order.GetDeliveryTypeId());
+
             await _orderDbContext.Orders
                 .Where(orderEntity => orderEntity.Id == order.GetId())
                 .ExecuteUpdateAsync(orderSetters => orderSetters
+                    .SetProperty(OrderEntity => OrderEntity.TotalAmount, order.GetTotalAmount())
                     .SetProperty(orderEntity => orderEntity.StatusId, order.GetStatusId())
                     .SetProperty(orderEntity => orderEntity.DeliveryTypeId, order.GetDeliveryTypeId()));
 
