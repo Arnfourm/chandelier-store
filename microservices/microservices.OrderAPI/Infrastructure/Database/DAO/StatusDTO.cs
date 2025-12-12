@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace microservices.OrderAPI.Infrastructure.Database.DAO
 {
-    public class StatusDTO : IStatusDTO
+    public class StatusDAO : IStatusDAO
     {
         private readonly OrderDbContext _orderDbContext;
 
-        public StatusDTO(OrderDbContext orderDbContext)
+        public StatusDAO(OrderDbContext orderDbContext)
         {
             _orderDbContext = orderDbContext;
         }
@@ -52,14 +52,14 @@ namespace microservices.OrderAPI.Infrastructure.Database.DAO
                 )).ToListAsync();
         }
 
-        public async Task CreateStatus(Status status)
+        public async Task<Status> CreateStatus(Status status)
         {
             StatusEntity statusEntity = new StatusEntity
             {
                 Title = status.GetTitle()
             };
 
-            await _orderDbContext.Statuses .AddAsync(statusEntity);
+            await _orderDbContext.Statuses.AddAsync(statusEntity);
             try
             {
                 await _orderDbContext.SaveChangesAsync();
@@ -68,6 +68,8 @@ namespace microservices.OrderAPI.Infrastructure.Database.DAO
             {
                 throw new ArgumentException($"Error while trying to add new order status. Error message:\n{ex.Message}", ex);
             }
+
+            return new Status(statusEntity.Id, statusEntity.Title);
         }
 
         public async Task UpdateStatus(Status status)
