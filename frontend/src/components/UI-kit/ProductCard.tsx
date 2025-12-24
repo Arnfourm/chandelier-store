@@ -42,7 +42,7 @@ export function ProductCard({ id, name, article, price, imgUrl }) {
             </div>
             <p className="text-xl ml-[30px] mt-[15px]">{formatCurrency(price)}</p>
 
-            <div className="w-full mt-auto z-10">
+            <div className="w-full mt-auto z-1">
                 {quantity === 0 ? (
                     isAuthenticated ? (
                         <button
