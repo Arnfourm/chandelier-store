@@ -16,3 +16,9 @@ dotnet ef database update --connection "User ID=luver;Password=987654321;Host=12
 
 cd ../microservices.UserAPI
 dotnet ef database update --connection "User ID=luver;Password=987654321;Host=127.0.0.1;Port=5432;Database=chandelier_store_user;"
+
+cd ../microservices.OrderAPI
+dotnet ef database update --connection "User ID=luver;Password=987654321;Host=127.0.0.1;Port=5432;Database=chandelier_store_order;"
+
+cd ../microservices.ReviewAPI
+dotnet ef database update --connection "User ID=luver;Password=987654321;Host=127.0.0.1;Port=5432;Database=chandelier_store_review;"

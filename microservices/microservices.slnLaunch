@@ -1,0 +1,27 @@
+[
+  {
+    "Name": "ClientModule",
+    "Projects": [
+      {
+        "Path": "microservices.UserAPI\\microservices.UserAPI.csproj",
+        "Action": "Start",
+        "DebugTarget": "http"
+      },
+      {
+        "Path": "microservices.CatalogAPI\\microservices.CatalogAPI.csproj",
+        "Action": "Start",
+        "DebugTarget": "http"
+      },
+      {
+        "Path": "microservices.OrderAPI\\microservices.OrderAPI.csproj",
+        "Action": "Start",
+        "DebugTarget": "http"
+      },
+      {
+        "Path": "microservices.ReviewAPI\\microservices.ReviewAPI.csproj",
+        "Action": "Start",
+        "DebugTarget": "http"
+      }
+    ]
+  }
+]

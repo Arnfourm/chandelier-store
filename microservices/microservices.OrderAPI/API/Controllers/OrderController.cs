@@ -1,6 +1,7 @@
 using microservices.OrderAPI.API.Contracts.Requests;
 using microservices.OrderAPI.API.Contracts.Responses;
 using microservices.OrderAPI.Domain.Interfaces.Services;
+using microservices.OrderAPI.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace microservices.OrderAPI.API.Controllers

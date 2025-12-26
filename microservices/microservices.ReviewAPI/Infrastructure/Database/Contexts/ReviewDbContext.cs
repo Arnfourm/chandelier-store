@@ -14,5 +14,11 @@ namespace microservices.ReviewAPI.Infrastructure.Database.Contexts
         }
 
         public DbSet<ReviewEntity> Reviews { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ReviewEntity>()
+                .HasKey(r => new { r.Id });
+        }
     }
 }

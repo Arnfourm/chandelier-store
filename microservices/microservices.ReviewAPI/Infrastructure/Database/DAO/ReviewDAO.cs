@@ -101,6 +101,29 @@ namespace microservices.ReviewAPI.Infrastructure.Database.DAO
             );
         }
 
+        public async Task<Guid> UpdateReviewAsync(Review review)
+        {
+            await _reviewDbContext.Reviews
+                .Where(reviewEntity => reviewEntity.Id == review.GetId())
+                .ExecuteUpdateAsync(reviewSetters => reviewSetters
+                    .SetProperty(reviewEntity => reviewEntity.UserId, review.GetUserId())
+                    .SetProperty(reviewEntity => reviewEntity.ProductId, review.GetProductId())
+                    .SetProperty(reviewEntity => reviewEntity.OrderId, review.GetOrderId())
+                    .SetProperty(reviewEntity => reviewEntity.Rate, review.GetRate())
+                    .SetProperty(reviewEntity => reviewEntity.Content, review.GetContent()));
+
+            try
+            {
+                await _reviewDbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error while trying to update review. Error message:\n{ex.Message}", ex);
+            }
+
+            return review.GetId();
+        }
+
         public async Task DeleteReview(Guid id)
         {
             await _reviewDbContext.Reviews.Where(reviewEntity => reviewEntity.Id == id).ExecuteDeleteAsync();
