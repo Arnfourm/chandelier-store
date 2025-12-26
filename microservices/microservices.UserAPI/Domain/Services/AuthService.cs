@@ -3,7 +3,6 @@ using microservices.UserAPI.API.Contracts.Responses;
 using microservices.UserAPI.Domain.Interfaces.DAO;
 using microservices.UserAPI.Domain.Interfaces.Services;
 using microservices.UserAPI.Domain.Models;
-using Microsoft.AspNetCore.Identity;
 
 namespace microservices.UserAPI.Domain.Services
 {
@@ -16,8 +15,13 @@ namespace microservices.UserAPI.Domain.Services
         private readonly IPasswordService _passwordService;
         private readonly IJwtService _jwtService;
 
-        public AuthService(IUserDAO userDAO, IPasswordDAO passwordDAO, IRefreshTokenDAO refreshTokenDAO,
-            IUserService userService, IPasswordService passwordService, IJwtService jwtService)
+        public AuthService(
+            IUserDAO userDAO,
+            IPasswordDAO passwordDAO,
+            IRefreshTokenDAO refreshTokenDAO,
+            IUserService userService,
+            IPasswordService passwordService,
+            IJwtService jwtService)
         {
             _userDAO = userDAO;
             _passwordDAO = passwordDAO;
@@ -29,85 +33,129 @@ namespace microservices.UserAPI.Domain.Services
 
         public async Task<AuthResponse> SignUp(UserRequest request)
         {
-            var userId = await _userService.CreateNewUser(request);
-            var user = await _userDAO.GetUserById(userId);
+            try
+            {
+                var existingUsers = await _userDAO.GetUsers();
+                var existingUser = existingUsers.FirstOrDefault(u =>
+                    string.Equals(u.GetEmail(), request.Email, StringComparison.OrdinalIgnoreCase));
 
-            var accessToken = _jwtService.GenerateAccessToken(user);
-            var refreshToken = _jwtService.GenerateRefreshToken();
+                if (existingUser != null)
+                {
+                    throw new ArgumentException($"User with email '{request.Email}' already exists");
+                }
 
-            var refreshTokenEntity = new RefreshToken(
-                refreshToken,
-                DateTime.UtcNow,
-                DateTime.UtcNow.AddDays(7)
-            );
-            var refreshTokenId = await _refreshTokenDAO.CreateRefreshToken(refreshTokenEntity);
+                var userId = await _userService.CreateUserAsync(request);
+                var user = await _userDAO.GetUserById(userId);
 
-            var updatedUser = new User(
-                user.GetId(),
-                user.GetEmail(),
-                user.GetName(),
-                user.GetSurname(),
-                user.GetBirthday(),
-                user.GetRegistration(),
-                user.GetPasswordId(),
-                refreshTokenId,
-                user.GetUserRole()
-            );
-            await _userDAO.UpdateUser(updatedUser);
+                var accessToken = _jwtService.GenerateAccessToken(user);
+                var refreshToken = _jwtService.GenerateRefreshToken();
 
-            return new AuthResponse(
-                userId,
-                user.GetEmail(),
-                user.GetUserRole(),
-                accessToken,
-                refreshToken
-            );
+                var refreshTokenEntity = new RefreshToken(
+                    refreshToken,
+                    DateTime.UtcNow,
+                    DateTime.UtcNow.AddDays(7)
+                );
+
+                var refreshTokenId = await _refreshTokenDAO.CreateRefreshToken(refreshTokenEntity);
+
+                var updatedUser = new User(
+                    user.GetId(),
+                    user.GetEmail(),
+                    user.GetName(),
+                    user.GetSurname(),
+                    user.GetBirthday(),
+                    user.GetRegistration(),
+                    user.GetPasswordId(),
+                    refreshTokenId,
+                    user.GetUserRole()
+                );
+                await _userDAO.UpdateUser(updatedUser);
+
+                return new AuthResponse(
+                    userId,
+                    user.GetEmail(),
+                    user.GetUserRole(),
+                    accessToken,
+                    refreshToken
+                );
+            }
+            catch (ArgumentException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Registration failed: {ex.Message}", ex);
+            }
         }
 
         public async Task<AuthResponse> LogIn(LoginRequest request)
         {
-            var user = await _userDAO.GetUserByEmail(request.Email);
-            var password = await _passwordDAO.GetPasswordById(user.GetPasswordId());
+            try
+            {
+                var allUsers = await _userDAO.GetUsers();
+                var user = allUsers.FirstOrDefault(u =>
+                    string.Equals(u.GetEmail(), request.Email, StringComparison.OrdinalIgnoreCase));
 
-            var isValid = _passwordService.VerifyPassword(
-                request.Password,
-                password.GetPasswordHash(),
-                password.GetPasswordSaulHash()
-            );
+                if (user == null)
+                {
+                    throw new ArgumentException($"User with email '{request.Email}' not found");
+                }
 
-            if (!isValid)
-                throw new UnauthorizedAccessException("Invalid credentials");
+                var password = await _passwordDAO.GetPasswordById(user.GetPasswordId());
 
-            var accessToken = _jwtService.GenerateAccessToken(user);
-            var refreshToken = _jwtService.GenerateRefreshToken();
+                var isValid = _passwordService.VerifyPassword(
+                    request.Password,
+                    password.GetPasswordHash(),
+                    password.GetPasswordSaulHash()
+                );
 
-            var refreshTokenEntity = new RefreshToken(
-                refreshToken,
-                DateTime.UtcNow,
-                DateTime.UtcNow.AddDays(7)
-            );
-            var refreshTokenId = await _refreshTokenDAO.CreateRefreshToken(refreshTokenEntity);
+                if (!isValid)
+                    throw new UnauthorizedAccessException("Invalid password");
 
-            var updatedUser = new User(
-                user.GetId(),
-                user.GetEmail(),
-                user.GetName(),
-                user.GetSurname(),
-                user.GetBirthday(),
-                user.GetRegistration(),
-                user.GetPasswordId(),
-                refreshTokenId,
-                user.GetUserRole()
-            );
-            await _userDAO.UpdateUser(updatedUser);
+                var accessToken = _jwtService.GenerateAccessToken(user);
+                var refreshToken = _jwtService.GenerateRefreshToken();
 
-            return new AuthResponse(
-                user.GetId(),
-                user.GetEmail(),
-                user.GetUserRole(),
-                accessToken,
-                refreshToken
-            );
+                var refreshTokenEntity = new RefreshToken(
+                    refreshToken,
+                    DateTime.UtcNow,
+                    DateTime.UtcNow.AddDays(7)
+                );
+                var refreshTokenId = await _refreshTokenDAO.CreateRefreshToken(refreshTokenEntity);
+
+                var updatedUser = new User(
+                    user.GetId(),
+                    user.GetEmail(),
+                    user.GetName(),
+                    user.GetSurname(),
+                    user.GetBirthday(),
+                    user.GetRegistration(),
+                    user.GetPasswordId(),
+                    refreshTokenId,
+                    user.GetUserRole()
+                );
+                await _userDAO.UpdateUser(updatedUser);
+
+                return new AuthResponse(
+                    user.GetId(),
+                    user.GetEmail(),
+                    user.GetUserRole(),
+                    accessToken,
+                    refreshToken
+                );
+            }
+            catch (ArgumentException)
+            {
+                throw;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Login failed: {ex.Message}", ex);
+            }
         }
 
         public async Task<bool> LogOut(Guid userId)
@@ -116,65 +164,94 @@ namespace microservices.UserAPI.Domain.Services
             {
                 var user = await _userDAO.GetUserById(userId);
 
-                await _refreshTokenDAO.DeleteRefreshToken(user.GetRefreshTokenId());
-
                 var updatedUser = new User(
-                        user.GetId(),
-                        user.GetEmail(),
-                        user.GetName(),
-                        user.GetSurname(),
-                        user.GetBirthday(),
-                        user.GetRegistration(),
-                        user.GetPasswordId(),
-                        Guid.Empty,
-                        user.GetUserRole()
-                    );
-
+                    user.GetId(),
+                    user.GetEmail(),
+                    user.GetName(),
+                    user.GetSurname(),
+                    user.GetBirthday(),
+                    user.GetRegistration(),
+                    user.GetPasswordId(),
+                    null,
+                    user.GetUserRole()
+                );
                 await _userDAO.UpdateUser(updatedUser);
-                return true;
 
+                if (user.GetRefreshTokenId().HasValue && user.GetRefreshTokenId().Value != Guid.Empty)
+                {
+                    await _refreshTokenDAO.DeleteRefreshToken(user.GetRefreshTokenId().Value);
+                }
+
+                return true;
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine($"Logout error: {ex.Message}");
                 return false;
             }
         }
 
+
+
+
         public async Task<AuthResponse> RefreshToken(RefreshTokenRequest request)
         {
-            var storedRefreshToken = await _refreshTokenDAO.GetRefreshTokenByToken(request.RefreshToken);
+            try
+            {
+                var storedRefreshToken = await _refreshTokenDAO.GetRefreshTokenByToken(request.RefreshToken);
 
-            if (storedRefreshToken == null)
-                throw new UnauthorizedAccessException("Invalid refresh token");
+                if (storedRefreshToken == null)
+                    throw new UnauthorizedAccessException("Invalid refresh token");
 
-            if (storedRefreshToken.GetExpireTime() < DateTime.UtcNow)
-                throw new UnauthorizedAccessException("Refresh token expired");
+                if (storedRefreshToken.GetExpireTime() < DateTime.UtcNow)
+                    throw new UnauthorizedAccessException("Refresh token expired");
 
-            var allUsers = await _userDAO.GetUsers();
-            var user = allUsers.FirstOrDefault(u => u.GetRefreshTokenId() == storedRefreshToken.GetId());
+                var allUsers = await _userDAO.GetUsers();
+                var user = allUsers.FirstOrDefault(u => u.GetRefreshTokenId() == storedRefreshToken.GetId());
 
-            if (user == null)
-                throw new UnauthorizedAccessException("User not found for this refresh token");
+                if (user == null)
+                    throw new UnauthorizedAccessException("User not found for this refresh token");
 
-            var newAccessToken = _jwtService.GenerateAccessToken(user);
-            var newRefreshToken = _jwtService.GenerateRefreshToken();
+                var newAccessToken = _jwtService.GenerateAccessToken(user);
+                var newRefreshToken = _jwtService.GenerateRefreshToken();
 
-            var updatedRefreshToken = new RefreshToken(
-                storedRefreshToken.GetId(),
-                newRefreshToken,
-                DateTime.UtcNow,
-                DateTime.UtcNow.AddDays(7)
-            );
-            await _refreshTokenDAO.UpdateRefreshToken(updatedRefreshToken);
+                var updatedRefreshToken = new RefreshToken(
+                    storedRefreshToken.GetId(),
+                    newRefreshToken,
+                    DateTime.UtcNow,
+                    DateTime.UtcNow.AddDays(7)
+                );
+                await _refreshTokenDAO.UpdateRefreshToken(updatedRefreshToken);
 
-            return new AuthResponse(
-                user.GetId(),
-                user.GetEmail(),
-                user.GetUserRole(),
-                newAccessToken,
-                newRefreshToken
-            );
+                var updatedUser = new User(
+                    user.GetId(),
+                    user.GetEmail(),
+                    user.GetName(),
+                    user.GetSurname(),
+                    user.GetBirthday(),
+                    user.GetRegistration(),
+                    user.GetPasswordId(),
+                    storedRefreshToken.GetId(),
+                    user.GetUserRole()
+                );
+                await _userDAO.UpdateUser(updatedUser);
+
+                return new AuthResponse(
+                    user.GetId(),
+                    user.GetEmail(),
+                    user.GetUserRole(),
+                    newAccessToken,
+                    newRefreshToken
+                );
+            }
+            catch (UnauthorizedAccessException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Token refresh failed: {ex.Message}", ex);
+            }
         }
-
     }
 }
