@@ -19,7 +19,7 @@ namespace microservices.OrderAPI.Domain.Services
             _userService = config["Microservices:UserMicroservice:Url"]
                 ?? throw new ArgumentException("User microservice url is null");
         }
-    
+
         public async Task<string> GetTokenAsync()
         {
             if (_token != null) return _token;
@@ -42,10 +42,10 @@ namespace microservices.OrderAPI.Domain.Services
                     }
 
                     UserLoginResponseDTO userResponse = await response.Content.ReadFromJsonAsync<UserLoginResponseDTO>()
-                        ?? throw new Exception("Unable to format json as object while tring to login as microservice");
+                    ?? throw new Exception("Unable to format json as object while tring to login as microservice");
 
                     _token = userResponse.accessToken;
-                }   
+                }
             }
 
             return _token;

@@ -32,7 +32,7 @@ builder.Services.AddScoped<IDeliveryTypeService, DeliveryTypeService>();
 builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
-// builder.Services.AddScoped<IOrderProductService, OrderProductSer
+builder.Services.AddScoped<IOrderProductService, OrderProductService>();
 
 
 builder.Services.AddControllers();

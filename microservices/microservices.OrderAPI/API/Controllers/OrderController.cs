@@ -23,7 +23,7 @@ namespace microservices.OrderAPI.API.Controllers
             IEnumerable<OrderResponse> response = await _orderService.GetAllOrderResponseAsync();
 
             return Ok(response);
-        }
+        }   
 
         [HttpPost]
         public async Task<ActionResult<OrderResponse>> CreateOrderAsync([FromForm] OrderRequest orderRequest)
