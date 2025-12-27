@@ -1,6 +1,7 @@
 ﻿using microservices.ReviewAPI.API.Contracts.Requests;
 using microservices.ReviewAPI.API.Contracts.Responses;
 using microservices.ReviewAPI.Domain.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace microservices.ReviewAPI.API.Controllers
@@ -17,6 +18,7 @@ namespace microservices.ReviewAPI.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult<IEnumerable<ReviewResponse>>> GetAllReviewsAsync()
         {
             IEnumerable<ReviewResponse> response = await _reviewService.GetAllReviewsAsync();
@@ -24,6 +26,7 @@ namespace microservices.ReviewAPI.API.Controllers
         }
 
         [HttpGet("{id:guid}")]
+        [Authorize(Roles = "Client,Employee,Admin")]
         public async Task<ActionResult<ReviewResponse>> GetReviewByIdAsync(Guid id)
         {
             ReviewResponse reviewResponse = await _reviewService.GetReviewByIdAsync(id);
@@ -31,6 +34,7 @@ namespace microservices.ReviewAPI.API.Controllers
         }
 
         [HttpGet("user/{userId:guid}")]
+        [Authorize(Roles = "Client,Employee,Admin")]
         public async Task<ActionResult<IEnumerable<ReviewResponse>>> GetReviewsByUserIdAsync(Guid userId)
         {
             IEnumerable<ReviewResponse> response = await _reviewService.GetReviewsByUserIdAsync(userId);
@@ -38,6 +42,7 @@ namespace microservices.ReviewAPI.API.Controllers
         }
 
         [HttpGet("product/{productId:guid}")]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ReviewResponse>>> GetReviewsByProductIdAsync(Guid productId)
         {
             IEnumerable<ReviewResponse> response = await _reviewService.GetReviewsByProductIdAsync(productId);
@@ -45,6 +50,7 @@ namespace microservices.ReviewAPI.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Client")]
         public async Task<ActionResult<ReviewResponse>> CreateReviewAsync([FromForm] ReviewRequest reviewRequest)
         {
             ReviewResponse reviewResponse = await _reviewService.CreateNewReviewAsync(reviewRequest);
@@ -52,6 +58,7 @@ namespace microservices.ReviewAPI.API.Controllers
         }
 
         [HttpDelete("{id:Guid}")]
+        [Authorize(Roles = "Client,Employee,Admin")]
         public async Task<ActionResult> DeleteReviewAsync(Guid id)
         {
             await _reviewService.DeleteSingleReviewByIdAsync(id);
