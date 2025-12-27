@@ -79,7 +79,7 @@ namespace microservices.UserAPI.Domain.Services
                     ClockSkew = TimeSpan.Zero
                 }, out SecurityToken validatedToken);
 
-                var jwtToken = (JwtSecurityToken) validatedToken;
+                var jwtToken = (JwtSecurityToken)validatedToken;
                 var userId = jwtToken.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
 
                 return Guid.Parse(userId);

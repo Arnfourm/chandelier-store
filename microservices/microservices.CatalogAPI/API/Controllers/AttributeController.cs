@@ -1,6 +1,7 @@
 ﻿using microservices.CatalogAPI.API.Contracts.Requests;
 using microservices.CatalogAPI.API.Contracts.Responses;
 using microservices.CatalogAPI.Domain.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace microservices.CatalogAPI.API.Controllers
@@ -17,6 +18,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<AttributeResponse>>> GetAttributes()
         {
             IEnumerable<AttributeResponse> response = await _attributeService.GetAllAttributes();
@@ -25,6 +27,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> CreateAttribute([FromBody] AttributeRequest request)
         {
             await _attributeService.CreateNewAttribute(request);
@@ -33,6 +36,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpPut("{id:Guid}")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> UpdateAttribute(Guid id, [FromBody] AttributeRequest request)
         {
             await _attributeService.UpdateAttribute(id, request);
@@ -41,6 +45,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpDelete("{id:guid}")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> DeleteAttribute(Guid id)
         {
             await _attributeService.DeleteSingleAttributeById(id);
