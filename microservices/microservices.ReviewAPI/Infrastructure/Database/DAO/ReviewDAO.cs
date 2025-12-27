@@ -51,20 +51,22 @@ namespace microservices.ReviewAPI.Infrastructure.Database.DAO
             );
         }
 
-        public async Task<List<Review>> GetReviewByIdsAsync(List<Guid> ids)
+        public async Task<List<Review>> GetReviewsByUserIdAsync(Guid userId)
         {
             return await _reviewDbContext.Reviews
-                .Where(reviewEntity => ids.Contains(reviewEntity.Id))
-                .Select(reviewEntity => new Review
-                (
-                    reviewEntity.Id,
-                    reviewEntity.UserId,
-                    reviewEntity.ProductId,
-                    reviewEntity.OrderId,
-                    reviewEntity.Rate,
-                    reviewEntity.Content,
-                    reviewEntity.CreationDate
-                )).ToListAsync();
+                .Where(r => r.UserId == userId)
+                .Select(r => new Review(
+                    r.UserId, r.ProductId, r.OrderId, r.Rate, r.Content, r.CreationDate))
+                .ToListAsync();
+        }
+
+        public async Task<List<Review>> GetReviewsByProductIdAsync(Guid productId)
+        {
+            return await _reviewDbContext.Reviews
+                .Where(r => r.ProductId == productId)
+                .Select(r => new Review(
+                    r.Id, r.UserId, r.ProductId, r.OrderId, r.Rate, r.Content, r.CreationDate))
+                .ToListAsync();
         }
 
         public async Task<Review> CreateReviewAsync(Review review)

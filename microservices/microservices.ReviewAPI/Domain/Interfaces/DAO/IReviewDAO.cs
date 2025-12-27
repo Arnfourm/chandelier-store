@@ -6,7 +6,8 @@ namespace microservices.ReviewAPI.Domain.Interfaces.DAO
     {
         Task<List<Review>> GetReviewsAsync();
         Task<Review> GetReviewByIdAsync(Guid id);
-        Task<List<Review>> GetReviewByIdsAsync(List<Guid> ids);
+        Task<List<Review>> GetReviewsByUserIdAsync(Guid userId);
+        Task<List<Review>> GetReviewsByProductIdAsync(Guid productId);
         Task<Review> CreateReviewAsync(Review review);
         Task<Guid> UpdateReviewAsync(Review review);
         Task DeleteReview(Guid id);
