@@ -20,12 +20,29 @@ namespace microservices.OrderAPI.API.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Employee,Admin")]
-        public async Task<ActionResult<IEnumerable<OrderResponse>>> GetOrdersAsync()
+        public async Task<ActionResult<IEnumerable<OrderResponse>>> GetAllOrdersAsync()
         {
             IEnumerable<OrderResponse> response = await _orderService.GetAllOrderResponseAsync();
 
             return Ok(response);
-        }   
+        }
+
+        [HttpGet("user/{userId:guid}")]
+        [Authorize(Roles = "Client,Employee,Admin")]
+        public async Task<ActionResult<IEnumerable<OrderResponse>>> GetOrdersByUserIdAsync(Guid userId)
+        {
+            IEnumerable<OrderResponse> response = await _orderService.GetOrdersByUserIdAsync(userId);
+
+            return Ok(response);
+        }
+
+        [HttpGet("{id:guid}")]
+        [Authorize(Roles = "Client,Employee,Admin")]
+        public async Task<ActionResult<OrderResponse>> GetOrderByIdAsync(Guid id)
+        {
+            OrderResponse response = await _orderService.GetOrderByIdAsync(id);
+            return Ok(response);
+        }
 
         [HttpPost]
         [Authorize(Roles = "Client,Employee,Admin")]
