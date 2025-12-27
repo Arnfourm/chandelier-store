@@ -1,6 +1,7 @@
 ﻿using microservices.OrderAPI.API.Contracts.Requests;
 using microservices.OrderAPI.API.Contracts.Responses;
 using microservices.OrderAPI.Domain.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace microservices.OrderAPI.API.Controllers
@@ -17,6 +18,7 @@ namespace microservices.OrderAPI.API.Controllers
         }
 
         [HttpGet("{orderId:guid}")]
+        [Authorize(Roles = "Client,Employee,Admin")]
         public async Task<ActionResult<IEnumerable<OrderProductResponse>>> GetProductsByOrder(Guid orderId)
         {
             IEnumerable<OrderProductResponse> response =
@@ -26,6 +28,7 @@ namespace microservices.OrderAPI.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Client,Employee,Admin")]
         public async Task<IActionResult> AddProductToOrder([FromBody] OrderProductRequest request)
         {
             await _orderProductService.AddProductToOrderAsync(request);
@@ -33,6 +36,7 @@ namespace microservices.OrderAPI.API.Controllers
         }
 
         [HttpDelete("{orderId:guid}/{productId:guid}")]
+        [Authorize(Roles = "Client,Employee,Admin")]
         public async Task<IActionResult> RemoveProductFromOrder(Guid orderId, Guid productId)
         {
             await _orderProductService.RemoveProductFromOrderAsync(orderId, productId);
