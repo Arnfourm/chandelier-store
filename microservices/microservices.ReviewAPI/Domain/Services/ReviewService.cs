@@ -67,45 +67,45 @@ namespace microservices.ReviewAPI.Domain.Services
             return response;
         }
 
+        public async Task<ReviewResponse> GetReviewByIdAsync(Guid id)
+        {
+            Review review = await _reviewDAO.GetReviewByIdAsync(id);
+
+            return new ReviewResponse(
+                review.GetId(),
+                review.GetRate(),
+                review.GetContent(),
+                review.GetCreationDate()
+            );
+        }
+
+        public async Task<IEnumerable<ReviewResponse>> GetReviewsByProductIdAsync(Guid productId)
+        {
+            List<Review> reviews = await _reviewDAO.GetReviewsByProductIdAsync(productId);
+
+            return reviews.Select(review => new ReviewResponse(
+                review.GetId(),
+                review.GetRate(),
+                review.GetContent(),
+                review.GetCreationDate()
+            ));
+        }
+
+        public async Task<IEnumerable<ReviewResponse>> GetReviewsByUserIdAsync(Guid userId)
+        {
+            List<Review> reviews = await _reviewDAO.GetReviewsByUserIdAsync(userId);
+
+            return reviews.Select(review => new ReviewResponse(
+                review.GetId(),
+                review.GetRate(),
+                review.GetContent(),
+                review.GetCreationDate()
+            ));
+        }
+
         public async Task<ReviewResponse> CreateNewReviewAsync(ReviewRequest request)
         {
             string token = await _tokenService.GetTokenAsync();
-
-            using (HttpClientHandler handler = new HttpClientHandler())
-            {
-                using (HttpClient httpClient = new HttpClient(handler))
-                {
-                    HttpResponseMessage responseUser = await httpClient.GetAsync($"{_userService}/User/{request.UserId}");
-
-                    if (!responseUser.IsSuccessStatusCode)
-                        throw new Exception($"Exception: user with id: {request.UserId} doesn't exit");
-                }
-            }
-
-            using (HttpClientHandler handler = new HttpClientHandler())
-            {
-                using (HttpClient httpClient = new HttpClient(handler))
-                {
-                    HttpResponseMessage responseProduct = await httpClient.GetAsync($"{_catalogMicroservice}/Product/{request.ProductId}");
-
-                    if (!responseProduct.IsSuccessStatusCode)
-                        throw new Exception($"Product with id: {request.ProductId} doesn't exist");
-                }
-            }
-
-            using (HttpClientHandler handler = new HttpClientHandler())
-            {
-                using (HttpClient httpClient = new HttpClient(handler))
-                {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-                    HttpResponseMessage responseOrder = await httpClient.GetAsync($"{_orderMicroservice}/Order/{request.OrderId}");
-
-                    if (!responseOrder.IsSuccessStatusCode)
-                        throw new Exception($"Order with id {request.OrderId} can't be null");
-                }
-            }
-
 
             Review newReview = new Review(request.UserId, request.ProductId, request.OrderId, request.Rate, request.Content, DateTime.UtcNow);
             await _reviewDAO.CreateReviewAsync(newReview);
@@ -118,89 +118,6 @@ namespace microservices.ReviewAPI.Domain.Services
             );
         }
 
-        public async Task<Review> GetReviewByIdAsync(Guid Id)
-        {
-            string token = await _tokenService.GetTokenAsync();
-
-            using (HttpClientHandler handler = new HttpClientHandler())
-            {
-                using (HttpClient httpClient = new HttpClient(handler))
-                {
-                    var userRequest = new HttpRequestMessage(HttpMethod.Get, $"{_userService}/User/");
-
-                    userRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-                    HttpResponseMessage userResponse = await httpClient.SendAsync(userRequest);
-
-                    if (!userResponse.IsSuccessStatusCode)
-                        throw new Exception($"Can't send request to user service");
-                }
-            }
-
-            Review review = await _reviewDAO.GetReviewByIdAsync(Id);
-
-            return review;
-        }
-
-        public async Task<Guid> UpdateSingleReviewByIdAsync(Guid id, ReviewRequest request)
-        {
-            Review existingReview = await _reviewDAO.GetReviewByIdAsync(id);
-            if (existingReview == null)
-                throw new Exception($"Review with id: {id} doesn't exist");
-
-            string token = await _tokenService.GetTokenAsync();
-
-            using (HttpClientHandler handler = new HttpClientHandler())
-            { 
-                using (HttpClient httpClient = new HttpClient(handler))
-                {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                    HttpResponseMessage responseUser = await httpClient.GetAsync($"{_userService}/User/{request.UserId}");
-
-                    if (!responseUser.IsSuccessStatusCode)
-                        throw new Exception($"Exception: user with id: {request.UserId} doesn't exist");
-                }
-            }
-
-            using (HttpClientHandler handler = new HttpClientHandler())
-            { 
-                using (HttpClient httpClient = new HttpClient(handler))
-                {
-                    HttpResponseMessage responseProduct = await httpClient.GetAsync($"{_catalogMicroservice}/Product/{request.ProductId}");
-
-                    if (!responseProduct.IsSuccessStatusCode)
-                        throw new Exception($"Product with id: {request.ProductId} doesn't exist");
-                }
-            }
-
-            using (HttpClientHandler handler = new HttpClientHandler())
-            {
-                using (HttpClient httpClient = new HttpClient(handler))
-                {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                    HttpResponseMessage responseOrder = await httpClient.GetAsync($"{_orderMicroservice}/Order/{request.OrderId}");
-
-                    if (!responseOrder.IsSuccessStatusCode)
-                        throw new Exception($"Order with id {request.OrderId} doesn't exist");
-                }
-            }
-
-
-            Review newReview = new Review
-                (
-                    request.UserId,
-                    request.ProductId,
-                    request.OrderId,
-                    request.Rate,
-                    request.Content,
-                    existingReview.GetCreationDate()
-                );
-
-            await _reviewDAO.UpdateReviewAsync(existingReview);
-
-            return id;
-        }
-
         public async Task<Guid> DeleteSingleReviewByIdAsync(Guid id)
         {
             string token = await _tokenService.GetTokenAsync();
@@ -208,18 +125,6 @@ namespace microservices.ReviewAPI.Domain.Services
             Review reviewToDelete = await _reviewDAO.GetReviewByIdAsync(id);
             if (reviewToDelete == null)
                 throw new Exception($"Review with id: {id} doesn't exist");
-
-            using (HttpClientHandler handler = new HttpClientHandler())
-            {
-                using (HttpClient httpClient = new HttpClient(handler))
-                {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                    HttpResponseMessage responseUser = await httpClient.GetAsync($"{_userService}/User/{reviewToDelete.GetUserId()}");
-
-                    if (!responseUser.IsSuccessStatusCode)
-                        throw new Exception($"User with id: {reviewToDelete.GetUserId()} no longer exists");
-                }
-            }
 
             await _reviewDAO.DeleteReview(id);
 

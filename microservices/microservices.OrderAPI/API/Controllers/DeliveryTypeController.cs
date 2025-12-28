@@ -1,6 +1,7 @@
 using microservices.OrderAPI.API.Contracts.Requests;
 using microservices.OrderAPI.API.Contracts.Responses;
 using microservices.OrderAPI.Domain.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace microservices.OrderAPI.API.Controllers
@@ -17,6 +18,7 @@ namespace microservices.OrderAPI.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Client,Employee,Admin")]
         public async Task<ActionResult<IEnumerable<DeliveryTypeResponse>>> GetDeliveryTypes()
         {
             IEnumerable<DeliveryTypeResponse> response = await _deliveryTypeService.GetAllDeliveryTypeResponse();
@@ -25,6 +27,7 @@ namespace microservices.OrderAPI.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult<DeliveryTypeResponse>> CreateDeliveryType([FromForm] DeliveryTypeRequest request)
         {
             DeliveryTypeResponse response = await _deliveryTypeService.CreateNewDeliveryType(request);
@@ -33,6 +36,7 @@ namespace microservices.OrderAPI.API.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> UpdateProduct(int id, [FromForm] DeliveryTypeRequest request)
         {
             await _deliveryTypeService.UpdateSingleDeliveryTypeById(id, request);
@@ -41,6 +45,7 @@ namespace microservices.OrderAPI.API.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> DeleteProduct(int id)
         {
             await _deliveryTypeService.DeleteSingleDeliveryTypeById(id);

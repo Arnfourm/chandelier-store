@@ -1,6 +1,7 @@
 ﻿using microservices.CatalogAPI.API.Contracts.Requests;
 using microservices.CatalogAPI.API.Contracts.Responses;
 using microservices.CatalogAPI.Domain.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace microservices.CatalogAPI.API.Controllers
@@ -17,6 +18,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<MeasurementUnitResponse>>> GetMeasurementUnits()
         {
             IEnumerable<MeasurementUnitResponse> response = await _measurementUnitService.GetAllMeasurementUnits();
@@ -25,6 +27,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> CreateMeasurementUnit([FromBody] MeasurementUnitRequest request)
         {
             await _measurementUnitService.CreateNewMeasurementUnit(request);
@@ -33,6 +36,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> UpdateMeasurementUnit(int id, [FromBody] MeasurementUnitRequest request)
         {
             await _measurementUnitService.UpdateSingleMeasurementUnit(id, request);
@@ -41,6 +45,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> DeleteMeasurementUnit(int id)
         {
             await _measurementUnitService.DeleteSingleMeasurementUnitById(id);

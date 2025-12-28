@@ -2,6 +2,7 @@ using microservices.OrderAPI.API.Contracts.Requests;
 using microservices.OrderAPI.API.Contracts.Responses;
 using microservices.OrderAPI.Domain.Interfaces.Services;
 using microservices.OrderAPI.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace microservices.OrderAPI.API.Controllers
@@ -18,14 +19,33 @@ namespace microservices.OrderAPI.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<OrderResponse>>> GetOrdersAsync()
+        [Authorize(Roles = "Employee,Admin")]
+        public async Task<ActionResult<IEnumerable<OrderResponse>>> GetAllOrdersAsync()
         {
             IEnumerable<OrderResponse> response = await _orderService.GetAllOrderResponseAsync();
 
             return Ok(response);
         }
 
+        [HttpGet("user/{userId:guid}")]
+        [Authorize(Roles = "Client,Employee,Admin")]
+        public async Task<ActionResult<IEnumerable<OrderResponse>>> GetOrdersByUserIdAsync(Guid userId)
+        {
+            IEnumerable<OrderResponse> response = await _orderService.GetOrdersByUserIdAsync(userId);
+
+            return Ok(response);
+        }
+
+        [HttpGet("{id:guid}")]
+        [Authorize(Roles = "Client,Employee,Admin")]
+        public async Task<ActionResult<OrderResponse>> GetOrderByIdAsync(Guid id)
+        {
+            OrderResponse response = await _orderService.GetOrderByIdAsync(id);
+            return Ok(response);
+        }
+
         [HttpPost]
+        [Authorize(Roles = "Client,Employee,Admin")]
         public async Task<ActionResult<OrderResponse>> CreateOrderAsync([FromForm] OrderRequest orderRequest)
         {
             OrderResponse orderResponse = await _orderService.CreateNewOrderAsync(orderRequest);
@@ -34,6 +54,7 @@ namespace microservices.OrderAPI.API.Controllers
         }
 
         [HttpPut("{id:Guid}")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> UpdateOrderAsync(Guid id, [FromBody] OrderRequest orderRequest)
         {
             await _orderService.UpdateSingleOrderByIdAsync(id, orderRequest);
@@ -42,6 +63,7 @@ namespace microservices.OrderAPI.API.Controllers
         }
 
         [HttpDelete("{id:Guid}")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> DeleteOrderAsync(Guid id)
         {
             await _orderService.DeleteSingleOrderByIdAsync(id);

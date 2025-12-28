@@ -12,7 +12,7 @@
         public Order(Guid userId, decimal totalAmount, int statusId, 
                     int deliveryTypeId, DateTime creationDate)
         {
-            if (totalAmount <= 0) throw new ArgumentException("Order total amount can't be zero or less", nameof(totalAmount));
+            if (totalAmount < 0) throw new ArgumentException("Order total amount can't be less than zero", nameof(totalAmount));
 
             if (creationDate > DateTime.Now) throw new ArgumentException("Order creation date can't be in the future", nameof(creationDate));
             if (creationDate == default) throw new ArgumentException("Order date can't be default", nameof(creationDate));

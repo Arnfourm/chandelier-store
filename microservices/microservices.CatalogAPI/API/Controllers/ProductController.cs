@@ -2,14 +2,14 @@ using microservices.CatalogAPI.API.Contracts.Requests;
 using microservices.CatalogAPI.API.Contracts.Responses;
 using microservices.CatalogAPI.API.Filters;
 using microservices.CatalogAPI.Domain.Interfaces.Services;
-
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace microservices.CatalogAPI.API.Controllers
 {
    [ApiController]
    [Route("api/Catalog/[controller]")]
-   public class ProductController : ControllerBase
+    public class ProductController : ControllerBase
    {
         private readonly IProductService _productService;
         private readonly IProductAttributeService _productAttributeService;
@@ -26,6 +26,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ProductResponse>>> GetProducts(
                 [FromQuery] string? sort,
                 [FromQuery] string? search,
@@ -38,6 +39,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpGet("{id:Guid}")]
+        [AllowAnonymous]
         public async Task<ActionResult<ProductResponse>> GetProduct(Guid id)
         {
             ProductResponse response = await _productService.GetSingleProductResponseById(id);
@@ -45,8 +47,8 @@ namespace microservices.CatalogAPI.API.Controllers
             return Ok(response);
         }
 
-        // Perhabs needs to remove method and move get by several ids with main method GetProducts()
         [HttpGet("ByIds")]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ProductResponse>>> GetProductsByIds([FromQuery] List<Guid> ids)
         {
             IEnumerable<ProductResponse> response = await _productService.GetListProductResponseByIds(ids);
@@ -55,6 +57,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult<Guid>> CreateProduct([FromForm] ProductRequest request)
         {
             Guid newProductId = await _productService.CreateNewProduct(request);
@@ -63,6 +66,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpPut("{id:Guid}")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> UpdateProduct(Guid id, [FromForm] ProductRequest request)
         {
             await _productService.UpdateSingleProductById(id, request);
@@ -71,6 +75,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpDelete("{id:Guid}")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> DeleteProduct(Guid id)
         {
             await _productService.DeleteSingleProductById(id);
@@ -79,6 +84,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpGet("Attribute/{productId:Guid}")]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ProductAttributeResponse>>> GetProductAttributes(Guid productId)
         {
             IEnumerable<ProductAttributeResponse> response = await _productAttributeService.GetProductAttributeByProductId(productId);
@@ -87,6 +93,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpPost("Attribute")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> CreateProductAttribute([FromBody] ProductAttributeRequest request)
         {
             await _productAttributeService.CreateNewSingleProductAttribute(request);
@@ -95,6 +102,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpPut("Attribute")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> UpdateProductAttribute([FromBody] ProductAttributeRequest request)
         {
             await _productAttributeService.UpdateSingleProductAttribute(request);
@@ -103,6 +111,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpDelete("{productId:Guid}/Attribute/{attributeId:Guid}")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> DeleteProductAttribute(Guid productId, Guid attributeId)
         {
             await _deleteProductAttributeService.DeleteSingleProductAttribute(productId, attributeId);

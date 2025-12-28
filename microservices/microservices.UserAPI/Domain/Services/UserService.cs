@@ -23,7 +23,7 @@ namespace microservices.UserAPI.Domain.Services
             _passwordService = passwordService;
         }
 
-        public async Task<IEnumerable<UserResponse>> GetAllUsers()
+        public async Task<IEnumerable<UserResponse>> GetAllUsersAsync()
         {
             var users = await _userDAO.GetUsers();
             return users.Select(
@@ -39,10 +39,10 @@ namespace microservices.UserAPI.Domain.Services
             );
         }
 
-        public async Task<UserResponse> GetSingleUserById(Guid id)
+        public async Task<UserResponse> GetSingleUserByIdAsync(Guid id)
         {
             var user = await _userDAO.GetUserById(id);
-            return new UserResponse (
+            return new UserResponse(
                 Id: user.GetId(),
                 Email: user.GetEmail(),
                 Name: user.GetName(),
@@ -53,7 +53,7 @@ namespace microservices.UserAPI.Domain.Services
             );
         }
 
-        public async Task<UserResponse> GetSingleUserByEmail(string email)
+        public async Task<UserResponse> GetSingleUserByEmailAsync(string email)
         {
             var user = await _userDAO.GetUserByEmail(email);
             return new UserResponse(
@@ -67,12 +67,12 @@ namespace microservices.UserAPI.Domain.Services
             );
         }
 
-        public async Task<Guid> CreateNewUser(UserRequest request)
+        public async Task<Guid> CreateUserAsync(UserRequest request)
         {
             //User existingUser = await _userDAO.GetUserByEmail(request.Email);
             //if (existingUser != null)
             //    throw new InvalidOperationException($"User with email {request.Email} already exists");
-           
+
             var password = _passwordService.CreatePassword(request.Password);
             var passwordId = await _passwordDAO.CreatePassword(password);
 
@@ -91,7 +91,7 @@ namespace microservices.UserAPI.Domain.Services
             return userId;
         }
 
-        public async Task UpdateUser(UserRequest request)
+        public async Task UpdateUserAsync(UserRequest request)
         {
             var currentUser = await _userDAO.GetUserByEmail(request.Email);
 
@@ -110,7 +110,7 @@ namespace microservices.UserAPI.Domain.Services
             await _userDAO.UpdateUser(updatedUser);
         }
 
-        public async Task DeleteSingleUserById(Guid id)
+        public async Task DeleteUserByIdAsync(Guid id)
         {
             await _userDAO.DeleteUser(id);
         }

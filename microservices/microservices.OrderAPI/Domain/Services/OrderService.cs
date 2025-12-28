@@ -86,11 +86,76 @@ namespace microservices.OrderAPI.Domain.Services
             return response;
         }
 
-        public async Task<Order> GetOrderByIdAsync(Guid Id)
+        public async Task<IEnumerable<OrderResponse>> GetOrdersByUserIdAsync(Guid userId)
+        {
+            string token = await _tokenService.GetTokenAsync();
+
+            using (HttpClientHandler handler = new HttpClientHandler())
+            { 
+                using (HttpClient httpClient = new HttpClient(handler))
+                {
+                    var userRequest = new HttpRequestMessage(
+                        HttpMethod.Get,
+                        $"{_userService}/User/{userId}"
+                    );
+
+                    userRequest.Headers.Authorization =
+                        new AuthenticationHeaderValue("Bearer", token);
+
+                    HttpResponseMessage userResponse = await httpClient.SendAsync(userRequest);
+
+                    if (!userResponse.IsSuccessStatusCode)
+                        throw new ArgumentException($"User with id {userId} not found");
+                }
+            }
+
+            List<Order> orders = await _orderDAO.GetOrders();
+
+            List<Order> userOrders = orders
+                .Where(order => order.GetUserId() == userId)
+                .ToList();
+
+            if (!userOrders.Any())
+                return Enumerable.Empty<OrderResponse>();
+
+            List<int> statusIds = userOrders.Select(o => o.GetStatusId()).Distinct().ToList();
+            List<int> deliveryTypeIds = userOrders.Select(o => o.GetDeliveryTypeId()).Distinct().ToList();
+
+            IEnumerable<StatusResponse> statuses = await _statusService.GetStatusResponsesByIds(statusIds);
+
+            IEnumerable<DeliveryTypeResponse> deliveryTypes = await _deliveryTypeService.GetDeliveryTypeResponseByIds(deliveryTypeIds);
+
+            var statusDict = statuses.ToDictionary(s => s.Id);
+            var deliveryTypeDict = deliveryTypes.ToDictionary(d => d.Id);
+
+            return userOrders.Select(order => new OrderResponse
+            (
+                order.GetId(),
+                order.GetTotalAmount(),
+                statusDict[order.GetStatusId()],
+                deliveryTypeDict[order.GetDeliveryTypeId()],
+                order.GetCreationDate()
+            ));
+        }
+
+        public async Task<OrderResponse> GetOrderByIdAsync(Guid Id)
         {
             Order order = await _orderDAO.GetOrderById(Id);
 
-            return order;
+            StatusResponse statusResponse =
+                await _statusService.GetStatusResponseByIdAsync(order.GetStatusId());
+
+            DeliveryTypeResponse deliveryTypeResponse =
+                await _deliveryTypeService.GetDeliveryTypeResponseByIdAsync(order.GetDeliveryTypeId());
+
+            return new OrderResponse
+            (
+                order.GetId(),
+                order.GetTotalAmount(),
+                statusResponse,
+                deliveryTypeResponse,
+                order.GetCreationDate()
+            );
         }
 
         public async Task<OrderResponse> CreateNewOrderAsync(OrderRequest request)
