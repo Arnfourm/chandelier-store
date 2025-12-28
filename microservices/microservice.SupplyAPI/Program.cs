@@ -7,13 +7,19 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddEnvironmentVariables();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+var connectionString = builder.Environment.IsDevelopment() 
+    ? builder.Configuration.GetConnectionString("DevelopConnection")
+    : builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<SupplyDbContext>(
     options =>
     {
-        options.UseNpgsql(builder.Configuration.GetConnectionString("DevelopConnection"));
+        options.UseNpgsql(connectionString);
     }
 );
 

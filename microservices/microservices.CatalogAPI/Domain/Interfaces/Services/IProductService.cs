@@ -1,12 +1,13 @@
 using microservices.CatalogAPI.API.Contracts.Requests;
 using microservices.CatalogAPI.API.Contracts.Responses;
+using microservices.CatalogAPI.API.Filters;
 using microservices.CatalogAPI.Domain.Models;
 
 namespace microservices.CatalogAPI.Domain.Interfaces.Services
 {
     public interface IProductService
     {
-        Task<IEnumerable<ProductResponse>> GetAllProducts(string? sort);
+        Task<IEnumerable<ProductResponse>> GetAllProducts(string? sort, ProductFilter filters, string? search);
         Task<Product> GetSingleProductById(Guid id);
         Task<ProductResponse> GetSingleProductResponseById(Guid id);
         Task<IEnumerable<ProductResponse>> GetListProductResponseByIds(List<Guid> ids);

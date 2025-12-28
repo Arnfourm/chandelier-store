@@ -118,6 +118,15 @@ namespace microservices.CatalogAPI.Infrastructure.Database.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<int?>("LampCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("LampPower")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("MainImgPath")
+                        .HasColumnType("text");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 

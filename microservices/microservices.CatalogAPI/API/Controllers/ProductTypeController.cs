@@ -4,6 +4,7 @@ using microservices.CatalogAPI.Domain.Interfaces.Services;
 using microservices.CatalogAPI.Domain.Models;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace microservices.CatalogAPI.API.Controllers
 {
@@ -18,6 +19,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ProductTypeResponse>>> GetProductTypes()
         {
             IEnumerable<ProductTypeResponse> response = await _productTypeService.GetAllProductTypes();
@@ -26,6 +28,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult<int>> CreateProductType([FromBody] ProductTypeRequest request)
         {
             int newProductTypId = await _productTypeService.CreateNewProductType(request);
@@ -34,6 +37,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult<int>> UpdateProductType([FromBody] ProductTypeRequest request, int id)
         {
             int updateProductTypeId = await _productTypeService.UpdateSingleProductType(id, request);
@@ -42,6 +46,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> DeleteProductType(int id)
         {
             await _productTypeService.DeleteSingleProductTypeById(id);

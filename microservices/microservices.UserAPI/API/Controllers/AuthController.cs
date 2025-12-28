@@ -21,8 +21,23 @@ namespace microservices.UserAPI.API.Controllers
         [HttpPost("SignUp")]
         public async Task<ActionResult<AuthResponse>> SignUp([FromBody] UserRequest request)
         {
-            var response = await _authService.SignUp(request);
-            return Ok(response);
+            try
+            {
+                var response = await _authService.SignUp(request);
+                return Ok(response);
+            }
+            catch (ArgumentException ex) when (ex.Message.Contains("already exists", StringComparison.OrdinalIgnoreCase))
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
         }
 
         [HttpPost("LogIn")]
@@ -33,27 +48,46 @@ namespace microservices.UserAPI.API.Controllers
                 var response = await _authService.LogIn(request);
                 return Ok(response);
             }
-            catch (Exception ex) when (ex.Message.Contains("email"))
+            catch (UnauthorizedAccessException ex)
             {
-                return Unauthorized(new { message = "Пользователь с таким email не найден" });
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (ArgumentException ex) when (ex.Message.Contains("not found", StringComparison.OrdinalIgnoreCase))
+            {
+                return Unauthorized(new { message = "Invalid email or password" });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = ex.Message });
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
             }
         }
 
         [Authorize]
-        [HttpPost("LogOut")]
+        [HttpGet("LogOut")]
         public async Task<ActionResult> Logout()
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null) return Unauthorized();
+            try
+            {
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (userId == null)
+                    return Unauthorized(new { message = "User not authenticated" });
 
-            var success = await _authService.LogOut(Guid.Parse(userId));
-            return Ok();
+                var success = await _authService.LogOut(Guid.Parse(userId));
+
+                if (!success)
+                    return BadRequest(new { message = "Logout failed" });
+
+                return Ok(new { message = "Successfully logged out" });
+            }
+            catch (ArgumentException ex) when (ex.Message.Contains("not found", StringComparison.OrdinalIgnoreCase))
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
         }
-
 
         [HttpPost("RefreshToken")]
         public async Task<ActionResult<AuthResponse>> RefreshToken([FromBody] RefreshTokenRequest request)
@@ -65,7 +99,11 @@ namespace microservices.UserAPI.API.Controllers
             }
             catch (UnauthorizedAccessException ex)
             {
-                return Unauthorized(ex.Message);
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
             }
         }
     }

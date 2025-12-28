@@ -11,6 +11,5 @@ namespace microservices.UserAPI.Domain.Interfaces.Services
         Task<bool> LogOut(Guid userId);
 
         Task<AuthResponse> RefreshToken(RefreshTokenRequest request);
-        //Task<bool> ValidatePasswordAsync(Guid userId, string password);
     }
 }

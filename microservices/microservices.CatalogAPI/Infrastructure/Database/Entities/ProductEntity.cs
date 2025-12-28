@@ -23,11 +23,17 @@ namespace microservices.CatalogAPI.Infrastructure.Database.Entities
 
         public int Quantity { get; set; }
 
+        public int? LampPower { get; set; }
+
+        public int? LampCount { get; set; }
+
         [Required]
         public int ProductTypeId { get; set; }
 
         [ForeignKey("ProductTypeId")]
         public ProductTypeEntity? ProductType { get; set; }
+
+        public string? MainImgPath { get; set; }
 
         [Required]
         public DateOnly AddedDate { get; set; }

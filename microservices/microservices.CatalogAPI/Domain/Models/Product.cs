@@ -7,17 +7,24 @@
         private string Title;
         private decimal Price;
         private int Quantity;
+        private int? LampPower;
+        private int? LampCount;
         private int ProductTypeId;
+        private string? MainImgPath;
         private DateOnly AddedDate;
 
-        public Product(string article, string title, decimal price,
-                       int quantity, int productTypeId, DateOnly addedDate)
+        public Product(string article, string title, decimal price, 
+                        int quantity, int? lampPower, int? lampCount, 
+                        int productTypeId, string? mainImgPath, DateOnly addedDate)
         {
             if (string.IsNullOrWhiteSpace(article)) throw new ArgumentException("Product article can't be null or empty: ", nameof(article));
             if (string.IsNullOrEmpty(title)) throw new ArgumentException("Product title can't be null or empty: ", nameof(title));
 
             if (price <= 0) throw new ArgumentException("Product price can't be zero or less", nameof(price));
             if (quantity < 0) throw new ArgumentException("Product quantity can't be less than zero", nameof(quantity));
+
+            if (lampPower != null && lampPower <= 0) throw new ArgumentException("Product lamp power can't be zero or less", nameof(lampPower));
+            if (lampCount != null && lampCount <= 0) throw new ArgumentException("Product lamp count can't be zero or less", nameof(lampCount));
 
             if (addedDate > DateOnly.FromDateTime(DateTime.Now)) throw new ArgumentException("Product date add can't be in the future", nameof(addedDate));
             if (addedDate == default) throw new ArgumentException("Product date can't be default date", nameof(addedDate));
@@ -26,13 +33,17 @@
             Title = title;
             Price = price;
             Quantity = quantity;
+            LampPower = lampPower;
+            LampCount = lampCount;
             ProductTypeId = productTypeId;
+            MainImgPath = mainImgPath;
             AddedDate = addedDate;
         }
 
         public Product(Guid id, string article, string title, decimal price, 
-                       int quantity, int productTypeId, DateOnly addedDate) 
-                       : this(article, title, price, quantity, productTypeId, addedDate)        
+                        int quantity, int? lampPower, int? lampCount,
+                        int productTypeId, string? mainImgPath, DateOnly addedDate) 
+                        : this(article, title, price, quantity, lampPower, lampCount, productTypeId, mainImgPath, addedDate)        
         {
             Id = id;
         }
@@ -42,7 +53,10 @@
         public string GetTitle() { return Title; }
         public decimal GetPrice() { return Price; }
         public int GetQuantity() { return Quantity; }
+        public int? GetLampPower() { return LampPower; }
+        public int? GetLampCount() { return LampCount; }
         public int GetProductTypeId() { return ProductTypeId; }
+        public string? GetMainImgPath() { return MainImgPath; }
         public DateOnly GetAddedDate() { return AddedDate; }
 
         public void SetArticle(string article) { 
@@ -67,6 +81,22 @@
             if (quantity < 0) throw new ArgumentException("Product quantity can't be less than zero", nameof(quantity));
             
             Quantity = quantity;
+        }
+        public void SetLampPower(int lampPower)
+        {
+            if (lampPower <= 0) throw new ArgumentException("Product lamp power can't be zero or less", nameof(lampPower));
+            
+            LampPower = lampPower;
+        }
+        public void SetLampCount(int lampCount)
+        {
+            if (lampCount <= 0) throw new ArgumentException("Product lamp count can't be zero or less", nameof(lampCount));
+
+            LampCount = lampCount;
+        }
+        public void SetMainImgPath(string mainImgPath)
+        {
+            MainImgPath = mainImgPath;
         }
         public void SetProductTypeId(int productTypeId)
         {

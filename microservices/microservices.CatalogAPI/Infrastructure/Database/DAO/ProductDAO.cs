@@ -1,4 +1,5 @@
-﻿using microservices.CatalogAPI.Domain.Interfaces.DAO;
+﻿using microservices.CatalogAPI.API.Filters;
+using microservices.CatalogAPI.Domain.Interfaces.DAO;
 using microservices.CatalogAPI.Domain.Models;
 using microservices.CatalogAPI.Infrastructure.Database.Contexts;
 using microservices.CatalogAPI.Infrastructure.Database.Entities;
@@ -15,26 +16,18 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
             _catalogDbContext = catalogDbContext;
         }
 
-        public async Task<List<Product>> GetProducts(string? sort)
+        public async Task<List<Product>> GetProducts(
+                string? sort,
+                ProductFilter filters,
+                string? search
+            )
         {
-            var query = _catalogDbContext.Products.AsQueryable();
-
-            switch (sort?.ToLower())
-            {
-                case "price-down":
-                    query = query.OrderByDescending(productEntity => productEntity.Price);
-                    break;
-                case "price-up":
-                    query = query.OrderBy(productEntity => productEntity.Price);
-                    break;
-                case "new":
-                    query = query.OrderByDescending(productEntity => productEntity.AddedDate);
-                    break;
-                // Сделать по популярности по популярности через параметр объекта (продаж в месяц)
-                default:
-                    query = query.OrderBy(productEntiy => productEntiy.Title.ToLower());
-                    break;
-            }
+            var query = _catalogDbContext.Products
+                .Filter(filters, _catalogDbContext)
+                .Sort(sort)
+                .Search(search)
+                .AsQueryable()
+                .AsNoTracking();
 
             return await query
                 .Select(productEntity => new Product
@@ -44,7 +37,10 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
                     productEntity.Title,
                     productEntity.Price,
                     productEntity.Quantity,
+                    productEntity.LampPower,
+                    productEntity.LampCount,
                     productEntity.ProductTypeId,
+                    productEntity.MainImgPath,
                     productEntity.AddedDate
                 )).ToListAsync();
         }
@@ -64,8 +60,12 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
                 productEntity.Title,
                 productEntity.Price,
                 productEntity.Quantity,
+                productEntity.LampPower,
+                productEntity.LampCount,
                 productEntity.ProductTypeId,
-                productEntity.AddedDate);
+                productEntity.MainImgPath,
+                productEntity.AddedDate
+            );
         }
         
         public async Task<List<Product>> GetProductsByIds(List<Guid> ids)
@@ -79,7 +79,10 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
                     productEntity.Title,
                     productEntity.Price,
                     productEntity.Quantity,
+                    productEntity.LampPower,
+                    productEntity.LampCount,
                     productEntity.ProductTypeId,
+                    productEntity.MainImgPath,
                     productEntity.AddedDate
                 )).ToListAsync();
         }
@@ -92,7 +95,10 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
                 Title = product.GetTitle(),
                 Price = product.GetPrice(),
                 Quantity = product.GetQuantity(),
+                LampPower = product.GetLampPower(),
+                LampCount = product.GetLampCount(),
                 ProductTypeId = product.GetProductTypeId(),
+                MainImgPath = product.GetMainImgPath(),
                 AddedDate = product.GetAddedDate(),
             };
 
@@ -118,6 +124,9 @@ namespace microservices.CatalogAPI.Infrastructure.Database.DAO
                     .SetProperty(productEntity => productEntity.Title, product.GetTitle())
                     .SetProperty(productEntity => productEntity.Price, product.GetPrice())
                     .SetProperty(productEntity => productEntity.Quantity, product.GetQuantity())
+                    .SetProperty(productEntity => productEntity.LampPower, product.GetLampPower())
+                    .SetProperty(productEntity => productEntity.LampCount, product.GetLampCount())
+                    .SetProperty(productEntity => productEntity.MainImgPath, product.GetMainImgPath())
                     .SetProperty(productEntity => productEntity.ProductTypeId, product.GetProductTypeId()));
 
             try

@@ -1,6 +1,7 @@
 ﻿using microservices.CatalogAPI.API.Contracts.Requests;
 using microservices.CatalogAPI.API.Contracts.Responses;
 using microservices.CatalogAPI.Domain.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace microservices.CatalogAPI.API.Controllers
@@ -17,6 +18,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<AttributeGroupResponse>>> GetAttributeGroups()
         {
             IEnumerable<AttributeGroupResponse> response = await _attributeGroupService.GetAllAttributeGroups();
@@ -25,6 +27,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> CreateAttributeGroup([FromBody] AttributeGroupRequest request)
         {
             await _attributeGroupService.CreateNewAttributeGroup(request);
@@ -33,6 +36,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> UpdateAttributeGroup(int id, AttributeGroupRequest request)
         {
             await _attributeGroupService.UpdateSingleAttributeGroupById(id, request);
@@ -41,6 +45,7 @@ namespace microservices.CatalogAPI.API.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> DeleteAttributeGroup(int id)
         {
             await _attributeGroupService.DeleteSingleAttributeGroupById(id);
