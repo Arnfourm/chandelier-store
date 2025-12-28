@@ -1,0 +1,50 @@
+[
+    {
+        "id": 1,
+        "name": "CLASSIC COFFEE",
+        "price": 150,
+        "imgUrl": "/images/chandelier-cart-test.png"
+    },
+    {
+        "id": 2,
+        "name": "VANILLA LATTE",
+        "price": 240,
+        "imgUrl": "/img/popular-coffee-1.png"
+    },
+    {
+        "id": 3,
+        "name": "MOCHA COFFEE",
+        "price": 360,
+        "imgUrl": "/img/popular-coffee-3.png"
+    },
+    {
+        "id": 4,
+        "name": "ICED COFFEE MOCHA",
+        "price": 450,
+        "imgUrl": "/img/products-coffee-1.png"
+    },
+    {
+        "id": 5,
+        "name": "COFFEE WITH CREAM",
+        "price": 420,
+        "imgUrl": "/img/products-coffee-2.png"
+    },
+    {
+        "id": 6,
+        "name": "CAPPUCCINO COFFEE",
+        "price": 280,
+        "imgUrl": "/img/products-coffee-3.png"
+    },
+    {
+        "id": 7,
+        "name": "COFFEE WITH MILK",
+        "price": 350,
+        "imgUrl": "/img/products-coffee-4.png"
+    },
+    {
+        "id": 8,
+        "name": "CLASSIC ICED COFFEE",
+        "price": 270,
+        "imgUrl": "/img/products-coffee-5.png"
+    }
+]
