@@ -1,6 +1,7 @@
 ﻿using microservice.SupplyAPI.API.Contracts.Requests;
 using microservice.SupplyAPI.API.Contracts.Responses;
 using microservice.SupplyAPI.Domain.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace microservice.SupplyAPI.API.Controllers
@@ -25,6 +26,7 @@ namespace microservice.SupplyAPI.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult<IEnumerable<SupplyResponse>>> GetSupplies()
         {
             IEnumerable<SupplyResponse> response = await _supplyService.GetAllSupplies();
@@ -33,6 +35,7 @@ namespace microservice.SupplyAPI.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> CreateSupply([FromBody] SupplyRequest request)
         {
             await _supplyService.CreateNewSupply(request);
@@ -41,6 +44,7 @@ namespace microservice.SupplyAPI.API.Controllers
         }
 
         [HttpDelete("{id:Guid}")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> DeleteSupply(Guid id)
         {
             await _supplyDeleteService.DeleteSingleSupplyById(id);
@@ -49,6 +53,7 @@ namespace microservice.SupplyAPI.API.Controllers
         }
 
         [HttpGet("{supplyId:Guid}/Product/")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult<IEnumerable<SupplyProductResponse>>> GetSupplyProductsById(Guid supplyId)
         {
             IEnumerable<SupplyProductResponse> response = await _supplyProductService.GetListSupplyProductBySupplyId(supplyId);
@@ -57,6 +62,7 @@ namespace microservice.SupplyAPI.API.Controllers
         }
 
         [HttpPost("Product")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> CreateSupplyProduct([FromBody] SupplyProductRequest request)
         {
             await _supplyProductService.CreateNewSupplyProduct(request);
@@ -65,6 +71,7 @@ namespace microservice.SupplyAPI.API.Controllers
         }
 
         [HttpDelete("{supplyId:Guid}/Product/{productId:Guid}")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> DeleteSupplyProduct(Guid supplyId, Guid productId)
         {
             await _supplyProductService.DeleteSupplyProductByBothIds(supplyId, productId);

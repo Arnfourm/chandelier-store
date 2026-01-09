@@ -5,6 +5,11 @@ using microservice.SupplyAPI.Domain.DTO.Responses;
 using microservice.SupplyAPI.Domain.Interfaces.DAO;
 using microservice.SupplyAPI.Domain.Interfaces.Services;
 using microservice.SupplyAPI.Domain.Models;
+using microservices.SupplyAPI.Domain.Interfaces.Services;
+using System.Globalization;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
 
 namespace microservice.SupplyAPI.Domain.Services
 {
@@ -13,20 +18,23 @@ namespace microservice.SupplyAPI.Domain.Services
         private readonly ISupplyProductDAO _supplyProductDAO;
 
         private readonly ISupplyService _supplyService;
+        private readonly ITokenService _tokenService;
 
         private readonly string _catalogMicroservice;
 
         public SupplyProductService(
             ISupplyProductDAO supplyProductDAO, 
             ISupplyService supplyService,
+            ITokenService tokenService,
             IConfiguration catalogMicroservice
         )
         {
             _supplyProductDAO = supplyProductDAO;
 
             _supplyService = supplyService;
+            _tokenService = tokenService;
 
-            _catalogMicroservice = catalogMicroservice["Microservices:CatalogMicroservice"] 
+            _catalogMicroservice = catalogMicroservice["Microservices:CatalogMicroservice:Url"] 
                 ?? throw new ArgumentException("Catalog microservice is null");
         }
 
@@ -89,13 +97,19 @@ namespace microservice.SupplyAPI.Domain.Services
 
         public async Task CreateNewSupplyProduct(SupplyProductRequest request)
         {
+            string token = await _tokenService.GetTokenAsync();
+
             ProductRequestDTO productRequestDTO;
 
             using (HttpClientHandler handler = new HttpClientHandler())
             {
                 using (HttpClient httpClient = new HttpClient(handler))
                 {
-                    HttpResponseMessage responseProduct = await httpClient.GetAsync($"{_catalogMicroservice}/Product/{request.ProductId}");
+                    var productRequest = new HttpRequestMessage(HttpMethod.Get, $"{_catalogMicroservice}/Product/{request.ProductId}");
+
+                    productRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                    HttpResponseMessage responseProduct = await httpClient.SendAsync(productRequest);
 
                     if (!responseProduct.IsSuccessStatusCode)
                     {
@@ -111,8 +125,9 @@ namespace microservice.SupplyAPI.Domain.Services
                         Title = productResponse.Title,
                         Price = productResponse.Price,
                         Quantity = productResponse.Quantity + request.Quantity,
+                        LampPower = productResponse.LampPower,
+                        LampCount = productResponse.LampCount,
                         ProductTypeId = productResponse.ProductType.Id,
-                        AddedDate = productResponse.AddedDate
                     };
                 }
             }
@@ -125,7 +140,25 @@ namespace microservice.SupplyAPI.Domain.Services
             {
                 using (HttpClient httpClient = new HttpClient(handler))
                 {
-                    HttpResponseMessage responsePut = await httpClient.PutAsJsonAsync($"{_catalogMicroservice}/Product/{request.ProductId}", productRequestDTO);
+                    var formData = new FormUrlEncodedContent(new[]
+                    {
+                        new KeyValuePair<string, string>("Article", productRequestDTO.Article),
+                        new KeyValuePair<string, string>("Title", productRequestDTO.Title),
+                        new KeyValuePair<string, string>("Price", productRequestDTO.Price.ToString()),
+                        new KeyValuePair<string, string>("Quantity", productRequestDTO.Quantity.ToString()),
+                        new KeyValuePair<string, string>("LampPower", productRequestDTO.LampPower.ToString() ?? ""),
+                        new KeyValuePair<string, string>("LampCount", productRequestDTO.LampCount.ToString() ?? ""),
+                        new KeyValuePair<string, string>("ProductTypeId", productRequestDTO.ProductTypeId.ToString()),
+                    });
+
+                    var requestMessage = new HttpRequestMessage(HttpMethod.Put, $"{_catalogMicroservice}/Product/{request.ProductId}")
+                    {
+                        Content = formData
+                    };
+
+                    requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                    HttpResponseMessage responsePut = await httpClient.SendAsync(requestMessage);
 
                     if (!responsePut.IsSuccessStatusCode)
                     {
@@ -158,13 +191,19 @@ namespace microservice.SupplyAPI.Domain.Services
                 throw new Exception($"Supply with id {supplyId} doesn't exist");
             }
 
+            string token = await _tokenService.GetTokenAsync();
+
             using (HttpClientHandler handler = new HttpClientHandler())
             {
                 using (HttpClient httpClient = new HttpClient(handler))
                 {
-                    HttpResponseMessage responseProducts = await httpClient.GetAsync($"{_catalogMicroservice}/Product/{productId}");
+                    var productRequest = new HttpRequestMessage(HttpMethod.Get, $"{_catalogMicroservice}/Product/{productId}");
 
-                    if (!responseProducts.IsSuccessStatusCode)
+                    productRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                    HttpResponseMessage responseProduct = await httpClient.SendAsync(productRequest);
+
+                    if (!responseProduct.IsSuccessStatusCode)
                     {
                         throw new Exception($"Product with id {productId} doesn't exist");
                     }
