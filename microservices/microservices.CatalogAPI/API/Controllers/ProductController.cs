@@ -1,4 +1,4 @@
-using microservices.CatalogAPI.API.Contracts.Requests;
+ using microservices.CatalogAPI.API.Contracts.Requests;
 using microservices.CatalogAPI.API.Contracts.Responses;
 using microservices.CatalogAPI.API.Filters;
 using microservices.CatalogAPI.Domain.Interfaces.Services;

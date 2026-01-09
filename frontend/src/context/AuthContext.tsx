@@ -7,6 +7,13 @@ useEffect - хук, который инициализирует контекст
 + методы для авторизации
 */
 
+// const auth = useAuth();
+
+// useEffect(() => {
+//     auth.logout();
+//     console.log("Авторизация сброшена при инициализации");
+// }, []);
+
 import { createContext, useContext, useState, useEffect } from "react";
 import { saveAuth, getAuth, clearAuth } from "../storage/AuthStorage";
 
