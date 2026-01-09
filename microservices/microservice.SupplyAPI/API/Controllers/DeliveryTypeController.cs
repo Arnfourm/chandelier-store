@@ -1,6 +1,7 @@
 ﻿using microservice.SupplyAPI.API.Contracts.Requests;
 using microservice.SupplyAPI.API.Contracts.Responses;
 using microservice.SupplyAPI.Domain.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace microservice.SupplyAPI.API.Controllers
@@ -17,6 +18,7 @@ namespace microservice.SupplyAPI.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult<IEnumerable<DeliveryTypeResponse>>> GetDeliveryTypes()
         {
             IEnumerable<DeliveryTypeResponse> response = await _deliveryTypeService.GetAllDeliveryType();
@@ -25,6 +27,7 @@ namespace microservice.SupplyAPI.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> CreateDeliveryType([FromBody] DeliveryTypeRequest request)
         {
             await _deliveryTypeService.CreateNewDeliveryType(request);
@@ -33,6 +36,7 @@ namespace microservice.SupplyAPI.API.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> UpdateDeliveryType(int id, [FromBody] DeliveryTypeRequest request)
         {
             await _deliveryTypeService.UpdateSingleDeliveryTypeById(id, request);
@@ -41,6 +45,7 @@ namespace microservice.SupplyAPI.API.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> DeleteDeliveryType(int id)
         {
             await _deliveryTypeService.DeleteSingleDeliveryTypeById(id);

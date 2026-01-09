@@ -6,7 +6,8 @@
         public required string Title { get; set; }
         public decimal Price { get; set; }
         public int Quantity { get; set; }
+        public int? LampPower { get; set; }
+        public int? LampCount { get; set; }
         public int ProductTypeId { get; set; }
-        public DateOnly AddedDate { get; set; }
     }
 }
