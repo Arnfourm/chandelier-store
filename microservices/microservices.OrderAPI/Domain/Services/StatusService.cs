@@ -67,11 +67,16 @@ namespace microservices.OrderAPI.Domain.Services
 
         public async Task<StatusResponse> CreateNewStatus(StatusRequest request)
         {
+            if (string.IsNullOrWhiteSpace(request.Title))
+            {
+                throw new ArgumentException("Status type of order can't be null or empty", nameof(request.Title));
+            }
+
             Status newStatus = new Status
             (
                 request.Title
             );
-            
+
             Status responseStatus = await _statusDAO.CreateStatus(newStatus);
 
             return new StatusResponse(responseStatus.GetId(), responseStatus.GetTitle());
@@ -79,6 +84,11 @@ namespace microservices.OrderAPI.Domain.Services
 
         public async Task UpdateStatusById(int id, StatusRequest request)
         {
+            if (string.IsNullOrWhiteSpace(request.Title))
+            {
+                throw new ArgumentException("Status type of order can't be null or empty", nameof(request.Title));
+            }
+
             Status updateStatus = new Status
             (
                 id,
