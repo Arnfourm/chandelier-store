@@ -6,7 +6,6 @@ using microservices.UserAPI.Domain.Models;
 using microservices.UserAPI.Domain.Enums;
 
 using User = microservices.UserAPI.Domain.Models.User;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace microservices.UserAPI.Domain.Services
 {
