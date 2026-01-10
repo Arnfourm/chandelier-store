@@ -1,7 +1,3 @@
 export function AuthButton() {
-    return (
-        <button type="submit" disabled={loading}>
-            {loading ? "Входим..." : "Войти"}
-        </button>
-    );
+    return <button type="submit">Войти</button>;
 }

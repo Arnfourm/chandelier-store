@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 interface ProfileButtonProps {
-    name: string;
+    name?: string;
     ref: string;
 }
 

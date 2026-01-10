@@ -1,5 +1,5 @@
-import { useShoppingCart } from "../../context/ShoppingCartContext"; // путь к твоему контексту
-import { useAuth } from "../../context/AuthContext"; // твой контекст авторизации
+import { useShoppingCart } from "../../context/ShoppingCartContext";
+import { useAuth } from "../../context/AuthContext";
 
 export function CartButton() {
     const { openCart, cartQuantity } = useShoppingCart();

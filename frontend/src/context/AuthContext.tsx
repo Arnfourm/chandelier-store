@@ -1,12 +1,26 @@
-// contexts/AuthContext.tsx
-import { createContext, useContext, useState, useEffect } from "react";
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+
+interface UserData {
+    userId: string;
+    email: string;
+    userRole: number;
+    name: string;
+    surname: string;
+    profile?: any;
+}
+
+interface AuthTokens {
+    accessToken: string;
+    refreshToken: string;
+}
 
 interface AuthContextType {
     accessToken: string | null;
     refreshToken: string | null;
     role: number | null;
     email: string | null;
-    user: any | null;
+    user: UserData | null;
     isAuthenticated: boolean;
     isInitializing: boolean;
     login: (email: string, password: string) => Promise<number | null>;
@@ -16,7 +30,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-export function useAuth() {
+export function useAuth(): AuthContextType {
     const context = useContext(AuthContext);
     if (!context) {
         throw new Error("useAuth must be used within AuthProvider");
@@ -24,16 +38,30 @@ export function useAuth() {
     return context;
 }
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+interface AuthProviderProps {
+    children: ReactNode;
+}
+
+interface StorageAuthData {
+    accessToken: string;
+    refreshToken: string;
+    userRole: number;
+    email: string;
+    userId?: string;
+    name?: string;
+    surname?: string;
+}
+
+export function AuthProvider({ children }: AuthProviderProps) {
     const [accessToken, setAccessToken] = useState<string | null>(null);
     const [refreshToken, setRefreshToken] = useState<string | null>(null);
     const [role, setRole] = useState<number | null>(null);
     const [email, setEmail] = useState<string | null>(null);
-    const [user, setUser] = useState<any | null>(null);
+    const [user, setUser] = useState<UserData | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isInitializing, setIsInitializing] = useState(true);
 
-    const decodeJWT = (token: string) => {
+    const decodeJWT = (token: string): any | null => {
         try {
             const base64Url = token.split(".")[1];
             const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
@@ -50,15 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
-    const saveAuthToStorage = (data: {
-        accessToken: string;
-        refreshToken: string;
-        userRole: number;
-        email: string;
-        userId?: string;
-        name?: string;
-        surname?: string;
-    }) => {
+    const saveAuthToStorage = (data: StorageAuthData) => {
         localStorage.setItem("accessToken", data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
 
@@ -93,12 +113,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.removeItem("user_surname");
     };
 
-    const getAuthFromStorage = () => {
-        let tokens = null;
+    const getAuthFromStorage = (): {
+        tokens: AuthTokens;
+        email: string;
+        role: number;
+    } | null => {
+        let tokens: AuthTokens | null = null;
         const tokensStr = localStorage.getItem("auth_tokens");
 
         if (tokensStr) {
-            tokens = JSON.parse(tokensStr);
+            try {
+                tokens = JSON.parse(tokensStr);
+            } catch {
+                tokens = null;
+            }
         } else {
             const accessToken = localStorage.getItem("accessToken");
             const refreshToken = localStorage.getItem("refreshToken");
@@ -112,10 +140,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         if (!tokens || !email || !roleStr) return null;
 
+        const role = parseInt(roleStr, 10);
+        if (isNaN(role)) return null;
+
         return {
             tokens,
             email,
-            role: parseInt(roleStr, 10),
+            role,
         };
     };
 
@@ -153,13 +184,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                                 decoded.nameid ||
                                 "";
 
-                            setUser({
+                            const userData: UserData = {
                                 userId: userId,
                                 email: storedAuth.email,
                                 userRole: storedAuth.role,
                                 name: userName,
                                 surname: userSurname,
-                            });
+                            };
+
+                            setUser(userData);
 
                             console.log("Авторизация восстановлена из localStorage");
                         } else {
@@ -233,7 +266,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
             console.log("Извлеченные данные:", { userName, userSurname });
 
-            const userData = {
+            const userData: UserData = {
                 userId: data.userId || decoded?.userId || decoded?.nameid || "",
                 email: data.email || email,
                 userRole: data.userRole,
@@ -281,7 +314,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     const refresh = async (): Promise<boolean> => {
-        if (!refreshToken) {
+        const currentRefreshToken = refreshToken;
+        if (!currentRefreshToken) {
             console.log("Нет refresh токена");
             return false;
         }
@@ -293,7 +327,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     "Content-Type": "application/json",
                     Accept: "application/json",
                 },
-                body: JSON.stringify({ refreshToken }),
+                body: JSON.stringify({ refreshToken: currentRefreshToken }),
             });
 
             if (!res.ok) {

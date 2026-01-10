@@ -18,21 +18,21 @@ export function AdminPanel() {
 
             <Link
                 to="/"
-                className="absolute top-[calc(50.00%_-_482px)] left-[50px] w-[246px] [font-family:'Arial-Bold',Helvetica] font-bold text-[#ffffff80] text-3xl tracking-[0] leading-[30px] whitespace-nowrap"
+                className="absolute top-[calc(50.00%-482px)] left-[50px] w-[246px] font-['Arial-Bold',Helvetica] font-bold text-[#ffffff80] text-3xl tracking-[0] leading-[30px] whitespace-nowrap"
             >
                 Империя люстр
             </Link>
 
-            <div className="absolute top-[calc(50.00%_-_375px)] left-[546px] w-[1077px] [font-family:'Arial-Bold',Helvetica] font-bold text-[#202020bf] text-5xl tracking-[0] leading-[48px] whitespace-nowrap">
+            <div className="absolute top-[calc(50.00%-375px)] left-[546px] w-[1077px] font-['Arial-Bold',Helvetica] font-bold text-[#202020bf] text-5xl tracking-[0] leading-12 whitespace-nowrap">
                 Здравствуйте, {user?.surname}!
             </div>
 
-            <div className="absolute top-[calc(50.00%_-_269px)] left-[546px] w-[1077px] [font-family:'Arial-Regular',Helvetica] font-normal text-[#202020bf] text-[32px] tracking-[0] leading-8">
+            <div className="absolute top-[calc(50.00%-269px)] left-[546px] w-[1077px] font-['Arial-Regular',Helvetica] font-normal text-[#202020bf] text-[32px] tracking-[0] leading-8">
                 Это страница сотрудника (админ)
             </div>
 
             <div className="top-[123px] -left-px w-[449px] h-[65px] flex-col gap-9 absolute flex">
-                <div className="ml-[51px] w-[284px] h-7 [font-family:'Arial-Regular',Helvetica] font-normal text-z-4d1-0r text-[28px] tracking-[0] leading-7 whitespace-nowrap">
+                <div className="ml-[51px] w-[284px] h-7 font-['Arial-Regular',Helvetica] font-normal text-z-4d1-0r text-[28px] tracking-[0] leading-7 whitespace-nowrap">
                     Управление пользователями
                 </div>
 
@@ -40,7 +40,7 @@ export function AdminPanel() {
             </div>
 
             <div className="top-56 -left-0.5 w-[449px] h-[65px] flex-col gap-9 absolute flex">
-                <div className="ml-[51px] w-[290px] h-7 [font-family:'Arial-Regular',Helvetica] font-normal text-z-4d1-0r text-[28px] tracking-[0] leading-7 whitespace-nowrap">
+                <div className="ml-[51px] w-[290px] h-7 font-['Arial-Regular',Helvetica] font-normal text-z-4d1-0r text-[28px] tracking-[0] leading-7 whitespace-nowrap">
                     Управление заказами
                 </div>
 
@@ -48,7 +48,7 @@ export function AdminPanel() {
             </div>
 
             <div className="top-[325px] left-[49px] w-36 h-7 absolute flex">
-                <div className="w-[142px] h-7 [font-family:'Arial-Regular',Helvetica] font-normal text-z-4d1-0r text-[28px] tracking-[0] leading-7 whitespace-nowrap">
+                <div className="w-[142px] h-7 font-['Arial-Regular',Helvetica] font-normal text-z-4d1-0r text-[28px] tracking-[0] leading-7 whitespace-nowrap">
                     Управление поставками
                 </div>
             </div>
@@ -56,7 +56,7 @@ export function AdminPanel() {
             <div className="top-[959px] left-[180px] w-[85px] h-7 absolute flex">
                 <button
                     onClick={handleLogout}
-                    className="w-[83px] h-7 [font-family:'Arial-Regular',Helvetica] font-normal text-[#ff8d28] text-[28px] tracking-[0] leading-7 whitespace-nowrap"
+                    className="w-[83px] h-7 font-['Arial-Regular',Helvetica] font-normal text-[#ff8d28] text-[28px] tracking-[0] leading-7 whitespace-nowrap"
                 >
                     Выйти
                 </button>
