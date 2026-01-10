@@ -16,9 +16,9 @@ export function Header() {
 
                 {isAuthenticated ? (
                     role === 1 ? (
-                        <ProfileButton ref="/account" name={user?.name} />
+                        <ProfileButton ref="/account" name={user?.surname} />
                     ) : role === 2 || role === 3 ? (
-                        <ProfileButton ref="/employee" name={user?.name} />
+                        <ProfileButton ref="/employee" name={user?.surname} />
                     ) : null
                 ) : (
                     <ProfileButton ref="/login" name="Войти" />
