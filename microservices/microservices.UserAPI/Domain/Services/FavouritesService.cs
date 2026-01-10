@@ -28,8 +28,7 @@ namespace microservices.UserAPI.Domain.Services
             bool alreadyExists = await _favouritesDAO.IsProductInFavourites(userId, productId);
 
             if (alreadyExists)
-                if (alreadyExists)
-                    throw new ArgumentException($"Product with id {productId} is already in favourites for user {userId}");
+                throw new ArgumentException($"Product with id {productId} is already in favourites for user {userId}");
 
             await _favouritesDAO.AddProductToFavourites(userId, productId);
         }

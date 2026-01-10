@@ -6,7 +6,6 @@ using microservices.UserAPI.Domain.Models;
 using microservices.UserAPI.Domain.Enums;
 
 using User = microservices.UserAPI.Domain.Models.User;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace microservices.UserAPI.Domain.Services
 {
@@ -69,9 +68,9 @@ namespace microservices.UserAPI.Domain.Services
 
         public async Task<Guid> CreateUserAsync(UserRequest request)
         {
-            //User existingUser = await _userDAO.GetUserByEmail(request.Email);
-            //if (existingUser != null)
-            //    throw new InvalidOperationException($"User with email {request.Email} already exists");
+            User existingUser = await _userDAO.GetUserByEmail(request.Email);
+            if (existingUser != null)
+                throw new InvalidOperationException($"User with email {request.Email} already exists");
 
             var password = _passwordService.CreatePassword(request.Password);
             var passwordId = await _passwordDAO.CreatePassword(password);
@@ -93,14 +92,28 @@ namespace microservices.UserAPI.Domain.Services
 
         public async Task UpdateUserAsync(UserRequest request)
         {
+            if (string.IsNullOrWhiteSpace(request.Email))
+                throw new ArgumentException("Email cannot be null or empty");
+
+            if (string.IsNullOrWhiteSpace(request.Name))
+                throw new ArgumentException("Name cannot be null or empty");
+
+            if (string.IsNullOrWhiteSpace(request.Surname))
+                throw new ArgumentException("Surname cannot be null or empty");
+
+            if (request.Birthday.HasValue && request.Birthday.Value > DateOnly.FromDateTime(DateTime.UtcNow))
+                throw new ArgumentException("Birthday cannot be in the future");
+
             var currentUser = await _userDAO.GetUserByEmail(request.Email);
+            if (currentUser == null)
+                throw new KeyNotFoundException($"User with email '{request.Email}' not found");
 
             var updatedUser = new User(
                 currentUser.GetId(),
                 request.Email ?? currentUser.GetEmail(),
                 request.Name ?? currentUser.GetName(),
                 request.Surname ?? currentUser.GetSurname(),
-                request.Birthday,
+                request.Birthday ?? currentUser.GetBirthday(),
                 currentUser.GetRegistration(),
                 currentUser.GetPasswordId(),
                 currentUser.GetRefreshTokenId(),

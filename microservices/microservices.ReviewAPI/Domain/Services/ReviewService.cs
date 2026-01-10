@@ -26,9 +26,9 @@ namespace microservices.ReviewAPI.Domain.Services
             _userService = config["Microservices:UserMicroservice:Url"]
                 ?? throw new ArgumentException("User microservice url is null");
             _catalogMicroservice = config["Microservices:CatalogMicroservice:Url"]
-                ?? throw new ArgumentException("User microservice url is null");
+                ?? throw new ArgumentException("Catalog microservice url is null");
             _orderMicroservice = config["Microservices:OrderMicroservice:Url"]
-                ?? throw new ArgumentException("User microservice url is null");
+                ?? throw new ArgumentException("Order microservice url is null");
         }
 
         public async Task<IEnumerable<ReviewResponse>> GetAllReviewsAsync()
@@ -70,6 +70,8 @@ namespace microservices.ReviewAPI.Domain.Services
         public async Task<ReviewResponse> GetReviewByIdAsync(Guid id)
         {
             Review review = await _reviewDAO.GetReviewByIdAsync(id);
+            if (review == null)
+                throw new KeyNotFoundException($"Review with id {id} not found");
 
             return new ReviewResponse(
                 review.GetId(),

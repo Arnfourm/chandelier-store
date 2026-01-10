@@ -184,15 +184,15 @@ namespace microservices.UserAPI.Domain.Services
 
                 return true;
             }
+            catch (KeyNotFoundException ex)
+            {
+                throw new KeyNotFoundException($"User with id {userId} not found", ex);
+            }
             catch (Exception ex)
             {
-                Console.WriteLine($"Logout error: {ex.Message}");
-                return false;
+                throw new Exception($"Logout error: {ex.Message}");
             }
         }
-
-
-
 
         public async Task<AuthResponse> RefreshToken(RefreshTokenRequest request)
         {
