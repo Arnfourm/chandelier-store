@@ -3,7 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { formatCurrency } from "../../utilities/formatCurrency";
 
-export function ProductCard({ id, name, article, price, imgUrl }) {
+export function ProductCard({ id, name, article, price }) {
     const { getItemQuantity, increaseCartQuantity, decreaseCartQuantity, removeFromCart } =
         useShoppingCart();
     const { isAuthenticated } = useAuth();

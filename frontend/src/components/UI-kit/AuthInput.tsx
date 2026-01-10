@@ -3,8 +3,8 @@ interface AuthInputProps {
     type: string;
     placeholder: string;
     value: string;
-    onChange: React.InputHTMLAttributes<HTMLInputElement>;
-    className: string;
+    onChange: React.ChangeEventHandler<HTMLInputElement>;
+    className?: string;
 }
 
 export function AuthInput({

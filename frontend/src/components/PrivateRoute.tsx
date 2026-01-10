@@ -2,8 +2,14 @@
 
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { type ReactNode } from "react";
 
-export function PrivateRoute({ children, allowedRoles = [] }) {
+interface PrivateRouteProps {
+    children: ReactNode;
+    allowedRoles?: number[];
+}
+
+export function PrivateRoute({ children, allowedRoles = [] }: PrivateRouteProps) {
     const { isAuthenticated, role, isInitializing } = useAuth();
 
     if (isInitializing) {
@@ -15,7 +21,7 @@ export function PrivateRoute({ children, allowedRoles = [] }) {
         return <Navigate to="/login" replace />;
     }
 
-    if (allowedRoles.length && !allowedRoles.includes(role)) {
+    if (allowedRoles.length && role !== null && !allowedRoles.includes(role)) {
         console.log("Нет роли для доступа, редирект на /login");
         return <Navigate to="/login" replace />;
     }
