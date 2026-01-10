@@ -1,6 +1,7 @@
 ﻿using microservice.SupplyAPI.API.Contracts.Requests;
 using microservice.SupplyAPI.API.Contracts.Responses;
 using microservice.SupplyAPI.Domain.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace microservice.SupplyAPI.API.Controllers
@@ -17,6 +18,7 @@ namespace microservice.SupplyAPI.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult<IEnumerable<SupplierResponse>>> GetSuppliers()
         {
             IEnumerable<SupplierResponse> response = await _supplierService.GetAllSuppliers();
@@ -25,6 +27,7 @@ namespace microservice.SupplyAPI.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> CreateSupplier([FromBody] SupplierRequest request)
         {
             await _supplierService.CreateNewSupplier(request);
@@ -33,6 +36,7 @@ namespace microservice.SupplyAPI.API.Controllers
         }
 
         [HttpPut("{id:Guid}")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> UpdateSupplier(Guid id, [FromBody] SupplierRequest request)
         {
             await _supplierService.UpdateSingleSupplier(id, request);
@@ -41,6 +45,7 @@ namespace microservice.SupplyAPI.API.Controllers
         }
 
         [HttpDelete("{id:Guid}")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<ActionResult> DeleteSupplier(Guid id)
         {
             await _supplierService.DeleteSingleSupplierById(id);
