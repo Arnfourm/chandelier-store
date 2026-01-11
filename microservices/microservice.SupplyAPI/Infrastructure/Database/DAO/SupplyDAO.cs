@@ -58,7 +58,7 @@ namespace microservice.SupplyAPI.Infrastructure.Database.DAO
                 )).ToListAsync();
         }
 
-        public async Task CreateSupply(Supply supply)
+        public async Task<Supply> CreateSupply(Supply supply)
         {
             SupplyEntity supplyEntity = new SupplyEntity
             {
@@ -76,6 +76,14 @@ namespace microservice.SupplyAPI.Infrastructure.Database.DAO
             {
                 throw new Exception($"Error while trying to add new supply. Error message:\n{ex.Message}", ex);
             }
+
+            return new Supply
+            (
+                supplyEntity.Id,
+                supplyEntity.SupplierId,
+                supplyEntity.SupplyDate,
+                supplyEntity.TotalAmount
+            );
         }
 
         public async Task DeleteSupply(Guid id)

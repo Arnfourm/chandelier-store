@@ -28,11 +28,11 @@ namespace microservice.SupplyAPI.API.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Employee,Admin")]
-        public async Task<ActionResult> CreateDeliveryType([FromBody] DeliveryTypeRequest request)
+        public async Task<ActionResult<DeliveryTypeResponse>> CreateDeliveryType([FromBody] DeliveryTypeRequest request)
         {
-            await _deliveryTypeService.CreateNewDeliveryType(request);
+            DeliveryTypeResponse response = await _deliveryTypeService.CreateNewDeliveryType(request);
 
-            return Ok();
+            return Ok(response);
         }
 
         [HttpPut("{id:int}")]

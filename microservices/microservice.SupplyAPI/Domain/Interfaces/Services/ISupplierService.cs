@@ -8,8 +8,9 @@ namespace microservice.SupplyAPI.Domain.Interfaces.Services
     {
         Task<IEnumerable<SupplierResponse>> GetAllSuppliers();
         Task<Supplier> GetSingleSupplierById(Guid id);
+        Task<SupplierResponse> GetSingleSupplierResponseByIdAsync(Guid id);
         Task<IEnumerable<SupplierResponse>> GetListSupplierResponseByIds(List<Guid> ids);
-        Task CreateNewSupplier(SupplierRequest request);
+        Task<SupplierResponse> CreateNewSupplier(SupplierRequest request);
         Task UpdateSingleSupplier(Guid id, SupplierRequest request);
         Task DeleteSingleSupplierById(Guid id);
     }

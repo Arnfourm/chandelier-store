@@ -51,7 +51,8 @@ namespace TestMicroservices
                 _mockDeliveryTypeService.Object,
                 _mockStatusService.Object,
                 _mockTokenService.Object,
-                _mockConfig.Object);
+                _mockConfig.Object
+            );
         }
 
         [Test]

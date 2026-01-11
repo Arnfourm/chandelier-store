@@ -39,6 +39,18 @@ namespace microservice.SupplyAPI.Domain.Services
             return deliveryType;
         }
 
+        public async Task<DeliveryTypeResponse> GetSingleDeliveryTypeResponseByIdAsync(int id)
+        {
+            DeliveryType delivery = await _deliveryTypeDAO.GetDeliveryTypeById(id);
+
+            return new DeliveryTypeResponse
+            (
+                delivery.GetId(),
+                delivery.GetTitle(),
+                delivery.GetComment()
+            );
+        }
+
         public async Task<IEnumerable<DeliveryTypeResponse>>  GetListDeliveryTypeResponseByIds(List<int> ids)
         {
             List<DeliveryType> deliveryTypes = await _deliveryTypeDAO.GetDeliveryTypeByIds(ids);
@@ -56,7 +68,7 @@ namespace microservice.SupplyAPI.Domain.Services
             return response;
         }
 
-        public async Task CreateNewDeliveryType(DeliveryTypeRequest deliveryTypeRequest)
+        public async Task<DeliveryTypeResponse> CreateNewDeliveryType(DeliveryTypeRequest deliveryTypeRequest)
         {
             DeliveryType newDeliveryType = new DeliveryType
                 (
@@ -64,7 +76,13 @@ namespace microservice.SupplyAPI.Domain.Services
                     deliveryTypeRequest.Comment
                 );
 
-            await _deliveryTypeDAO.CreateDeliveryType(newDeliveryType);
+            DeliveryType responseDeliveryType = await _deliveryTypeDAO.CreateDeliveryType(newDeliveryType);
+
+            return new DeliveryTypeResponse(
+                responseDeliveryType.GetId(),
+                responseDeliveryType.GetTitle(),
+                responseDeliveryType.GetComment()
+            );
         }
 
         public async Task UpdateSingleDeliveryTypeById(int id, DeliveryTypeRequest request)

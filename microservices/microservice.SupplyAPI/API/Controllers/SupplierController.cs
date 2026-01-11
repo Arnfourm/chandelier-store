@@ -28,11 +28,11 @@ namespace microservice.SupplyAPI.API.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Employee,Admin")]
-        public async Task<ActionResult> CreateSupplier([FromBody] SupplierRequest request)
+        public async Task<ActionResult<SupplierResponse>> CreateSupplier([FromBody] SupplierRequest request)
         {
-            await _supplierService.CreateNewSupplier(request);
+            SupplierResponse response = await _supplierService.CreateNewSupplier(request);
 
-            return Ok();
+            return Ok(response);
         }
 
         [HttpPut("{id:Guid}")]
