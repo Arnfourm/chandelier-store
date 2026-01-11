@@ -7,7 +7,7 @@ namespace microservice.SupplyAPI.Domain.Interfaces.DAO
         Task<List<Supply>> GetSupplies();
         Task<Supply> GetSupplyById(Guid id);
         Task<List<Supply>> GetSupplyGyIds(List<Guid> ids);
-        Task CreateSupply(Supply supply);
+        Task<Supply> CreateSupply(Supply supply);
         Task DeleteSupply(Guid id);
     }
 }

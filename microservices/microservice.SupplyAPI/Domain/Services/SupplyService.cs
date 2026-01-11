@@ -53,7 +53,7 @@ namespace microservice.SupplyAPI.Domain.Services
             return supply;
         }
 
-        public async Task CreateNewSupply(SupplyRequest request)
+        public async Task<SupplyResponse> CreateNewSupply(SupplyRequest request)
         {
             Supply newSupply = new Supply
                 (
@@ -62,7 +62,17 @@ namespace microservice.SupplyAPI.Domain.Services
                     request.TotalAmount
                 );
 
-            await _supplyDAO.CreateSupply(newSupply);
+            Supply supplyResponse = await _supplyDAO.CreateSupply(newSupply);
+
+            SupplierResponse currentSupplier = await _supplierService.GetSingleSupplierResponseByIdAsync(supplyResponse.GetSupplierId());
+
+            return new SupplyResponse
+            (
+                supplyResponse.GetId(),
+                currentSupplier,
+                supplyResponse.GetSupplyDate(),
+                supplyResponse.GetTotalAmount()
+            );
         }
     }
 }

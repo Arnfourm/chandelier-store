@@ -28,7 +28,7 @@ namespace microservice.SupplyAPI.API.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Employee,Admin")]
-        public async Task<ActionResult> CreateDeliveryType([FromBody] DeliveryTypeRequest request)
+        public async Task<ActionResult<DeliveryTypeResponse>> CreateDeliveryType([FromBody] DeliveryTypeRequest request)
         {
             DeliveryTypeResponse response = await _deliveryTypeService.CreateNewDeliveryType(request);
 

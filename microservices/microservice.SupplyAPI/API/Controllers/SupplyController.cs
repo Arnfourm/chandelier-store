@@ -36,11 +36,11 @@ namespace microservice.SupplyAPI.API.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Employee,Admin")]
-        public async Task<ActionResult> CreateSupply([FromBody] SupplyRequest request)
+        public async Task<ActionResult<SupplyResponse>> CreateSupply([FromBody] SupplyRequest request)
         {
-            await _supplyService.CreateNewSupply(request);
+            SupplyResponse response = await _supplyService.CreateNewSupply(request);
 
-            return Ok();
+            return Ok(response);
         }
 
         [HttpDelete("{id:Guid}")]

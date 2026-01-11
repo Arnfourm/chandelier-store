@@ -52,6 +52,20 @@ namespace microservice.SupplyAPI.Domain.Services
             return supplier;
         }
 
+        public async Task<SupplierResponse> GetSingleSupplierResponseByIdAsync(Guid id)
+        {
+            Supplier supplier = await _supplierDAO.GetSupplierById(id);
+
+            DeliveryTypeResponse currentDeliveryType = await _deliveryTypeService.GetSingleDeliveryTypeResponseByIdAsync(supplier.GetDeliveryTypeId());
+
+            return new SupplierResponse
+            (
+                supplier.GetId(),
+                supplier.GetName(),
+                currentDeliveryType
+            );
+        }
+
         public async Task<IEnumerable<SupplierResponse>> GetListSupplierResponseByIds(List<Guid> ids)
         {
             List<Supplier> suppliers = await _supplierDAO.GetSupplierByIds(ids);
@@ -78,7 +92,7 @@ namespace microservice.SupplyAPI.Domain.Services
             return response;
         }
 
-        public async Task CreateNewSupplier(SupplierRequest request)
+        public async Task<SupplierResponse> CreateNewSupplier(SupplierRequest request)
         {
             DeliveryType deliveryType = await _deliveryTypeService.GetSingleDeliveryTypeById(request.DeliveryTypeId);
 
@@ -88,7 +102,16 @@ namespace microservice.SupplyAPI.Domain.Services
                     deliveryType.GetId()
                 );
 
-            await _supplierDAO.CreateSupplier(newSupplier);
+            Supplier supplierResponse = await _supplierDAO.CreateSupplier(newSupplier);
+
+            DeliveryTypeResponse currentDeliveryType = await _deliveryTypeService.GetSingleDeliveryTypeResponseByIdAsync(supplierResponse.GetDeliveryTypeId());
+
+            return new SupplierResponse
+            (
+                supplierResponse.GetId(),
+                supplierResponse.GetName(),
+                currentDeliveryType
+            );
         }
 
 

@@ -55,7 +55,7 @@ namespace microservice.SupplyAPI.Infrastructure.Database.DAO
                 )).ToListAsync();
         }
 
-        public async Task CreateSupplier(Supplier supplier)
+        public async Task<Supplier> CreateSupplier(Supplier supplier)
         {
             SupplierEntity supplierEntity = new SupplierEntity 
             { 
@@ -72,6 +72,13 @@ namespace microservice.SupplyAPI.Infrastructure.Database.DAO
             {
                 throw new Exception($"Error while trying to add new supplier. Error message:\n{ex.Message}", ex);
             }
+
+            return new Supplier
+            (
+                supplierEntity.Id,
+                supplierEntity.Name,
+                supplierEntity.DeliveryTypeId
+            );
         }
 
         public async Task UpdateSupplier(Supplier supplier)
