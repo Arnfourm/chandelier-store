@@ -56,7 +56,7 @@ namespace microservice.SupplyAPI.Domain.Services
             return response;
         }
 
-        public async Task CreateNewDeliveryType(DeliveryTypeRequest deliveryTypeRequest)
+        public async Task<DeliveryTypeResponse> CreateNewDeliveryType(DeliveryTypeRequest deliveryTypeRequest)
         {
             DeliveryType newDeliveryType = new DeliveryType
                 (
@@ -64,7 +64,13 @@ namespace microservice.SupplyAPI.Domain.Services
                     deliveryTypeRequest.Comment
                 );
 
-            await _deliveryTypeDAO.CreateDeliveryType(newDeliveryType);
+            DeliveryType responseDeliveryType = await _deliveryTypeDAO.CreateDeliveryType(newDeliveryType);
+
+            return new DeliveryTypeResponse(
+                responseDeliveryType.GetId(),
+                responseDeliveryType.GetTitle(),
+                responseDeliveryType.GetComment()
+            );
         }
 
         public async Task UpdateSingleDeliveryTypeById(int id, DeliveryTypeRequest request)

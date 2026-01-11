@@ -9,7 +9,7 @@ namespace microservice.SupplyAPI.Domain.Interfaces.Services
         Task<IEnumerable<DeliveryTypeResponse>> GetAllDeliveryType();
         Task<DeliveryType> GetSingleDeliveryTypeById(int id);
         Task<IEnumerable<DeliveryTypeResponse>> GetListDeliveryTypeResponseByIds(List<int> ids);
-        Task CreateNewDeliveryType(DeliveryTypeRequest deliveryTypeRequest);
+        Task<DeliveryTypeResponse> CreateNewDeliveryType(DeliveryTypeRequest deliveryTypeRequest);
         Task UpdateSingleDeliveryTypeById(int id, DeliveryTypeRequest request);
         Task DeleteSingleDeliveryTypeById(int id);
     }

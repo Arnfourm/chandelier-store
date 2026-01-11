@@ -55,7 +55,7 @@ namespace microservice.SupplyAPI.Infrastructure.Database.DAO
                 )).ToListAsync();
         }
 
-        public async Task CreateDeliveryType(DeliveryType deliveryType)
+        public async Task<DeliveryType> CreateDeliveryType(DeliveryType deliveryType)
         {
             DeliveryTypeEntity deliveryTypeEntity = new DeliveryTypeEntity
             {
@@ -72,6 +72,13 @@ namespace microservice.SupplyAPI.Infrastructure.Database.DAO
             {
                 throw new Exception($"Error while trying to add new delivery type. Error message:\n{ex.Message}", ex);
             }
+
+            return new DeliveryType
+            (
+                deliveryTypeEntity.Id,
+                deliveryTypeEntity.Title,
+                deliveryTypeEntity.Comment
+            );
         }
         
         public async Task UpdateDeliveryType(DeliveryType deliveryType)
